@@ -71,23 +71,26 @@ When the form is succesfully uploaded, the output should look like this -
  ```
  ./claims-cli.sh view-claim-output --claim-reference-id <claim_reference_id_from_step1_output>
  ```
+An example output (screenshot below) of the command lists the summary of the automate review performed by the Bedrock Agent
+![Claims Output](screenshot_claims_review_output)
+
+
  3. We can also look at available claim reference ids using the cli
  ```
-    ./claims-cli.sh list-claims
+./claims-cli.sh list-claims
  ```
-When the form is succesfully uploaded, the output should look like this - 
-![Claim Submitted](../../assets/img/claimsubmission-output.jpg)
 
 ## Viewing Logs and Troubleshooting
 
-### Error: Claim output not found for claim reference ID: <<claim_reference_id>>. Please try again later when trying to view claim output in [Step 2](#step2_claimreview)
+#### Error: Claim output not found for claim reference ID: <<claim_reference_id>>. Please try again later when trying to view claim output in [Step 2](#step2_claimreview)
 This means an error in the claims review process. We can look at CloudWatch Logs to identify the root cause of the error
 
-1. Look at Lambda invocation logs for the BDA invoke automation lambda function
-2. Look at Lambda invocation logs for the BDA invoke claim verification lambda function
+1. View and analyse log stream for the BDA invoke automation lambda function for any errors
+2. View and analyse log stream logs for the BDA invoke claim verification lambda function for any errors
+3. View and analyse log stream logs for the Bedrock Agent Actions lambda function for any errors
 
 
-We also need debug instructions (CloudWatch, Lamnda moniror, etc) of the expected results are not generated. 
+
 
 [Sync_your_data_with_your_Amazon_Bedrock_knowledge_base]: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html
 
@@ -98,4 +101,5 @@ We also need debug instructions (CloudWatch, Lamnda moniror, etc) of the expecte
 [screenshot_view_kb]: ../../assets/screenshots/claims_review_docs/open-kb-view.jpg
 [screenshot_claim_submitted]: ../../assets/screenshots/claims_review_docs/claimsubmission-output.jpg
 [screenshot_claim_eoc_ingestion]: ../../assets/screenshots/claims_review_docs/claim-eoc-ingestion.jpg
+[screenshot_claims_review_output]: ../../assets/screenshots/claims_review_docs/claims_review_output.jpg
 
