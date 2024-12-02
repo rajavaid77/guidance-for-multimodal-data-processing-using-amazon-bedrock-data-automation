@@ -12,6 +12,10 @@ from requests_aws4auth import AWS4Auth
 
 class InvalidRequestTypeError(ValueError):
     pass
+
+class BlueprintNotFoundError(ValueError):
+    pass
+
 # Create a Bedrock client
 bda_client = boto3.client("bedrock-data-automation-runtime", 
                                 **({'endpoint_url': ENDPOINT} if ENDPOINT is not None else {}),
@@ -22,7 +26,7 @@ region_name = session.region_name
 service_name ="bedrock"
 credentials = session.get_credentials().get_frozen_credentials()
 
-def send_request(url, method, payload, service=service_name, region=region_name):
+def send_request(url, method, payload=None, service=service_name, region=region_name):
     host = url.split("/")[2]
     request = AWSRequest(
             method,
@@ -30,14 +34,9 @@ def send_request(url, method, payload, service=service_name, region=region_name)
             data=payload,
             headers={'Host': host, 'Content-Type':'application/json'}
     )    
-    request = AWSRequest(
-            method,
-            url,
-            headers={'Host': host}
-    )
     SigV4Auth(credentials, service, region).add_auth(request)
     response = requests.request(method, url, headers=dict(request.headers), data=payload, timeout=50)
-    # response.raise_for_status()
+    response.raise_for_status()
     print(response)
     content = response.content.decode("utf-8")
     print(content)
@@ -66,6 +65,18 @@ def update_blueprint(event):
 def delete_blueprint(event):
     print(event)
 
+def get_blueprint(event):
+    url = f"{bda_client.meta.endpoint_url}/blueprints/"
+    print(url)
+    response = send_request(
+        url = url,
+        method = "POST"
+    )
+    blueprint = next((blueprint for blueprint in response["blueprints"] if blueprint["blueprintName"]==BLUEPRINT_NAME), None)    
+    if not blueprint:
+        raise BlueprintNotFoundError(f"Blueprint {BLUEPRINT_NAME} not found")
+    return blueprint
+    
 def create_blueprint(event):
     url = f"{bda_client.meta.endpoint_url}/blueprints/"
     print(url)
@@ -104,10 +115,14 @@ def on_create(event):
     props = event["ResourceProperties"]
     print("create new resource with props %s" % props)
     #response = create_blueprint(event)
-    print(response)
+    response = get_blueprint(event)
+    if not response:
+        print(response)
+    else:
+        response = create_blueprint(event)
     return {
         "Data": {
-            "response": response
+            "blueprintArn": response["blueprintArn"]
         }
     }
 

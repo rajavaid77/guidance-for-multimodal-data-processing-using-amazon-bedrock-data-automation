@@ -1,1 +1,1 @@
-python source/scripts/claims-cli.py %*
+python source/claims_review_app/claims-cli.py %*
