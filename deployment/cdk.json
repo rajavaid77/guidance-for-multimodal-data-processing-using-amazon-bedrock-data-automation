@@ -1,0 +1,61 @@
+{
+  "app": "python3 app.py",
+  "context":{
+    "bda_runtime_endpoint":"https://us-east-1.gamma.runtime.bedrock-keystone.aws.dev/",
+    "bda_endpoint":"https://us-east-1.gamma.runtime.bedrock-keystone.aws.dev/",
+    "blueprint_arn":"arn:aws:bedrock:us-east-1:870569814485:blueprint/67357e23c0b4",
+    "blueprint_name":"claims-review-cms1500",
+    "claims_submission_bucket_name": "claims-submission",
+    "claims_review_bucket_name": "claims-review",
+    "agent":{
+        "foundation_model_id":"anthropic.claude-3-haiku-20240307-v1:0",
+        "claims_review_agent_resource_role_name": "claims_review_agent_resource_role"
+    },
+    "vector_store": {
+      "collection_name": "claims-vector-store", 
+      "collection_description": "Vector store for claims review and EOC documents embeddings",
+      "vector_store_index_creation_lambda_role_name":"ClaimsVectorStoreIndexCreationLambdaRole"
+    },
+    "knowledge_bases": {
+        "claims-eoc-kb": {
+            "knowledge_base_name": "claims-eoc-kb",
+            "knowledge_base_description": "Knowledge Base for Evidence of Coverage artifact for verifying claims",
+            "embedding_model_id": "amazon.titan-embed-text-v2:0",
+            "datasource_parameters" : {
+                "name":"claims-eoc-datasource",
+                "description":"Data source for evidence of coverage artifact",
+                "datasource_bucket_name":"claims-eoc-datasource",
+                "chunking_configuration" : {
+                    "chunking_strategy":"auto",
+                    "chunk_size": 1000,
+                    "overlap": 200
+                }
+            },
+            "vector_store_index_params": {
+                "index_name":"claims_eoc_index",
+                "metadata_field":"text-metadata",
+                "text_field":"text",
+                "vector_field":"vector"
+            },
+            "logging_parameters":{
+                "kb_cw_log_group_name_prefix":"claims-eoc-kb",
+                "kb_log_delivery_source":"claims-eoc-kb_log_delivery_source"
+            }
+        }
+    }    
+  },
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "requirements*.txt",
+      "source.bat",
+      "**/__init__.py",
+      "python/__pycache__",
+      "tests"
+    ]
+  }
+}
