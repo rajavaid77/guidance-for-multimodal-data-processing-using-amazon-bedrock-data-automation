@@ -1,0 +1,1 @@
+python source/scripts/claims-cli.py "$@"
