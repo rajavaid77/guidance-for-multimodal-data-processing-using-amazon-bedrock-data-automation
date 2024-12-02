@@ -50,7 +50,7 @@ deployment/
 
 1. Create and activate a virtual environment:
 ```bash
-cd guidance-for-document-processing-using-amazon-bedrock-keystone/deployment
+cd guidance-for-intelligent-document-processing-using-amazon-bedrock/deployment
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
