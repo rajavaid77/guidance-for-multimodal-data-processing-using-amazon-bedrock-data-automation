@@ -68,7 +68,7 @@ By using this dataset and guidance, you acknowledge that you have read, understo
 3. [Process lending documents](deployment/docs/a_lending_03_run_flow.md)
 
 #### Claims Review Setup
-1. Create BDA project and blueprint
+1. [Create BDA blueprint][deployment/docs/b_claims_review_03_create_blueprint.md]
 2. [Deploy claims review stack](deployment/docs/b_claims_review_01_deploy.md)
 3. [Process claims](deployment/docs/b_claims_review_02_run_flow.md)
 
