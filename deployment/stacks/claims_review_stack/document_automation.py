@@ -86,7 +86,7 @@ class DocumentAutomation(Construct):
         ######################################
 
         blueprint_creation_lambda_function = _lambda.Function(
-            self, 'claims-review-blueprint-creation',
+            self, 'blueprint-creation',
             runtime=_lambda.Runtime.PYTHON_3_10,
             code=_lambda.Code.from_asset('lambda/claims_review/blueprint_creation'),
             handler='index.on_event',
