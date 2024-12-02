@@ -9,6 +9,23 @@ You have now completed the install and setup of the solution to process Insuranc
 
 BDA is a generative-AI powered capability of Amazon Bedrock that enables you to automate your end-to-end Intelligent Document Processing (IDP) workflows quickly, accurately and at scale. A blueprint is a structural representation of your desired output for a specific document type (e.g. invoices, drivers licenses or IRS form 1099-INT). We then feed new unseen documents into the solution, for BDA to detect the document type, apply the correct blueprint and send the extracted results for downstream processing.
 
+## Adding Content to the Insurance EOC Knowledge Base
+We now need to populate the knowledge base with the content from our claims Evidence of Coverage documents. There are sample documents available in the path `assets/data/claims_review/eoc`.  We can use the claims-cli command-line interface add these document to the claims EOC knowledge base.
+
+More details - [Sync your data with your Amazon Bedrock knowledge base][Sync_your_data_with_your_Amazon_Bedrock_knowledge_base]
+
+
+> [!Note]
+>Before continuing ensure you are in the root directory of this repository which is `guidance-for-intelligent-document-processing-using-amazon-bedrock`
+
+
+```
+ ./claims-cli.sh upload-eoc-document --file assets/data/claims_review/eoc/Evidence_of_Coverage_-_FakeHealth_Standard.pdf 
+ ./claims-cli.sh upload-eoc-document --file assets/data/claims_review/eoc/Evidence_of_Coverage_-_FakeHealth_Plus.pdf 
+ ./claims-cli.sh upload-eoc-document --file assets/data/claims_review/eoc/Evidence_of_Coverage_-_FakeHealth_Premium.pdf 
+```
+
+
 ## Accessing the Insurance EOC Knowledge Base
 
 In this step, we will use Bedrock in the AWS Console to view and access the Insurance EOC Knowledge Base. We will use the console to issue prompts 
@@ -17,14 +34,42 @@ In this step, we will use Bedrock in the AWS Console to view and access the Insu
 ![Navigate to Knowledge Base Page](../../assets/img/open-kb-view.jpg)
 
 2. In the Knowledge Bases view, select the Knowledge Base named `claims-eoc-kb` and click on `Test Knowledge Base`
+![Test Knowledge Base](../../assets/img/test-kb.jpg)
+
+3. In the `Test Knowledge Base` pane on the right side of the page, Click Select model, select the `Titan Text G1 - Premier` model and Click Apply.
+![Select Mode to Test Knowledge Base][screenshot_select_model]
+
+4. With the model selected, we are ready to test our Claims Evidence of Coverage knowledge base. You can ask a question in natural language to retrieve relevant response. For example
+
+    ```
+     What are the treatments covered under the Premium Plan?
+    ```
+    ![KB_ASK][screenshot_ask_kb]
+
+5. The Knowledge base retrieves the relevant EoC document for the Premium plan and responds to the question
+
+    ![KB_Response][screenshot_kb_response]
 
 
 ## Processing of a Medical Insurance Claims
 
 We will now submit a new lending application to BDA. BDA will process the insurance claim, and check for coverage against the EOC documents in the Knowledge Base. 
 
-Steps:
-1. Upload a new lending package to the S3 input bucket. 
-2. Check for results RDS. 
+We can use the claims-cli again to do this. A few sample claims forms are available in `assets/data/claims_review/cms_155`
+
+1. Upload a claim form using the cli. Keep a note of the `claim-reference-id` in the output 
+ ```
+ ./claims-cli.sh submit-claim --file assets/data/claims_review/cms_1500/sample1_cms-1500-P.pdf 
+ ```
+When the form is succesfully uploaded, the output should look like this - 
+![Claim Submitted](../../assets/img/claimsubmission-output.jpg)
+
+
 
 We also need debug instructions (CloudWatch, Lamnda moniror, etc) of the expected results are not generated. 
+
+[Sync_your_data_with_your_Amazon_Bedrock_knowledge_base]: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html
+[screenshot_select_model]: ../../assets/img/select-model.jpg
+[screenshot_ask_kb]: ../../assets/img/ask-kb.jpg
+[screenshot_kb_response]: ../../assets/img/kb-result.jpg
+

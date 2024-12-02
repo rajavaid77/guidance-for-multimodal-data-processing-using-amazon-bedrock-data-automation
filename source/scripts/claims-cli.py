@@ -41,14 +41,10 @@ class ClaimsCLI:
     def list_ingestion_jobs(self):
         kb_id = self.get_eoc_kb_id()
         datasource_id = self.get_eoc_kb_datasource_id()
-        print(f"Listing Ingestion Jobs for KB: {kb_id} and Datasource:{datasource_id}")
         response  = self.bedrock_agent_client.list_ingestion_jobs(
             knowledgeBaseId=kb_id,
             dataSourceId=datasource_id
         )
-        for job in response['ingestionJobSummaries']:
-            print(job)
-
                 # Create a PrettyTable object
         table = PrettyTable()
         # Define the columns for your table
@@ -80,7 +76,7 @@ class ClaimsCLI:
         while attempts < max_attempts:
             job = self.get_ingestion_job_for_document(bucket, key)
             if not job:
-                print(f"Attempt {attempts + 1}: Waiting for the Job to started.")
+                print(f"Attempt {attempts + 1}: Waiting for the Ingestion Job to start.")
             else:
                 print("Ingestion Job Started successfully!")
                 return job['ingestionJobId']
@@ -96,7 +92,7 @@ class ClaimsCLI:
             status = self.get_ingestion_job_status(ingestion_job_id)
             if status in ['COMPLETE', 'FAILED','STOPPED']:
                 return True
-            print(f"Attempt {attempts + 1}: Status is {status}")
+            print(f"Attempt {attempts + 1}: Waiting for Job to complete. Current status is {status}")
             attempts += 1
             time.sleep(delay)
         print("Max attempts reached. Task not completed.")
