@@ -138,7 +138,7 @@ guidance-for-intelligent-document-processing-using-amazon-bedrock/
 │       │   └── vector_store.py
 ├── README.md
 ├── source/
-│   └── scripts/
+│   └── claims_review_app/
 │       └── claims-cli.py
 ├── source.bat
 ```
