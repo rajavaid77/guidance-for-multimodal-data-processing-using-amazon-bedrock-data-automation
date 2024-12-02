@@ -4,7 +4,7 @@ In the second flow, we will submit documents that will be processed and the extr
 
 You have now completed the install and setup of the solution to process Insurance Claims. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](./deployment-claims-review-agent.md) before proceeding. 
 
-<img src="../../assets/img/guidance-for-document-processing-using-amazon-bedrock-keystone-flow-2.png" width="800" />
+<img src="../../assets/assets/guidance-for-document-processing-using-amazon-bedrock-keystone-flow-2.png" width="800" />
 
 
 BDA is a generative-AI powered capability of Amazon Bedrock that enables you to automate your end-to-end Intelligent Document Processing (IDP) workflows quickly, accurately and at scale. A blueprint is a structural representation of your desired output for a specific document type (e.g. invoices, drivers licenses or IRS form 1099-INT). We then feed new unseen documents into the solution, for BDA to detect the document type, apply the correct blueprint and send the extracted results for downstream processing.
@@ -18,23 +18,25 @@ More details - [Sync your data with your Amazon Bedrock knowledge base][Sync_you
 > [!Note]
 >Before continuing ensure you are in the root directory of this repository which is `guidance-for-intelligent-document-processing-using-amazon-bedrock`
 
-
+Run the following commands to add each of the EoC documents to S3 and start the ingestion process
 ```
  ./claims-cli.sh upload-eoc-document --file assets/data/claims_review/eoc/Evidence_of_Coverage_-_FakeHealth_Standard.pdf 
  ./claims-cli.sh upload-eoc-document --file assets/data/claims_review/eoc/Evidence_of_Coverage_-_FakeHealth_Plus.pdf 
  ./claims-cli.sh upload-eoc-document --file assets/data/claims_review/eoc/Evidence_of_Coverage_-_FakeHealth_Premium.pdf 
 ```
 
+The output shows the Ingestion process starting and completing.
+![Claims EoC Ingestion](screenshot_claims-eoc-ingestion)
 
 ## Accessing the Insurance EOC Knowledge Base
 
 In this step, we will use Bedrock in the AWS Console to view and access the Insurance EOC Knowledge Base. We will use the console to issue prompts 
 
 1. Open the Amazon Bedrock Console and Click on `Knowledge Bases` under `Builder Tools` in the the sidebar to navigate to the Knowledge Bases view
-![Navigate to Knowledge Base Page](../../assets/img/open-kb-view.jpg)
+![Navigate to Knowledge Base Page](screenshot_view_kb)
 
 2. In the Knowledge Bases view, select the Knowledge Base named `claims-eoc-kb` and click on `Test Knowledge Base`
-![Test Knowledge Base](../../assets/img/test-kb.jpg)
+![Test Knowledge Base](screenshot_test_kb)
 
 3. In the `Test Knowledge Base` pane on the right side of the page, Click Select model, select the `Titan Text G1 - Premier` model and Click Apply.
 ![Select Mode to Test Knowledge Base][screenshot_select_model]
@@ -62,14 +64,19 @@ We can use the claims-cli again to do this. A few sample claims forms are availa
  ./claims-cli.sh submit-claim --file assets/data/claims_review/cms_1500/sample1_cms-1500-P.pdf 
  ```
 When the form is succesfully uploaded, the output should look like this - 
-![Claim Submitted](../../assets/img/claimsubmission-output.jpg)
+![Claim Submitted](screenshot_claim_submitted)
 
 
 
 We also need debug instructions (CloudWatch, Lamnda moniror, etc) of the expected results are not generated. 
 
 [Sync_your_data_with_your_Amazon_Bedrock_knowledge_base]: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html
-[screenshot_select_model]: ../../assets/img/select-model.jpg
-[screenshot_ask_kb]: ../../assets/img/ask-kb.jpg
-[screenshot_kb_response]: ../../assets/img/kb-result.jpg
+
+[screenshot_select_model]: ../../assets/screenshots/claims_review_docs/select-model.jpg
+[screenshot_ask_kb]: ../../assets/screenshots/claims_review_docs/ask-kb.jpg
+[screenshot_test_kb]: ../../assets/screenshots/claims_review_docs/test-kb.jpg
+[screenshot_kb_response]: ../../assets/screenshots/claims_review_docs/kb-result.jpg
+[screenshot_view_kb]: ../../assets/screenshots/claims_review_docs/open-kb-view.jpg
+[screenshot_claim_submitted]: ../../assets/screenshots/claims_review_docs/claimsubmission-output.jpg
+[screenshot_claim_eoc_ingestion]: ../../assets/screenshots/claims_review_docs/claim-eoc-ingestion.jpg
 
