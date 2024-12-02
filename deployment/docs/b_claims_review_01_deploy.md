@@ -9,7 +9,7 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
 The stack sets up the following key AWS resources: 
 
 > [!Important]
->The resource names or name prefixes would change if the parameters in `cdk.context.json` are modified from their default values before creating the stack
+>The resource names or name prefixes would change if the parameters in `cdk.json` are modified from their default values before creating the stack
 
 - Claims Submission Bucket - Used to store incoming CMS 1500 claim forms
   - bucket name prefix `claims-review-bdaclaimsreviewbucket`
@@ -88,7 +88,6 @@ guidance-for-intelligent-document-processing-using-amazon-bedrock/
 ├── claims-cli.sh
 ├── deployment/
 │   ├── app.py
-│   ├── cdk.context.json
 │   ├── cdk.json
 │   ├── docs/
 │   │   ├── b_claims_review_01_deploy.md
@@ -215,8 +214,6 @@ The stack enforces the following security measures:
 
 If you encounter any issues during deployment or runtime, here are some troubleshooting steps:
 
-
-
 **Examples:**
 
 * Open CloudFormation console and verify the status of the template with the name starting with xxxxxx.
@@ -261,8 +258,8 @@ Ensure you're in the right directory when running `cdk deploy`. see [Step 1](#de
 
 To modify the stack:
 
-### Customize Stack Parameters
-The stack uses context values in `cdk.context.json` file to store default parameters used for stack creation. The values can be modified by modifying the `cdk.content.json`
+### Customize Stack Parameters <a name="customize_stack_parameters'></a>
+The stack uses context values in `cdk.json` file to store default parameters used for stack creation. The values can be modified by modifying the `cdk.json`
 
 ### Customize the Claims Review Bedrock Agent prompt
 The prompt instruction used to create the agent is in the `deployment/stacks/claims_review_stack/prompts/claims_review_agent.py`.
