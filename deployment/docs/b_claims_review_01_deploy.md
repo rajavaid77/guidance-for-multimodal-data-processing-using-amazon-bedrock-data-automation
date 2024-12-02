@@ -63,13 +63,16 @@ The stack sets up the following key AWS resources:
 - Node.js and npm (for AWS CDK CLI)
 - AWS CDK CLI installed (`npm install -g aws-cdk`)
 - [Ensure Amazon Bedrock Model Access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html)
+  - Enable access to 
+    * Titan Text G1 - Premier (model id: amazon.titan-text-premier-v1:0)
+    * Titan Text Embeddings V2 (model id: amazon.titan-embed-text-v2:0)
 
 ## Project Structure
 <details>
   <summary>Click for Project Structure</summary>
 
 ```
-guidance-for-document-processing-using-amazon-bedrock-keystone/
+guidance-for-intelligent-document-processing-using-amazon-bedrock/
 ├── assets/
 │   ├── data/
 │   │   ├── claims_review/
@@ -150,7 +153,7 @@ guidance-for-document-processing-using-amazon-bedrock-keystone/
 
 1. Change to the `deployment` directory for the guidance repository <a name='deployment-directory'></a>
    ```
-   cd guidance-for-document-processing-using-amazon-bedrock-keystone/deployment
+   cd guidance-for-intelligent-document-processing-using-amazon-bedrock/deployment
    ```
 2. Create and activate a virtual environment:
    ```
@@ -195,14 +198,6 @@ guidance-for-document-processing-using-amazon-bedrock-keystone/
    ```
   A successful initial deployment should show a 'CREATE_COMPLETE' status and a successful subsequent deployment should show
   'UPDATE_COMPLETE' status
-
-8. Once the stack deployment is completed, before we can use the application, we need to populate the knowledge base with data from our claims Evidence of Coverage documents. There are sample documents available in the path `assets/data/claims_review/eoc`
-that we can use with the Claims cli to add this document to the claims EOC knowledge base
-
-   ```
-   ./claims-cli.sh upload-eoc-document --file assets/data/claims_review/eoc/Evidence_of_Coverage_-_FakeHealth_Plus.pdf 
-   ```
-
 
 ## Using the Sample Application
 See the guide [here](./b_claims_review_02_run_flow.md) for steps to run the claims review application
@@ -260,7 +255,7 @@ Ensure you're in the right directory when running `cdk deploy`. see [Step 1](#de
 - "Resource not found": Ensure the required resources exist and the permissions are correct.
 - "Access denied": Check the IAM roles and policies.
 - "Invalid handler": Verify the Lambda function handler name.
-- "Access denied when calling Bedrock": Verify Bedrock Model Access for the model used by the Agent in this case `anthropic.claude-3-5-sonnet-20241022-v2`.
+- "Access denied when calling Bedrock": Verify Bedrock Model Access for the model used by the Agent in this case `amazon.titan-text-premier-v1:0`.
 
 ## Development
 
@@ -330,7 +325,7 @@ To update stack resources -
  
 1. Change to the `deployment` directory for the guidance repository
    ```
-   cd guidance-for-document-processing-using-amazon-bedrock-keystone/deployment
+   cd guidance-for-intelligent-document-processing-using-amazon-bedrock/deployment
    ```
  
 1. Destroy the stack
