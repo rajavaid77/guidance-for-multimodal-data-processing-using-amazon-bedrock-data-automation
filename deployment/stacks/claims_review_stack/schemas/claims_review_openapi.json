@@ -366,6 +366,7 @@
                                     },
                                     "claim_date": {
                                         "type": "string",
+                                        "description": "The date the claim was submitted in YYYY-MM-DD format",
                                         "format":"date",
                                         "pattern": "^\\d{4}-((0[1-9])|(1[012]))-((0[1-9]|[12]\\d)|3[01])$",
                                         "example": "2024-12-02"                                               
@@ -399,6 +400,7 @@
                                                 "date_of_service": {
                                                     "type": "string",
                                                     "format": "date",
+                                                    "description": "The date of service in YYYY-MM-DD format",
                                                     "pattern": "^\\d{4}-((0[1-9])|(1[012]))-((0[1-9]|[12]\\d)|3[01])$",
                                                     "example": "2024-12-02"                                               
                                                 },

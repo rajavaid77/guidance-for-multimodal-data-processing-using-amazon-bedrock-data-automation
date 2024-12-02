@@ -201,9 +201,9 @@ def create_claim(event) :
         create_param("patient_id", get_request_property (event, "patient_id")),
         create_param("claim_date", get_request_property(event,"claim_date")),
         create_param("diagnosis_1", get_request_property(event,"diagnosis_1")),
-        create_param("diagnosis_2", get_request_property(event,"diagnosis_2")),
-        create_param("diagnosis_3", get_request_property(event,"diagnosis_3")),
-        create_param("diagnosis_4", get_request_property(event,"diagnosis_4")),
+        create_param("diagnosis_2", get_request_property(event,"diagnosis_2",'')),
+        create_param("diagnosis_3", get_request_property(event,"diagnosis_3",'')),
+        create_param("diagnosis_4", get_request_property(event,"diagnosis_4",'')),
         create_param("total_charges", get_request_property(event,"total_charges")),
         create_param("amountPaid", get_request_property(event,"amount_paid")),
         create_param("balanceDue", get_request_property(event,"balance")),
@@ -216,7 +216,8 @@ def create_claim(event) :
     data = results_by_column_name(result)
     if not data:
         raise ParameterNotFoundError(f"Missing return record after Insert")
-    services = get_request_property(event,"services")
+    services_text = get_request_property(event,"services")
+    services = json.loads(services_text)
     print(services)
     for service in services: # type: ignore
         parameters = [
