@@ -59,13 +59,14 @@ class AuroraPostgresCluster(Construct):
 
         self.db_credentials_secret = db_credentials_secret.secret_arn
 
-        create_schema_file, delete_schema_file = self.create_schema_file_assets()
+        create_schema_file, delete_schema_file, update_schema_file = self.create_schema_file_assets()
 
         manage_schema_lambda_function = self.create_manage_schema_lambda_function(
             cluster_arn=self.aurora_cluster.cluster_arn,
             db_credentials_secret_arn=self.db_credentials_secret,
             create_schema_file_uri=create_schema_file.s3_object_url,
-            delete_schema_file_uri=delete_schema_file.s3_object_url            
+            delete_schema_file_uri=delete_schema_file.s3_object_url,
+            update_schema_file_uri=update_schema_file.s3_object_url if update_schema_file else None        
         )
         self.create_create_schema_custom_resource(manage_schema_lambda_function)
 
@@ -121,24 +122,34 @@ class AuroraPostgresCluster(Construct):
             "CreateSQLSchemaAsset",
             path=os.path.join(current_dir, "schemas/create_database_schema.sql"),
         )
+        update_schema_file = None
+        #if update_database_schema.sql exists then create an S3 asset for it
+        if os.path.exists(os.path.join(current_dir, "schemas/update_database_schema.sql")):
+            update_schema_file = s3_assets.Asset(
+                self,
+                "UpdateSQLSchemaAsset",
+                path=os.path.join(current_dir, "schemas/update_database_schema.sql"),
+            )
+
         # Upload the SQL schema file to S3 as an asset
         delete_schema_file = s3_assets.Asset(
             self,
             "DeleteSQLSchemaAsset",
             path=os.path.join(current_dir, "schemas/delete_database_schema.sql"),
         )
-        return (create_schema_file, delete_schema_file)
+        return (create_schema_file, delete_schema_file, update_schema_file)
     
     def create_manage_schema_lambda_function(self,
             cluster_arn:str,
             db_credentials_secret_arn:str,
             create_schema_file_uri:str,
-            delete_schema_file_uri:str
+            delete_schema_file_uri:str,
+            update_schema_file_uri:str = None
         ):
                # Define the Lambda function that will execute the schema
         manage_schema_lambda_function = _lambda.Function(
             self,
-            "SchemaExecutorLambda",
+            "schema_executor",
             runtime=_lambda.Runtime.PYTHON_3_10,
             handler="index.handler",
             code=_lambda.Code.from_asset("lambda/claims_review/manage_schema"),
@@ -148,7 +159,8 @@ class AuroraPostgresCluster(Construct):
                 "DATABASE_NAME": "claimdatabase",
                 "CREATE_SCHEMA_FILE": create_schema_file_uri,  # Path to the uploaded SQL file in S3
                 "DELETE_SCHEMA_FILE": delete_schema_file_uri,  # Path to the uploaded SQL file in S3
-            },
+                **({'UPDATE_SCHEMA_FILE': update_schema_file_uri} if update_schema_file_uri is not None else {}),
+            }
         )
 
         # Grant permissions for Lambda to access RDS Data API and Secrets Manager

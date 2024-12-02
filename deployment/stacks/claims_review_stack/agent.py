@@ -89,7 +89,7 @@ class ClaimsReviewAgentStack(Stack):
         )
 
         claims_review_agent_actions_function = _lambda.Function(
-            self, 'claims_review_agent_actions',
+            self, 'agent_actions',
             runtime=_lambda.Runtime.PYTHON_3_10,
             code=_lambda.Code.from_asset('lambda/claims_review/claims_review_agent_actions'),
             handler='index.lambda_handler',
@@ -335,7 +335,7 @@ class ClaimsReviewAgentStack(Stack):
 
         return  _lambda.Function(
             self,
-            "datasource_sync_lambda_function",
+            "datasource_sync",
             runtime=_lambda.Runtime.PYTHON_3_10,
             handler="index.lambda_handler",
             code=_lambda.Code.from_asset('lambda/claims_review/datasource_sync'),

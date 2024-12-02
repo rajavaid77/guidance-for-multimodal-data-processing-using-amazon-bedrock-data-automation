@@ -9,6 +9,7 @@ secret_arn = os.environ['SECRET_ARN']
 database_name = os.environ['DATABASE_NAME']
 create_schema_sql_file = os.environ['CREATE_SCHEMA_FILE']
 delete_schema_sql_file = os.environ['DELETE_SCHEMA_FILE']
+update_schema_sql_file = os.environ.get('UPDATE_SCHEMA_FILE',None)
 
 def handler(event, context):
     
@@ -18,7 +19,8 @@ def handler(event, context):
         case 'Create':
             execute(create_schema_sql_file)
         case 'Update':
-            pass
+            if update_schema_sql_file:
+                execute(update_schema_sql_file)
         case 'Delete':
             execute(delete_schema_sql_file)
         case _:
