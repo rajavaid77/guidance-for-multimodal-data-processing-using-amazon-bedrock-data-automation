@@ -64,6 +64,25 @@ We can use the claims-cli again to do this. A few sample claims forms are availa
 When the form is succesfully uploaded, the output should look like this - 
 ![Claim Submitted](../../assets/img/claimsubmission-output.jpg)
 
+2. Wait for a few minutes and check the claim output using the cli.<a name=step2_claimreview></a>
+ Keep a note of the `claim-reference-id` in the output 
+ ```
+ ./claims-cli.sh view-claim-output --claim-reference-id <claim_reference_id_from_step1_output>
+ ```
+ 3. We can also look at available claim reference ids using the cli
+ ```
+    ./claims-cli.sh list-claims
+ ```
+When the form is succesfully uploaded, the output should look like this - 
+![Claim Submitted](../../assets/img/claimsubmission-output.jpg)
+
+## Viewing Logs and Troubleshooting
+
+### Error: Claim output not found for claim reference ID: <<claim_reference_id>>. Please try again later when trying to view claim output in [Step 2](#step2_claimreview)
+This means an error in the claims review process. We can look at CloudWatch Logs to identify the root cause of the error
+
+1. Look at Lambda invocation logs for the BDA invoke automation lambda function
+2. Look at Lambda invocation logs for the BDA invoke claim verification lambda function
 
 
 We also need debug instructions (CloudWatch, Lamnda moniror, etc) of the expected results are not generated. 
