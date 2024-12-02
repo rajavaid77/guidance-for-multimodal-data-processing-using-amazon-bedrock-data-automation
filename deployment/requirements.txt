@@ -15,5 +15,5 @@ requests_aws4auth
 opensearch-py
 ../boto3-1.35.72-py3-none-any.whl
 ../botocore-1.35.72-py3-none-any.whl
-
+prettytable
 # streamlit>=1.40.0
