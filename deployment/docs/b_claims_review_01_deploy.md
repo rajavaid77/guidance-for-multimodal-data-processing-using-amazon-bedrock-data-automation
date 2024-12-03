@@ -212,24 +212,6 @@ The stack enforces the following security measures:
 
 ## Troubleshooting <a name="Troubleshooting"></a>
 
-If you encounter any issues during deployment or runtime, here are some troubleshooting steps:
-
-**Examples:**
-
-* Open CloudFormation console and verify the status of the template with the name starting with xxxxxx.
-* If deployment is successful, you should see an active database instance with the name starting with <xxxxx> in        the RDS console.
-*  Run the following CLI command to validate the deployment: ```aws cloudformation describe xxxxxxxxxxxxx```
-
-## Running the Guidance 
-
-<Provide instructions to run the Guidance with the sample data or input provided, and interpret the output received.> 
-
-This section should include:
-
-* Guidance inputs
-* Commands to run
-* Expected output (provide screenshot if possible)
-* Output description
 
 ### Deployment Issues:
 
