@@ -2,7 +2,7 @@
 
 You have now completed the install and setup of the solution to process Loan Applications. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](./deployment-readme.md) before proceeding. 
 
-<img src="../assets/architectures/a_lending_flow_architecture.png" width="800" />
+<img src="../../assets/architectures/a_lending_flow_architecture.png" width="800" />
 
 After installing, we used BDA in the Amazon Console to view  to access five sample blueprints we need for processing loan applications. We then add a new blueprints for a Homeowners Insurance Application form. If you have not completed this step, please go back and complete the setup steps [here](./console-blueprint-instructions.md)
 
