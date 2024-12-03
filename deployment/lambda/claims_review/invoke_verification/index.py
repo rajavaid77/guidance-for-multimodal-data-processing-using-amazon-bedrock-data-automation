@@ -43,9 +43,7 @@ def invoke_bedrock_agent(s3_uri:str):
         
     except Exception as e:
         print(f"Error invoking Bedrock agent: {str(e)}")
-        return {
-            ERROR_MESSAGE
-        }
+        return  ERROR_MESSAGE
     
 def lambda_handler(event, context):
     # Log the event for debugging
