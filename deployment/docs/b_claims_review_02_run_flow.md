@@ -72,6 +72,11 @@ When the form is succesfully uploaded, the output should look like this -
  ./claims-cli.sh view-claim-output --claim-reference-id <claim_reference_id_from_step1_output>
  ```
 An example output (screenshot below) of the command lists the summary of the automate review performed by the Bedrock Agent
+
+
+> [!Note]
+> Results will vary based on the foundational model chosen
+
 ![Claims Output](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/claims_review_output.jpg)
 
 
