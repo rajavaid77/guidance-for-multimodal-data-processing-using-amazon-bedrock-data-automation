@@ -5,6 +5,8 @@ import argparse
 import uuid
 import time
 from prettytable import PrettyTable
+from datetime import datetime, timezone
+import dateutil.parser
 import json
 import botocore
 from botocore.exceptions import CredentialRetrievalError, NoRegionError
@@ -32,14 +34,17 @@ class ClaimsCLI:
         return response['ingestionJob']['ingestionJobId']
 
 
-    def get_ingestion_job_for_document(self, bucket:str, key:str):
+    def get_ingestion_job_for_document(self, bucket:str, key:str, timestamp):
         kb_id = self.get_eoc_kb_id()
         datasource_id = self.get_eoc_kb_datasource_id()
         response  = self.bedrock_agent_client.list_ingestion_jobs(
             knowledgeBaseId=kb_id,
             dataSourceId=datasource_id
         )
-        return next((job for job in response["ingestionJobSummaries"] if (bucket in job['description'] and key in job['description'])), None)
+        jobs = response["ingestionJobSummaries"]
+        jobs = [item for item in jobs if item['startedAt'] >= timestamp]
+        jobs = sorted(jobs, key=lambda x: x['startedAt'], reverse=True)
+        return next((job for job in jobs if (bucket in job['description'] and key in job['description'])), None)
     
     def list_ingestion_jobs(self):
         kb_id = self.get_eoc_kb_id()
@@ -48,6 +53,7 @@ class ClaimsCLI:
             knowledgeBaseId=kb_id,
             dataSourceId=datasource_id
         )
+        jobs = sorted(response["ingestionJobSummaries"], key=lambda x: x['startedAt'], reverse=True)
                 # Create a PrettyTable object
         table = PrettyTable()
         # Define the columns for your table
@@ -55,12 +61,12 @@ class ClaimsCLI:
         table.field_names = ["Ingestion Job Id", "Status", "# New Documents Indexed", "StartTime", "End Time"]
 
         # Add rows to the table
-        for job in response['ingestionJobSummaries']:
+        for job in jobs:
             table.add_row([
                 job.get('Ingestion Job Id', job["ingestionJobId"]),
                 job.get('Status', job['status']),
                 job.get('#Documents Indexed', job['statistics']["numberOfNewDocumentsIndexed"]),
-                job.get('StartTime', 'startedAt'),
+                job.get('StartTime', job['startedAt']),
                 job.get('Last Updated', job['updatedAt'])
             ])
 
@@ -74,10 +80,10 @@ class ClaimsCLI:
         )
         return response['ingestionJob']['status']
 
-    def wait_for_start(self,bucket:str, key:str, max_attempts=10, delay=5)-> None | str:
+    def wait_for_start(self,bucket:str, key:str,timestamp, max_attempts=10, delay=5)-> None | str:
         attempts = 0
         while attempts < max_attempts:
-            job = self.get_ingestion_job_for_document(bucket, key)
+            job = self.get_ingestion_job_for_document(bucket, key, timestamp)
             if not job:
                 print(f"Attempt {attempts + 1}: Waiting for the Ingestion Job to start.")
             else:
@@ -159,9 +165,11 @@ class ClaimsCLI:
 
         try:
             key = os.path.basename(eoc_document_path)
+            #get current timestamp
+            timestamp = datetime.now(timezone.utc)
             self.s3_client.upload_file(eoc_document_path, bucket_name, key)
             print(f"\n\033[1mUploaded document.... Running Datasource Sync\033[0m\n")
-            ingestion_job_id = self.wait_for_start(bucket_name, key)
+            ingestion_job_id = self.wait_for_start(bucket_name, key, timestamp)
             self.print_job_status(ingestion_job_id)
             self.wait_for_ingestion_job_completion(ingestion_job_id)
             self.print_job_status(ingestion_job_id)
