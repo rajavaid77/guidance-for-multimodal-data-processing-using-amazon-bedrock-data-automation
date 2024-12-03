@@ -66,8 +66,8 @@ def delete_blueprint(event):
     print(event)
 
 def get_blueprint(event):
-    url = f"{bda_client.meta.endpoint_url}/blueprints/"
-    print(url)
+    #strip trailing / 
+    url = f"{bda_client.meta.endpoint_url.rstrip('/')}/blueprints/"
     response = send_request(
         url = url,
         method = "POST"
@@ -116,10 +116,6 @@ def on_create(event):
     print("create new resource with props %s" % props)
     #response = create_blueprint(event)
     response = get_blueprint(event)
-    if not response:
-        print(response)
-    else:
-        response = create_blueprint(event)
     return {
         "Data": {
             "blueprintArn": response["blueprintArn"]

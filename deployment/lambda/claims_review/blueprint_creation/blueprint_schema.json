@@ -1,5 +1,5 @@
 {
-    "$schema": "http: //json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "documentClass": "CMS 1500 Claim Form",
     "description": "A standard medical claim form used by healthcare providers in the US to bill health insurance companies for medical services.",
     "definitions": {
@@ -44,7 +44,7 @@
                     "type": "string",
                     "inferenceType": "extractive",
                     "description": "The COB field from item 24J"
-                },                
+                },
                 "type_of_service": {
                     "type": "string",
                     "description": "The type of medical service"
@@ -234,7 +234,7 @@
             "inferenceType": "extractive",
             "description": "The local use field from item 19"
         },
-        "is_outside_lab_indicator":{
+        "is_outside_lab_indicator": {
             "type": "boolean",
             "inferenceType": "extractive",
             "description": "Are there outside lab charges? from item 20"
