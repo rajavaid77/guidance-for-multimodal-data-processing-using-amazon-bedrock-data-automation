@@ -39,7 +39,7 @@ In this step, we will use Bedrock in the AWS Console to view and access the Insu
 ![Test Knowledge Base](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/test-kb.jpg)
 
 3. In the `Test Knowledge Base` pane on the right side of the page, Click Select model, select the `Titan Text G1 - Premier` model and Click Apply.
-![Select Mode to Test Knowledge Base][https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg]
+![Select Mode to Test Knowledge Base](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg)
 
 4. With the model selected, we are ready to test our Claims Evidence of Coverage knowledge base. You can ask a question in natural language to retrieve relevant response. For example
 
@@ -95,7 +95,7 @@ This means an error in the claims review process. We can look at CloudWatch Logs
 [Sync_your_data_with_your_Amazon_Bedrock_knowledge_base]: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html
 
 [screenshot_select_model]: ../../assets/screenshots/claims_review_docs/select-model.jpg
-[screenshot_ask_kb]: ../../assets/screenshots/claims_review_docs/ask-kb.jpg
+[screenshot_ask_kb]: ../../../assets/screenshots/claims_review_docs/ask-kb.jpg
 [screenshot_test_kb]: ../../assets/screenshots/claims_review_docs/test-kb.jpg
 [screenshot_kb_response]: ../../assets/screenshots/claims_review_docs/kb-result.jpg
 [screenshot_view_kb]: ../../assets/screenshots/claims_review_docs/open-kb-view.jpg
