@@ -1,5 +1,4 @@
-# Guidance for document processing using Amazon Bedrock Data Automation
-
+![image](https://github.com/user-attachments/assets/a554e3c6-1d6a-475d-a447-9b410b6b4ded)# Guidance for Multimodal Data Processing Using Amazon Bedrock Data Automation
 Automate document processing using AWS AI/ML services to:
 - Speed up business processes
 - Improve decision quality 
