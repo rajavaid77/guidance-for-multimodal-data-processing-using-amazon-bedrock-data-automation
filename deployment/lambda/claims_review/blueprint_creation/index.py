@@ -130,12 +130,12 @@ def on_update(event):
     """
     response = {}
     props = event["ResourceProperties"]
-    print("create new resource with props %s" % props)
-    #response = update_blueprint(event)
-    #print(response)
+    print("update new resource with props %s" % props)
+    #response = create_blueprint(event)
+    response = get_blueprint(event)
     return {
         "Data": {
-            "response": response
+            "blueprintArn": response["blueprintArn"]
         }
     }
 

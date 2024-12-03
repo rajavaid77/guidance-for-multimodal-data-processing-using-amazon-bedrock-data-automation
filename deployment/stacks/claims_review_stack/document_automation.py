@@ -25,16 +25,16 @@ class DocumentAutomation(Construct):
 
         super().__init__(scope, construct_id, **kwargs)
         data_project_arn = self.node.try_get_context("data_project_arn")
-        blueprint_arn = self.node.try_get_context("blueprint_arn")
+        #blueprint_arn = self.node.try_get_context("blueprint_arn")
         blueprint_name= self.node.try_get_context("blueprint_name")
 
         bda_runtime_endpoint = self.node.try_get_context("bda_runtime_endpoint")
         bda_endpoint = self.node.try_get_context("bda_endpoint")
 
-        blueprint_creation_lambda_function = self.create_blueprint_creation_lambda_function(
+        blueprint_creation_custom_resource = self.create_blueprint_creation_lambda_function(
              bda_endpoint=bda_endpoint,
             blueprint_name=blueprint_name)
-
+        blueprint_arn = blueprint_creation_custom_resource.get_att_string("blueprintArn")
         # Bucket to store claim form submissions
         claims_submission_bucket = self.create_claims_submission_bucket()
         
@@ -111,12 +111,12 @@ class DocumentAutomation(Construct):
             on_event_handler=blueprint_creation_lambda_function,
             provider_function_name="claims-review_blueprint_creation_provider"
         )
-        CustomResource (
+        blueprint_creation_custom_resource = CustomResource (
             self, f"claims_review_blueprint_creation_custom_resource",
             service_token=claims_review_blueprint_creation_provider.service_token,
         )
 
-        return blueprint_creation_lambda_function
+        return blueprint_creation_custom_resource
 
     def create_claims_submission_bucket(self):
         claims_submission_bucket_name = self.node.try_get_context("claims_submission_bucket_name")

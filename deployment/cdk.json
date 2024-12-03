@@ -3,7 +3,6 @@
   "context":{
     "bda_runtime_endpoint":"https://us-east-1.gamma.runtime.bedrock-keystone.aws.dev",
     "bda_endpoint":"https://us-east-1.gamma.bedrock-keystone.aws.dev",
-    "blueprint_arn":"arn:aws:bedrock:us-east-1:870569814485:blueprint/67357e23c0b4",
     "blueprint_name":"claims-review-cms-1500",
     "claims_submission_bucket_name": "claims-submission",
     "claims_review_bucket_name": "claims-review",
