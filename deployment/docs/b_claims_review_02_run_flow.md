@@ -4,7 +4,7 @@ In the second flow, we will submit documents that will be processed and the extr
 
 You have now completed the install and setup of the solution to process Insurance Claims. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](./deployment-claims-review-agent.md) before proceeding. 
 
-<img src="../../assets/assets/guidance-for-document-processing-using-amazon-bedrock-keystone-flow-2.png" width="800" />
+<img src="../../assets/architectures/b_claims_review_architecture.png" width="800" />
 
 
 BDA is a generative-AI powered capability of Amazon Bedrock that enables you to automate your end-to-end Intelligent Document Processing (IDP) workflows quickly, accurately and at scale. A blueprint is a structural representation of your desired output for a specific document type (e.g. invoices, drivers licenses or IRS form 1099-INT). We then feed new unseen documents into the solution, for BDA to detect the document type, apply the correct blueprint and send the extracted results for downstream processing.
