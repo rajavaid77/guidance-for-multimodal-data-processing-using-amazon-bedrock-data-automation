@@ -26,7 +26,7 @@ Run the following commands to add each of the EoC documents to S3 and start the 
 ```
 
 The output shows the Ingestion process starting and completing.
-![Claims EoC Ingestion](screenshot_claims-eoc-ingestion)
+![Claims EoC Ingestion]([screenshot_claims-eoc-ingestion](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/claim-eoc-ingestion.jpg))
 
 ## Accessing the Insurance EOC Knowledge Base
 
