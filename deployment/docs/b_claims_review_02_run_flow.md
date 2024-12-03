@@ -2,7 +2,7 @@
 
 In the second flow, we will submit documents that will be processed and the extracted contents stored in an Amazon Bedrock Knowledge Base, to create a Retrieval Augmented Generation (RAG) database.  We will then build a Bedrock Agent to process an insurance claim. The agent will use Generative AI to determine the eligibility of the claim, and update the claims database.
 
-You have now completed the install and setup of the solution to process Insurance Claims. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](./deployment-claims-review-agent.md) before proceeding. 
+You have now completed the install and setup of the solution to process Insurance Claims. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/deployment/docs/b_claims_review_01_deploy.md) before proceeding. 
 
 <img src="../../assets/architectures/b_claims_review_architecture.png" width="800" />
 
