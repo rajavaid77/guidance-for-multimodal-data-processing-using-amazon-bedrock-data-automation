@@ -5,6 +5,7 @@ from botocore.awsrequest import AWSRequest
 import requests
 import json
 from urllib.parse import quote_plus
+from enum import Enum
 
 ENDPOINT = os.environ.get('ENDPOINT', None)
 BLUEPRINT_NAME = os.environ.get('BLUEPRINT_NAME', None)
@@ -16,17 +17,22 @@ class InvalidRequestTypeError(ValueError):
 class BlueprintNotFoundError(ValueError):
     pass
 
+    
 # Create a Bedrock client
 bda_client = boto3.client("bedrock-data-automation-runtime", 
                                 **({'endpoint_url': ENDPOINT} if ENDPOINT is not None else {}),
                                 verify=False)
 
-session = boto3.Session()
-region_name = session.region_name
-service_name ="bedrock"
-credentials = session.get_credentials().get_frozen_credentials()
+SERVICE_NAME ="bedrock"
 
-def send_request(url, method, payload=None, service=service_name, region=region_name):
+
+def get_bda_endpoint(control_plane:bool):
+    if(control_plane):
+        return bda_client.meta.endpoint_url.replace(".runtime", "")
+    else:
+        return bda_client.meta.endpoint_url
+
+def send_request(url, method, payload=None):
     host = url.split("/")[2]
     request = AWSRequest(
             method,
@@ -34,7 +40,11 @@ def send_request(url, method, payload=None, service=service_name, region=region_
             data=payload,
             headers={'Host': host, 'Content-Type':'application/json'}
     )    
-    SigV4Auth(credentials, service, region).add_auth(request)
+    session = boto3.Session()
+    region_name = session.region_name
+    credentials = session.get_credentials().get_frozen_credentials()
+
+    SigV4Auth(credentials, SERVICE_NAME, region_name).add_auth(request)
     response = requests.request(method, url, headers=dict(request.headers), data=payload, timeout=50)
     response.raise_for_status()
     print(response)
@@ -67,7 +77,7 @@ def delete_blueprint(event):
 
 def get_blueprint(event):
     #strip trailing / 
-    url = f"{bda_client.meta.endpoint_url.rstrip('/')}/blueprints/"
+    url = f"{get_bda_endpoint(control_plane=True).rstrip('/')}/blueprints/"
     response = send_request(
         url = url,
         method = "POST"
