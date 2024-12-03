@@ -4,7 +4,7 @@
 
 The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic architecture to automate the processing and review of medical insurance claim forms using Amazon Bedrock Data Automation.
 
-## Architecture Overview
+## Key Stack Resources
 
 The stack sets up the following key AWS resources: 
 
@@ -63,9 +63,9 @@ The stack sets up the following key AWS resources:
 - Node.js and npm (for AWS CDK CLI)
 - AWS CDK CLI installed (`npm install -g aws-cdk`)
 - [Ensure Amazon Bedrock Model Access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html)
-  - Enable access to 
-    * Titan Text G1 - Premier (model id: amazon.titan-text-premier-v1:0)
-    * Titan Text Embeddings V2 (model id: amazon.titan-embed-text-v2:0)
+  - **Choose the model of your choice and please follow the model provider acceptable end user policy**
+  - See [Change Amazon Bedrock Model used by the Bedrock Agent](#customize-the-foundation-model-used-by-bedrock-agent)
+    
 
 ## Project Structure
 <details>
@@ -252,7 +252,7 @@ Ensure you're in the right directory when running `cdk deploy`. see [Step 1](#de
 - "Resource not found": Ensure the required resources exist and the permissions are correct.
 - "Access denied": Check the IAM roles and policies.
 - "Invalid handler": Verify the Lambda function handler name.
-- "Access denied when calling Bedrock": Verify Bedrock Model Access for the model used by the Agent in this case `amazon.titan-text-premier-v1:0`.
+- "Access denied when calling Bedrock": Verify Bedrock Model Access for the model used by the Agent
 
 ## Development
 
@@ -260,6 +260,11 @@ To modify the stack:
 
 ### Customize Stack Parameters <a name="customize_stack_parameters'></a>
 The stack uses context values in `cdk.json` file to store default parameters used for stack creation. The values can be modified by modifying the `cdk.json`
+
+### Customize the Foundation Model used by Bedrock Agent
+- You can choose the model of your choice (Please follow the model provider acceptable end user policy)
+- See [Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+- Change the "agent.foundation_model_id" property in `cdk.json` to the model id of you choice
 
 ### Customize the Claims Review Bedrock Agent prompt
 The prompt instruction used to create the agent is in the `deployment/stacks/claims_review_stack/prompts/claims_review_agent.py`.
