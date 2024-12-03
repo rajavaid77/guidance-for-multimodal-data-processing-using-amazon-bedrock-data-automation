@@ -266,7 +266,7 @@ The prompt instruction used to create the agent is in the `deployment/stacks/cla
 To Customize the agent instruction: 
 1. Update the text set to variable `claims_review_agent_instruction`
 2. save the changes
-3. deploy the stack again using instructions in [5. Deploy the stack](#deploy-the-stack)
+3. deploy the stack again using instructions in [6. Deploy the stack](#deploy-the-stack)
 
 ### Manage Action Group schema 
 - The action group API schema used for the agent action group is in  `deployment/stacks/claims_review_stack/schemas/claims_review_openapi.json`
@@ -278,7 +278,7 @@ To Customize the action group API schema:
 2. If necessary, make changes to the action group labmda function. 
 3. Make necessary changes to the database schema
 3. Save all the changes
-4. Deploy the stack again using instructions in [5. Deploy the stack](#deploy-the-stack)
+4. Deploy the stack again using instructions in [6. Deploy the stack](#deploy-the-stack)
 
 > [!Important]
 >In case of breaking/incompatible changes to the database schema, it might be neccesary to delete and redeploy the stack. Follow the steps in [Cleanup](#cleanup) and [5. Deploy the stack](#deploy-the-stack)
