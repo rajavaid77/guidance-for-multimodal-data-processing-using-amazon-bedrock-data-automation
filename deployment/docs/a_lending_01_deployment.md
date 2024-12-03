@@ -61,16 +61,23 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-3. Bootstrap AWS CDK (first-time only):
+3. Go to the `layer` directory and install lambda layer dependencies into the `python` subdirectory:
+   ```
+   cd lambda/lending_flow/layer/
+   pip install -r requirements.txt --target python
+   cd ../../..
+   ```
+
+4. Bootstrap AWS CDK (first-time only):
 ```bash
 cdk bootstrap
 ```
 For more details, read the [AWS CDK Bootstrap Instructions](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-env.html)
 
-4. Deploy the lending flow stack:
+5. Deploy the lending flow stack:
 
 ```bash
-cdk deploy lending-flow --require-approval never 
+cdk deploy lending-flow --require-approval never --context data_project_name=my-lending-project
 ```
 
 General cdk commands
@@ -99,24 +106,7 @@ The stack deploys three lambda functions as decribe below
 
 ## Deployment Validation
 
-<Provide steps to validate a successful deployment, such as terminal output, verifying that the resource is created, status of the CloudFormation template, etc.>
-
-**Examples:**
-
-* Open CloudFormation console and verify the status of the template with the name starting with xxxxxx.
-* If deployment is successful, you should see an active database instance with the name starting with <xxxxx> in        the RDS console.
-*  Run the following CLI command to validate the deployment: ```aws cloudformation describe xxxxxxxxxxxxx```
-
-## Running the Guidance 
-
-<Provide instructions to run the Guidance with the sample data or input provided, and interpret the output received.> 
-
-This section should include:
-
-* Guidance inputs
-* Commands to run
-* Expected output (provide screenshot if possible)
-* Output description
+* Open CloudFormation console and verify the status of the template with the name starting with lending-flow.
 
 ## Useful Commands
 
@@ -176,7 +166,7 @@ BUCKET_NAME     # S3 bucket name
 ## Development
 
 To modify the stack:
-1. Update `s3_event_processing_stack.py`
+1. Update `lending_flow_stack.py`
 2. Update Lambda function code in respective directories
 3. Run `cdk diff` to review changes
 4. Deploy with `cdk deploy`

@@ -9,9 +9,30 @@ After installing, we used BDA in the Amazon Console to view  to access five samp
 
 BDA is a generative-AI powered capability of Amazon Bedrock that enables you to automate your end-to-end Intelligent Document Processing (IDP) workflows quickly, accurately and at scale. A blueprint is a structural representation of your desired output for a specific document type (e.g. invoices, drivers licenses or IRS form 1099-INT). We then feed new unseen documents into the solution, for BDA to detect the document type, apply the correct blueprint and send the extracted results for downstream processing.
 
+## Running the Guidance - Processing of a Lending Application Package
 
-## Processing of a Lending Application Package
+### Sample A
 
+Steps:
+1. Upload a [lending_package_w2.pdf](../../assets/data/lending_package_w2.pdf) to the S3 input bucket, e.g. similar to this `lending-flow-bucket43879c71-heddfpqsgwfj/documents/lending_package_w2.pdf`
+2. Check for results in the S3 output bucket, e.g. similar like `lending-flow-bucket43879c71-heddfpqsgwfj/documents-output/`.
+
+You can use the command below to copy the BDA result.
+```bash
+bucket_name="lending-flow-bucket..."
+
+# First, get the matching keys and format them for copying
+aws s3api list-objects-v2 \
+--bucket $bucket_name \
+--prefix documents-output/lending_package_w2.pdf \
+--query "Contents[?contains(Key, 'custom_output')].Key" \
+--output text | \
+xargs -I {} aws s3 cp s3://$bucket_name/{} .
+```
+
+3. Review the results.json that has been copied to your local directory.
+
+### Sample B
 We will now submit a new lending application to BDA. The workflow will process the lending application package, identifying the six documents in the package, and applying the appropriate Blueprint for each document. 
 
 1.  An Earning Statement (Pay Stub)
@@ -22,8 +43,7 @@ We will now submit a new lending application to BDA. The workflow will process t
 6.  A Homeowners Insurance Application
 
 Steps:
-1. Upload a new lending package to the S3 input bucket. 
+1. Upload a new [lending_package.pdf](../../assets/data/lending_package.pdf) to the S3 input bucket. 
 2. Check for results in the S3 output bucket. 
 3. Instructions to review and understand the results. 
-
-We also need debug instructions (CloudWatch, Lamnda moniror, etc) of the expected results are not generated. 
+ 
