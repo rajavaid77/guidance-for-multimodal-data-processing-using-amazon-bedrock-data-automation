@@ -218,7 +218,7 @@ class ClaimsCLI:
             return
 
         claim_output = json.loads(claim_output_s3_object['Body'].read().decode('utf-8'))
-        print(json.dumps(claim_output, indent=4))
+        print(claim_output)
         print("\n")
 def main():
 
