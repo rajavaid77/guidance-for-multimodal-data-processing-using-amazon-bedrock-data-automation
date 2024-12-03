@@ -43,6 +43,19 @@ We will now submit a new lending application to BDA. The workflow will process t
 
 Steps:
 1. Upload a new [lending_package.pdf](../../assets/data/lending_package.pdf) to the S3 input bucket. 
-2. Check for results in the S3 output bucket. 
-3. Instructions to review and understand the results. 
+2. Check for results in the S3 output bucket in the AWS console, e.g. `lending-flow-bucket.../documents-output`.  
+
+You can use the command below to copy the BDA result.
+```bash
+bucket_name="lending-flow-bucket..."
+
+# First, get the matching keys and format them for copying
+aws s3api list-objects-v2 \
+--bucket $bucket_name \
+--prefix documents-output/lending_package.pdf \
+--query "Contents[?contains(Key, 'custom_output')].Key" \
+--output text | \
+xargs -I {} aws s3 cp s3://$bucket_name/{} .
+```
+3. Review the results.json that has been copied to your local directory.
  

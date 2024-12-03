@@ -29,11 +29,10 @@ def lambda_handler(event, context):
     # Generate a unique ID using UUID4
     bucket = event['detail']['bucket']['name']
     key = event['detail']['object']['key']
-    targetkey = key.replace("documents", "documents-output")
+    key = key.replace("documents", "documents-output")
     input_s3_uri = f"s3://{bucket}/{key}"
-    output_s3_uri = f"s3://{TARGET_BUCKET_NAME}/{targetkey}"
-    print(f"input_s3_uri: {input_s3_uri}")
-    print(f"target_s3_uri: {output_s3_uri}")
+    output_s3_uri = f"s3://{TARGET_BUCKET_NAME}/{key}"
+
     project_arn = get_project_arn(DATA_PROJECT_NAME)
 
     # invoke insight generation
