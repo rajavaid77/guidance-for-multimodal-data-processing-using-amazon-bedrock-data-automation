@@ -46,11 +46,11 @@ In this step, we will use Bedrock in the AWS Console to view and access the Insu
     ```
      What are the treatments covered under the Premium Plan?
     ```
-    ![KB_ASK][https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/ask-kb.jpg]
+    ![KB_ASK](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/ask-kb.jpg)
 
 5. The Knowledge base retrieves the relevant EoC document for the Premium plan and responds to the question
 
-    ![KB_Response][https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg]
+    ![KB_Response](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg)
 
 
 ## Processing of a Medical Insurance Claims
