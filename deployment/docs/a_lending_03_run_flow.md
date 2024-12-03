@@ -1,6 +1,6 @@
 # Instructions For Using Blueprints To Process Loan Applications
 
-You have now completed the install and setup of the solution to process Loan Applications. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](./deployment-readme.md) before proceeding. 
+You have now completed the install and setup of the solution to process Loan Applications. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/deployment/docs/a_lending_01_deployment.md) before proceeding. 
 
 <img src="../../assets/architectures/a_lending_flow_architecture.png" width="800" />
 
