@@ -46,11 +46,11 @@ In this step, we will use Bedrock in the AWS Console to view and access the Insu
     ```
      What are the treatments covered under the Premium Plan?
     ```
-    ![KB_ASK][screenshot_ask_kb]
+    ![KB_ASK][https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/ask-kb.jpg]
 
 5. The Knowledge base retrieves the relevant EoC document for the Premium plan and responds to the question
 
-    ![KB_Response][screenshot_kb_response]
+    ![KB_Response][https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg]
 
 
 ## Processing of a Medical Insurance Claims
@@ -64,7 +64,7 @@ We can use the claims-cli again to do this. A few sample claims forms are availa
  ./claims-cli.sh submit-claim --file assets/data/claims_review/cms_1500/sample1_cms-1500-P.pdf 
  ```
 When the form is succesfully uploaded, the output should look like this - 
-![Claim Submitted](screenshot_claim_submitted)
+![Claim Submitted](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/claimsubmission-output.jpg)
 
 2. Wait for a few minutes and check the claim output using the cli.<a name=step2_claimreview></a>
  Keep a note of the `claim-reference-id` in the output 
