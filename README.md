@@ -25,7 +25,7 @@ By using this dataset and guidance, you acknowledge that you have read, understo
 
 ## Table of Contents
 
-- [Architecture and Key Features](#architecture)
+- [Architecture and Key Features](#architecture-and-key-features)
   - [Part A: Automated Lending Flow](#part-a-automated-lending-flow)
   - [Part B: Intelligent Claims Review](#part-b-intelligent-claims-review)
 - [Getting Started](#getting-started)
