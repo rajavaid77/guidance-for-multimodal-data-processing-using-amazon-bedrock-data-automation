@@ -240,7 +240,7 @@ Ensure you're in the right directory when running `cdk deploy`. see [Step 1](#de
 
 To modify the stack:
 
-### Customize Stack Parameters <a name="customize_stack_parameters'></a>
+### Customize Stack Parameters <a name="customize_stack_parameters"></a>
 The stack uses context values in `cdk.json` file to store default parameters used for stack creation. The values can be modified by modifying the `cdk.json`
 
 ### Customize the Foundation Model used by Bedrock Agent
