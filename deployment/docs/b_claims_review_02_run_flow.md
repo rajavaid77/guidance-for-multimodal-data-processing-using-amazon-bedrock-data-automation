@@ -33,7 +33,7 @@ The output shows the Ingestion process starting and completing.
 In this step, we will use Bedrock in the AWS Console to view and access the Insurance EOC Knowledge Base. We will use the console to issue prompts 
 
 1. Open the Amazon Bedrock Console and Click on `Knowledge Bases` under `Builder Tools` in the the sidebar to navigate to the Knowledge Bases view
-![Navigate to Knowledge Base Page](screenshot_view_kb)
+![Navigate to Knowledge Base Page](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/open-kb-view.jpg)
 
 2. In the Knowledge Bases view, select the Knowledge Base named `claims-eoc-kb` and click on `Test Knowledge Base`
 ![Test Knowledge Base](screenshot_test_kb)
