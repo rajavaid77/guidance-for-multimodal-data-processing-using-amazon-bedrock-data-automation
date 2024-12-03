@@ -281,7 +281,7 @@ To Customize the action group API schema:
 4. Deploy the stack again using instructions in [6. Deploy the stack](#deploy-the-stack)
 
 > [!Important]
->In case of breaking/incompatible changes to the database schema, it might be neccesary to delete and redeploy the stack. Follow the steps in [Cleanup](#cleanup) and [5. Deploy the stack](#deploy-the-stack)
+>In case of breaking/incompatible changes to the database schema, it might be neccesary to delete and redeploy the stack. Follow the steps in [Cleanup](#cleanup) and [6. Deploy the stack](#deploy-the-stack)
 
 
 ### Update stack resources
