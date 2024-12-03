@@ -38,7 +38,11 @@ In this step, we will use Bedrock in the AWS Console to view and access the Insu
 2. In the Knowledge Bases view, select the Knowledge Base named `claims-eoc-kb` and click on `Test Knowledge Base`
 ![Test Knowledge Base](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/test-kb.jpg)
 
-3. In the `Test Knowledge Base` pane on the right side of the page, Click Select model, select the `Titan Text G1 - Premier` model and Click Apply.
+3. In the `Test Knowledge Base` pane on the right side of the page, Click Select model, select a model of choice from the available models and Click Apply.
+
+> [!Note]
+> Choose the model of your choice and please follow the model provider acceptable end user policy. Results will vary based on the foundational model chosen
+
 ![Select Mode to Test Knowledge Base](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg)
 
 4. With the model selected, we are ready to test our Claims Evidence of Coverage knowledge base. You can ask a question in natural language to retrieve relevant response. For example
