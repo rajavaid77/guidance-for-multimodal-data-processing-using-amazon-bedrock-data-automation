@@ -76,12 +76,13 @@ By using this dataset and guidance, you acknowledge that you have read, understo
 3. [Process claims](deployment/docs/b_claims_review_02_run_flow.md)
 
 ## Cost Estimation
-- Approximate cost: $XX/month for 1,000 pages (US-West-2 Region, December 2024)
+- Approximate cost: The Lending Flow will cost $42 month for 1,000 pages (US-West-2 Region, December 2024)
+- Approximate cost: The Claims Review Flow will cost $579 month for 1,000 pages (US-West-2 Region, December 2024)
 - Recommend setting up [AWS Budget](https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html)
 
 ### Cost Breakdown
 
-Below you can see th estimated costs of the guidance solution and the assumptions.
+Below you can see the estimated costs of the guidance solution and the assumptions.
 
 #### Flow A: Lending Flow
 
