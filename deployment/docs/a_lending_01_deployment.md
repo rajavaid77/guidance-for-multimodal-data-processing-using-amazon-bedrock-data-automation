@@ -62,11 +62,11 @@ pip install -r requirements.txt
 ```
 
 3. Go to the `layer` directory and install lambda layer dependencies into the `python` subdirectory:
-   ```
-   cd lambda/lending_flow/layer/
-   pip install -r requirements.txt --target python
-   cd ../../..
-   ```
+```
+cd lambda/lending_flow/layer/
+pip install -r requirements.txt --target python
+cd ../../..
+```
 
 4. Bootstrap AWS CDK (first-time only):
 ```bash
