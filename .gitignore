@@ -1,2 +1,3 @@
 /deployment/.venv/
 .idea
+/deployment/lambda/lending_flow/layer/python/
