@@ -36,7 +36,7 @@ In this step, we will use Bedrock in the AWS Console to view and access the Insu
 ![Navigate to Knowledge Base Page](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/open-kb-view.jpg)
 
 2. In the Knowledge Bases view, select the Knowledge Base named `claims-eoc-kb` and click on `Test Knowledge Base`
-![Test Knowledge Base](screenshot_test_kb)
+![Test Knowledge Base](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/test-kb.jpg)
 
 3. In the `Test Knowledge Base` pane on the right side of the page, Click Select model, select the `Titan Text G1 - Premier` model and Click Apply.
 ![Select Mode to Test Knowledge Base][screenshot_select_model]
