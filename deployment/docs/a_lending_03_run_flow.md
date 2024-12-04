@@ -32,6 +32,7 @@ xargs -I {} aws s3 cp s3://$bucket_name/{} .
 3. Review the results.json that has been copied to your local directory.
 
 ### Sample B
+
 We will now submit a new lending application to BDA. The workflow will process the lending application package, identifying the six documents in the package, and applying the appropriate Blueprint for each document. 
 
 1.  An Earning Statement (Pay Stub)
@@ -42,8 +43,8 @@ We will now submit a new lending application to BDA. The workflow will process t
 6.  A Homeowners Insurance Application
 
 Steps:
-1. Upload a new [lending_package.pdf](../../assets/data/lending_package.pdf) to the S3 input bucket. 
-2. Check for results in the S3 output bucket in the AWS console, e.g. `lending-flow-bucket.../documents-output`.  
+1. Upload a new [lending_package.pdf](../../assets/data/lending_package.pdf) to the S3 input bucket, e.g. similar to this `lending-flow-bucket43879c71-heddfpqsgwfj/documents/`
+2. Check for results in the S3 output bucket in the AWS console, e.g. similar to `lending-flow-bucket43879c71-heddfpqsgwfj/documents-output/`.  
 
 You can use the command below to copy the BDA result.
 ```bash
