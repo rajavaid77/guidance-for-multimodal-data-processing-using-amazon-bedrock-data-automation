@@ -115,5 +115,9 @@ class LendingFlowStack(Stack):
             actions=["bedrock:InvokeDataAutomationAsync"],
             resources=["*"]
         ))
+        lending_document_automation_lambda_function.add_to_role_policy(iam.PolicyStatement(
+            actions=["bedrock:List*"],
+            resources=["*"]
+        ))
 
         return lending_document_automation_lambda_function
