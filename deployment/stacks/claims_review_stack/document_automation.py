@@ -93,7 +93,7 @@ class DocumentAutomation(Construct):
             timeout=Duration.seconds(300),
             layers=[layer],
             environment={
-                'ENDPOINT':bda_endpoint,
+                 **({'ENDPOINT': bda_endpoint} if bda_endpoint is not None else {}),
                 'BLUEPRINT_NAME':blueprint_name
             }
         )
