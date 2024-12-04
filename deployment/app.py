@@ -23,6 +23,7 @@ app = cdk.App()
 if config["deploy_lending_flow"]:
     LendingFlowStack(app, "lending-flow",
         env=cdk.Environment(
+            description="SO9570 -Stack for managing lending flow processes",
             account=app.account,  # Your AWS account ID will be picked from your CLI configuration
             region=app.region     # Your AWS region will be picked from your CLI configuration
         )
@@ -41,6 +42,7 @@ if config["deploy_claims_review"]:
     
     ClaimsReviewAgentStack(app, "claims-review",
         env=cdk.Environment(
+            description="SO9570 Stack for claims review agent processes",
             account=app.account,  # Your AWS account ID will be picked from your CLI configuration
             region=app.region     # Your AWS region will be picked from your CLI configuration
         )
