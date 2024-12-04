@@ -193,7 +193,7 @@ class ClaimsReviewAgentStack(Stack):
                     bedrock.CfnAgent.PromptConfigurationProperty(
                         base_prompt_template=orchestration_override,
                         inference_configuration=bedrock.CfnAgent.InferenceConfigurationProperty(
-                            maximum_length=4096,
+                            maximum_length=3071,
                             stop_sequences=[],
                             temperature=0,
                             top_p=0.1
