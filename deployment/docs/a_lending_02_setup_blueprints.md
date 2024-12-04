@@ -9,7 +9,7 @@ In this first use case, we will be processing a US lending application using Bed
 5.  A W2 US Tax form
 6.  A Homeowners Insurance Application
 
-To get started, we will download the sample documents located in `/assets/data folder` to your load hard drive. 
+To get started, we will download the sample documents located in `/assets/data` folder to your load hard drive. 
 
 * [Homeowners Insurance Application sample](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/data/homeowner_insurance_application_sample.pdf)
 * [Lending package sample](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/data/lending_package.pdf)
