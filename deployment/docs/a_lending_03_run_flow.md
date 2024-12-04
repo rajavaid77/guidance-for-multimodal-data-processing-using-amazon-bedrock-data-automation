@@ -59,4 +59,3 @@ aws s3api list-objects-v2 \
 xargs -I {} aws s3 cp s3://$bucket_name/{} .
 ```
 3. Review the results.json that has been copied to your local directory.
- 
