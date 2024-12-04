@@ -30,7 +30,7 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 8. Click on `Generate Blueprint` to start the BDA blueprint creation process. BDA will analyze the sample form and create a new reusable Blueprint for future CMS 1500 forms.
    ![screenshot_generate_blueprint][screenshot_generate_blueprint]
 
-9. Once the blueprint is ready, BDA prompts for a Blueprint name. Enter `claims-review-cms1500` and click `Create Blueprint`. In a short while BDA would gather insights from the generate results 
+9. Once the blueprint is ready, BDA prompts for a Blueprint name. Enter `claims-review-cms-1500` and click `Create Blueprint`. In a short while BDA would gather insights from the generate results 
    ![name_blueprint][screenshot_name_blueprint]
 
 > [!Important]
