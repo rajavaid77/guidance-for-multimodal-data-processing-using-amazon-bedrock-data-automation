@@ -27,7 +27,7 @@ class AuroraPostgresCluster(Construct):
 
         # Create a secret to store database credentials
         db_credentials_secret = secretsmanager.Secret(self, "DBCredentialsSecret",
-                                                      secret_name="AuroraPostgresCredentials",
+                                                      #secret_name="AuroraPostgresCredentials",
                                                       generate_secret_string=secretsmanager.SecretStringGenerator(
                                                           exclude_punctuation=True,
                                                           include_space=False,
