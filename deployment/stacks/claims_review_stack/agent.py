@@ -16,6 +16,7 @@ from stacks.claims_review_stack.vector_store import VectorStore
 from stacks.claims_review_stack.knowledge_base import KnowledgeBase
 from stacks.claims_review_stack.document_automation import DocumentAutomation
 from stacks.claims_review_stack.aurora_postgres import AuroraPostgresCluster
+from .prompts.orchestration_override import orchestration_override
 class ClaimsReviewAgentStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None: 
@@ -186,7 +187,23 @@ class ClaimsReviewAgentStack(Stack):
             instruction=claims_review_agent_instruction,            
             tags={
                 "project": "claims-review"
-            }
+            },
+            prompt_override_configuration= bedrock.CfnAgent.PromptOverrideConfigurationProperty(
+                prompt_configurations=[
+                    bedrock.CfnAgent.PromptConfigurationProperty(
+                        base_prompt_template=orchestration_override,
+                        inference_configuration=bedrock.CfnAgent.InferenceConfigurationProperty(
+                            maximum_length=4096,
+                            stop_sequences=[],
+                            temperature=0,
+                            top_p=0.1
+                        ),                        
+                        prompt_type="ORCHESTRATION",
+                        prompt_state="ENABLED",
+                        prompt_creation_mode="OVERRIDDEN"
+                    )
+                ]
+            )
         )
         claims_review_agent_actions_lambda_function.grant_invoke(claims_review_agent_resource_role)
         claims_review_agent_actions_lambda_function.add_permission(
