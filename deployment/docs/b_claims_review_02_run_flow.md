@@ -16,7 +16,9 @@ More details - [Sync your data with your Amazon Bedrock knowledge base][Sync_you
 
 
 > [!Note]
->Before continuing ensure you are in the root directory of this repository which is `guidance-for-intelligent-document-processing-using-amazon-bedrock`
+>Before continuing: 
+1. Ensure you are in the root directory of this repository which is `guidance-for-intelligent-document-processing-using-amazon-bedrock`
+2. Ensure you have the python virtual environment still active. See [Create and activate a virtual environment](./b_claims_review_01_deploy.md#create_env)
 
 Run the following commands to add each of the EoC documents to S3 and start the ingestion process
 ```
@@ -47,10 +49,10 @@ In this step, we will use Bedrock in the AWS Console to view and access the Insu
 
 4. With the model selected, we are ready to test our Claims Evidence of Coverage knowledge base. You can ask a question in natural language to retrieve relevant response. For example
 
-    ```
-     What are the treatments covered under the Premium Plan?
-    ```
-    ![KB_ASK](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/ask-kb.jpg)
+ ```
+  What are the treatments covered under the Premium Plan?
+ ```
+![KB_ASK](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/ask-kb.jpg)
 
 5. The Knowledge base retrieves the relevant EoC document for the Premium plan and responds to the question
 
@@ -72,9 +74,9 @@ When the form is succesfully uploaded, the output should look like this -
 
 2. Wait for a few minutes and check the claim output using the cli.<a name=step2_claimreview></a>
  Keep a note of the `claim-reference-id` in the output 
- ```
- ./claims-cli.sh view-claim-output --claim-reference-id <claim_reference_id_from_step1_output>
- ```
+  ```
+  ./claims-cli.sh view-claim-output --claim-reference-id <claim_reference_id_from_step1_output>
+  ```
 An example output (screenshot below) of the command lists the summary of the automate review performed by the Bedrock Agent
 
 
@@ -85,9 +87,9 @@ An example output (screenshot below) of the command lists the summary of the aut
 
 
  3. We can also look at available claim reference ids using the cli
- ```
-./claims-cli.sh list-claims
- ```
+  ```
+ ./claims-cli.sh list-claims
+  ```
 
 ## Viewing Logs and Troubleshooting
 

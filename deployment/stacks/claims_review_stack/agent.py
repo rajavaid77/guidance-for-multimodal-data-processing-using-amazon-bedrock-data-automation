@@ -16,7 +16,7 @@ from stacks.claims_review_stack.vector_store import VectorStore
 from stacks.claims_review_stack.knowledge_base import KnowledgeBase
 from stacks.claims_review_stack.document_automation import DocumentAutomation
 from stacks.claims_review_stack.aurora_postgres import AuroraPostgresCluster
-from .prompts.orchestration_override import orchestration_override
+from .prompts.prompt_overrides import prompt_overrides
 class ClaimsReviewAgentStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None: 
@@ -162,13 +162,12 @@ class ClaimsReviewAgentStack(Stack):
             foundation_model_id = foundation_model_id
         )
         
-        #add lambda execution permission to claims_review_agent_resource_role
-
+        prompt_override_configuration = prompt_overrides.get(foundation_model_id,None)
         claims_review_agent = bedrock.CfnAgent(self, "claims_review_agent",
             agent_name="claims-review-agent",
             # the properties below are optional
             action_groups=[bedrock.CfnAgent.AgentActionGroupProperty(
-                action_group_name="claims-review-action-group",
+                action_group_name="claim_review_action_group",
 
                 # the properties below are optional
                 action_group_executor=bedrock.CfnAgent.ActionGroupExecutorProperty(
@@ -188,22 +187,7 @@ class ClaimsReviewAgentStack(Stack):
             tags={
                 "project": "claims-review"
             },
-            prompt_override_configuration= bedrock.CfnAgent.PromptOverrideConfigurationProperty(
-                prompt_configurations=[
-                    bedrock.CfnAgent.PromptConfigurationProperty(
-                        base_prompt_template=orchestration_override,
-                        inference_configuration=bedrock.CfnAgent.InferenceConfigurationProperty(
-                            maximum_length=3071,
-                            stop_sequences=[],
-                            temperature=0,
-                            top_p=0.1
-                        ),                        
-                        prompt_type="ORCHESTRATION",
-                        prompt_state="ENABLED",
-                        prompt_creation_mode="OVERRIDDEN"
-                    )
-                ]
-            )
+            **({'prompt_override_configuration': prompt_override_configuration}if prompt_override_configuration is not None else {})
         )
         claims_review_agent_actions_lambda_function.grant_invoke(claims_review_agent_resource_role)
         claims_review_agent_actions_lambda_function.add_permission(
