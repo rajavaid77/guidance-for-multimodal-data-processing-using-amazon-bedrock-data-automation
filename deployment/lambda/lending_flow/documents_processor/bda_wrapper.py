@@ -7,6 +7,7 @@ import os
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
 import requests
+import re
 
 ENDPOINT_RUNTIME = os.environ.get('BDA_RUNTIME_ENDPOINT', None)
 
@@ -20,8 +21,9 @@ def bda_sdk(bda_client_runtime, url_path ="data-automation-projects/", method ="
     host = bda_client_runtime.meta.endpoint_url.replace("https://", "")
     url = f"{bda_client_runtime.meta.endpoint_url}/{url_path}"
     if control_plane:
-        host = host.replace(".runtime", "")
-        url = url.replace(".runtime", "")
+        host = re.sub(r'.runtime+', '', host)
+        url = re.sub(r'.runtime+', '', url)
+
     session = boto3.Session()
 
     request = AWSRequest(
@@ -33,9 +35,8 @@ def bda_sdk(bda_client_runtime, url_path ="data-automation-projects/", method ="
     region = bda_client_runtime.meta.region_name
     SigV4Auth(session.get_credentials(), service, region).add_auth(request)
     headers = dict(request.headers)
-    print(headers)
     response = requests.request(method, url, headers=headers, data=payload, timeout=5)
-    print(response)
+    print(f"Response: {response}")
     content = response.content.decode("utf-8")
     data = json.loads(content)
     return data
@@ -67,8 +68,8 @@ def invoke_insight_generation_async(
         "dataAutomationConfiguration": {
             "dataAutomationArn": data_project_arn,
         },
-        "NotificationConfiguration": {
-        "EventBridgeConfiguration": {"EventBridgeEnabled": True},
+        "notificationConfiguration": {
+        "eventBridgeConfiguration": {"eventBridgeEnabled": True},
         }
     # "blueprints" : [
         # {"blueprintArn": blueprint_arn}
