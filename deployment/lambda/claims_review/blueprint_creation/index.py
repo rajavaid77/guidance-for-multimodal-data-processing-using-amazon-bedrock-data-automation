@@ -6,6 +6,7 @@ import requests
 import json
 from urllib.parse import quote_plus
 from enum import Enum
+import re
 
 ENDPOINT = os.environ.get('ENDPOINT', None)
 BLUEPRINT_NAME = os.environ.get('BLUEPRINT_NAME', None)
@@ -28,7 +29,7 @@ SERVICE_NAME ="bedrock"
 
 def get_bda_endpoint(control_plane:bool):
     if(control_plane):
-        return bda_client.meta.endpoint_url.replace(".runtime", "")
+        return re.sub(r'.runtime+', '', bda_client.meta.endpoint_url)
     else:
         return bda_client.meta.endpoint_url
 
