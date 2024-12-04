@@ -154,7 +154,9 @@ guidance-for-intelligent-document-processing-using-amazon-bedrock/
    ```
    cd guidance-for-intelligent-document-processing-using-amazon-bedrock/deployment
    ```
-2. Create and activate a virtual environment:
+
+<a name='create_venv'></a>
+2. Create and activate a virtual environment: 
    ```
    python -m venv .venv
    source .venv/bin/activate
