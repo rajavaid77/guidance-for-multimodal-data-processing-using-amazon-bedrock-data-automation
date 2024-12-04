@@ -165,6 +165,8 @@ def getMemberDetails(event) :
     result = run_command(MEMBER_DETAILS_QUERY, parameters)
     print(result)
     data = results_by_column_name(result)
+    if not data:
+        return f"Insured Member with last name {insured_policy_number}  not found"
     member = data[0]
     response = {"memberName": member['insured_name'],
                 "memberAddress": member['address'],
@@ -259,6 +261,8 @@ def getPatient(event):
     result = run_command(PATIENT_DETAILS_QUERY, parameters)
     print(result)
     data = results_by_column_name(result)
+    if not data:
+        return f"Patient with last name {patient_lastname} and birth data {patient_birth_date} not found associated with insured id number {insured_id_number}"
     patient = data[0]
     response = {
         "firstName": patient['patient_firstname'],
