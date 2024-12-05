@@ -78,7 +78,7 @@ When the form is succesfully uploaded, the cli outputs a success mesage with a u
  Keep a note of the `claim-reference-id` in the output 
   
   ```bash
-  ./claims-cli.sh view-claim-output --claim-reference-id <claim_reference_id_from_step1_output>
+  ./claims-cli.sh view-claim-output --claim-reference-id <<claim_reference_id_from_step1_output>>
 
   ```
 An example output (screenshot below) of the command lists the summary of the automate review performed by the Bedrock Agent
@@ -91,7 +91,7 @@ An example output (screenshot below) of the command lists the summary of the aut
 
 
  3. We can also look at available claim reference ids using the cli
- 
+
   ```bash
  ./claims-cli.sh list-claims
 
