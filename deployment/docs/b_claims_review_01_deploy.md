@@ -322,7 +322,9 @@ To update stack resources -
 
 ## Cleanup  <a name="cleanup"></a>
  
-1. Change to the `deployment` directory for the guidance repository
+1. Ensure that the S3 Buckets for claims submission, claims review and claims Eoc are empty. Save any documents that you would like to retain in an alternate location.
+
+2. Change to the `deployment` directory for the guidance repository
    ```
    cd guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation
    ```
