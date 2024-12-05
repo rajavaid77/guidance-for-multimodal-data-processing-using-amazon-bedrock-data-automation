@@ -63,6 +63,7 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 4. You can also return to the blueprint at a later time to view and make adjustments.
  - From the Amazon Bedrock console, Click `Custom output setup`-> `Custom Blueprints` to view a list of blueprints created by you. 
  - Click on the blueprint name to view blueprint details. 
+ ![View_Blueprint][screenshot_blueprint_view]
  - `Upload` a sample document and `Generate result` to see `Extraction` result
  ![Generate_results][screenshot_generate_results]
  - Continue editing the blueprint and `Save blueprint` when done editing
