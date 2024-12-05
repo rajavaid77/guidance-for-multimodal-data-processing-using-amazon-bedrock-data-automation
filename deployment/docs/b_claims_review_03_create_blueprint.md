@@ -24,33 +24,35 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 6. Verify the document preview and click `Upload`. If you see a `Create bucket confirmation` then click `Confirm` to confirm creation of bucket.  BDA creates an S3 bucket in your AWS Account. This would be used to store user assets
    ![upload_blueprint_sample][screenshot_upload_blueprint_view]
 
-7. Once the sample is uploaded, the Generate Blueprint button is enable. You can optionally provide a prompt to create a blueprint.  If you do not provide a prompt the Blueprint prompt AI will instead generate one.
+7. Once the sample is uploaded, the Generate Blueprint button is enabled. You can optionally provide a prompt to create a blueprint.  If you do not provide a prompt the Blueprint prompt AI will instead generate one.
    ![screenshot_blueprint_prompt][screenshot_blueprint_prompt]
 
-8. Click on `Generate Blueprint` to start the BDA blueprint creation process. BDA will analyze the sample form and create a new reusable Blueprint for future CMS 1500 forms.
+8. Click on `Generate Blueprint` to start the BDA blueprint creation process. BDA will analyze the sample form to identify an existing blueprint that match the input example document. 
    ![screenshot_generate_blueprint][screenshot_generate_blueprint]
 
-9. Once the blueprint is ready, BDA prompts for a Blueprint name. Enter `claims-review-cms-1500` and click `Create Blueprint`. In a short while BDA would gather insights from the extract fields for the blueprint
+9. Once BDA has finished looking for sample blueprints, BDA prompts to enter a Blueprint name. Enter `claims-review-cms-1500` and click `Create Blueprint` to start the BDA job to extract keys, values from the sample document to create a blueprint
    ![name_blueprint][screenshot_name_blueprint]
 
 > [!Important]
->By default the claims review stack uses the blueprint name `claims-review-cms-1500`. To use another name you would need to modify the cdk context variable in `cdk.json` and redeploy the stack. See [Customize Stack Parameters](b_claims_review_01_deploy.md#customize-stack-parameters-a-namecustomize_stack_parameters)
+>By default the claims review stack uses the blueprint name `claims-review-cms-1500`. To use another name you would need to use add a `blueprint_name:<<your_chosen_blueprint_name` to the --context parameter when running the `cdk deploy` command for the stack. See [Customize Stack Parameters](b_claims_review_01_deploy.md#customize_stack_parameters)
 
 
 ## Step 3: Review and Refine the Blueprint
 
-1. Review the extracted fields. You might see various sections including:
+1. Once BDA has extracted the fields and values, you can view them in Blueprint `Extractions` section. You might see various sections including:
    - Patient and Insured Information
    - Physician or Supplier Information
    - Diagnosis Codes
    - Service Lines (potentially multiple)
    ![Extracted_fields][screenshot_extracted_fields]
+
 2. If needed, manually add or adjust fields to ensure all critical information is captured
 
 
 ## Step 4: Refine and Iterate
 
-1. Review the results of your test
+1. From the `Blueprint section` you can also upload other sample documents and get results using the newly create blueprint
+2. You can `Download` the results and review the extracted values along with confidence and explainability info
 2. If necessary, return to the blueprint and make adjustments:
    - Add missing fields
    - Refine field names for clarity
