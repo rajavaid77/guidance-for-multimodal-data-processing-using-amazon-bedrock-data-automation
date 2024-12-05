@@ -18,7 +18,8 @@ Steps:
 
 You can use the command below to copy the BDA result.
 ```bash
-bucket_name="lending-flow-bucket..."
+# Lets get the bucket name of your deployment
+bucket_name=$(aws s3api list-buckets --query 'Buckets[?starts_with(Name, `lending-flow-bucket`)].[Name]' --output text)
 
 # First, get the matching keys and format them for copying
 aws s3api list-objects-v2 \
@@ -26,10 +27,10 @@ aws s3api list-objects-v2 \
 --prefix documents-output/lending_package_w2.pdf \
 --query "Contents[?contains(Key, 'custom_output')].Key" \
 --output text | \
-xargs -I {} aws s3 cp s3://$bucket_name/{} .
+xargs -I {} aws s3 cp s3://$bucket_name/{} ./results_w2.json
 ```
 
-3. Review the results.json that has been copied to your local directory.
+3. Review the `results_w2.json` that has been copied to your local directory.
 
 ### Sample B
 
@@ -48,7 +49,9 @@ Steps:
 
 You can use the command below to copy the BDA result.
 ```bash
-bucket_name="lending-flow-bucket..."
+
+# Lets get the bucket name of your deployment
+bucket_name=$(aws s3api list-buckets --query 'Buckets[?starts_with(Name, `lending-flow-bucket`)].[Name]' --output text)
 
 # First, get the matching keys and format them for copying
 aws s3api list-objects-v2 \
@@ -56,6 +59,6 @@ aws s3api list-objects-v2 \
 --prefix documents-output/lending_package.pdf \
 --query "Contents[?contains(Key, 'custom_output')].Key" \
 --output text | \
-xargs -I {} aws s3 cp s3://$bucket_name/{} .
+xargs -I {} aws s3 cp s3://$bucket_name/{} ./results_lending_package.json
 ```
-3. Review the results.json that has been copied to your local directory.
+3. Review the `results_lending_package.json` that has been copied to your local directory.
