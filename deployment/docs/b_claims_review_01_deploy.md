@@ -77,7 +77,7 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
 > You would need a model id. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
 
    
-   ```
+   ```bash
    cdk deploy --context foundation_model_id=<<your_chosen_model_id>> claims-review # Deploy stack
 
    ```
