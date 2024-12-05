@@ -27,10 +27,10 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 7. Once the sample is uploaded, the Generate Blueprint button is enabled. You can optionally provide a prompt to create a blueprint.  If you do not provide a prompt the Blueprint prompt AI will instead generate one.
    ![screenshot_blueprint_prompt][screenshot_blueprint_prompt]
 
-8. Click on `Generate Blueprint` to start the BDA blueprint creation process. BDA will analyze the sample form to identify an existing blueprint that match the input example document. 
+8. Click on `Generate Blueprint` to start the BDA blueprint creation process. BDA will analyze the sample document to find any matching blueprint from sample blueprints global catalog 
    ![screenshot_generate_blueprint][screenshot_generate_blueprint]
 
-9. Once BDA has finished looking for sample blueprints, BDA prompts to enter a Blueprint name. Enter `claims-review-cms-1500` and click `Create Blueprint` to start the BDA job to extract keys, values from the sample document to create a blueprint
+9. When BDA has no matches from global catalog, BDA presents a `Create a blueprint` pop-up. In the pop-up box, under `Blueprint name`, Enter `claims-review-cms-1500` and click `Create Blueprint` to start the BDA job to extract keys, values from the sample document to create a blueprint.
    ![name_blueprint][screenshot_name_blueprint]
 
 > [!Important]
@@ -48,23 +48,27 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 >Your `Extractions` output may vary depending on if your entered a `Blueprint prompt` or based on the `AI Generated prompt for the current blueprint` 
 
 
-
    ![Extracted_fields][screenshot_extracted_fields]
 
-2. If needed, manually add or adjust fields to ensure all critical information is captured
+2. Click `Save and exit blueprint prompt` to save the blueprint along with the `Extractions` schema
+![Save_Blueprint][screenshot_save_blueprint]
 
 
 ## Step 4: Refine and Iterate
+1. Once the blueprint is create, you can manually refine the Blueprint in the `Blueprint` section of the page.
+2. You can add / update the extracted fields.
+3. Click `Save blueprint` to save the blueprint or `Publish a new version`
+![Save_Blueprint][screenshot_save_blueprint]
 
-1. From the `Blueprint section` you can also upload other sample documents and get results using the newly create blueprint
-2. You can `Download` the results and review the extracted values along with confidence and explainability info
-2. If necessary, return to the blueprint and make adjustments:
+4. Once the blueprint is saved, you can also upload other sample documents and get results using the newly create blueprint
+5. Click `Download` to download the results to your local computer and review the extracted values along with confidence and explainability info
+6. If necessary, return to the blueprint and make adjustments:
    - Add missing fields
    - Refine field names for clarity
    - Adjust the initial prompt if certain areas need more attention
-3. Repeat the testing process with various CMS 1500 forms to ensure consistency and accuracy
-4. Finally, you can save the blueprint
-![Save_Blueprint][screenshot_save_blueprint]
+7 Repeat the testing process with various CMS 1500 forms to ensure consistency and accuracy
+8. Finally, you can save the blueprint
+
 
 By following these steps, you'll have created a custom blueprint in AWS Bedrock Document Automation specifically designed to extract key information from CMS 1500 medical claim forms. This blueprint can be used to process large volumes of claims efficiently, supporting tasks such as claims processing, auditing, and data analysis in healthcare administration.
 
