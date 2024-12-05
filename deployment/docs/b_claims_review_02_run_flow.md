@@ -2,7 +2,7 @@
 
 In the second flow, we will submit documents that will be processed and the extracted contents stored in an Amazon Bedrock Knowledge Base, to create a Retrieval Augmented Generation (RAG) database.  We will then build a Bedrock Agent to process an insurance claim. The agent will use Generative AI to determine the eligibility of the claim, and update the claims database.
 
-You have now completed the install and setup of the solution to process Insurance Claims. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/deployment/docs/b_claims_review_01_deploy.md) before proceeding. 
+You have now completed the install and setup of the solution to process Insurance Claims. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/deployment/docs/b_claims_review_01_deploy.md) before proceeding. 
 
 <img src="../../assets/architectures/b_claims_review_architecture.png" width="800" />
 
@@ -17,7 +17,7 @@ More details - [Sync your data with your Amazon Bedrock knowledge base][Sync_you
 
 > [!Note]
 >Before continuing: 
-1. Ensure you are in the root directory of this repository which is `guidance-for-intelligent-document-processing-using-amazon-bedrock`
+1. Ensure you are in the root directory of this repository which is `guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation`
 2. Ensure you have the python virtual environment still active. See [Create and activate a virtual environment](./b_claims_review_01_deploy.md#create_env)
 
 Run the following commands to add each of the EoC documents to S3 and start the ingestion process
@@ -28,35 +28,35 @@ Run the following commands to add each of the EoC documents to S3 and start the 
 ```
 
 The output shows the Ingestion process starting and completing.
-![Claims EoC Ingestion](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/claim-eoc-ingestion.jpg)
+![Claims EoC Ingestion](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/screenshots/claims_review_docs/claim-eoc-ingestion.jpg)
 
 ## Accessing the Insurance EOC Knowledge Base
 
 In this step, we will use Bedrock in the AWS Console to view and access the Insurance EOC Knowledge Base. We will use the console to issue prompts 
 
 1. Open the Amazon Bedrock Console and Click on `Knowledge Bases` under `Builder Tools` in the the sidebar to navigate to the Knowledge Bases view
-![Navigate to Knowledge Base Page](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/open-kb-view.jpg)
+![Navigate to Knowledge Base Page](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/screenshots/claims_review_docs/open-kb-view.jpg)
 
 2. In the Knowledge Bases view, select the Knowledge Base named `claims-eoc-kb` and click on `Test Knowledge Base`
-![Test Knowledge Base](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/test-kb.jpg)
+![Test Knowledge Base](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/screenshots/claims_review_docs/test-kb.jpg)
 
 3. In the `Test Knowledge Base` pane on the right side of the page, Click Select model, select a model of choice from the available models and Click Apply.
 
 > [!Note]
 > Choose the model of your choice and please follow the model provider acceptable end user policy. Results will vary based on the foundational model chosen
 
-![Select Mode to Test Knowledge Base](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg)
+![Select Mode to Test Knowledge Base](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg)
 
 4. With the model selected, we are ready to test our Claims Evidence of Coverage knowledge base. You can ask a question in natural language to retrieve relevant response. For example
 
  ```
   What are the treatments covered under the Premium Plan?
  ```
-![KB_ASK](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/ask-kb.jpg)
+![KB_ASK](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/screenshots/claims_review_docs/ask-kb.jpg)
 
 5. The Knowledge base retrieves the relevant EoC document for the Premium plan and responds to the question
 
-    ![KB_Response](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg)
+    ![KB_Response](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/screenshots/claims_review_docs/KB-result.jpg)
 
 
 ## Processing of a Medical Insurance Claims
@@ -70,7 +70,7 @@ We can use the claims-cli again to do this. A few sample claims forms are availa
  ./claims-cli.sh submit-claim --file assets/data/claims_review/cms_1500/sample1_cms-1500-P.pdf 
  ```
 When the form is succesfully uploaded, the output should look like this - 
-![Claim Submitted](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/claimsubmission-output.jpg)
+![Claim Submitted](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/screenshots/claims_review_docs/claimsubmission-output.jpg)
 
 2. Wait for a few minutes and check the claim output using the cli.<a name=step2_claimreview></a>
  Keep a note of the `claim-reference-id` in the output 
@@ -83,7 +83,7 @@ An example output (screenshot below) of the command lists the summary of the aut
 > [!Note]
 > Results will vary based on the foundational model chosen
 
-![Claims Output](https://github.com/aws-solutions-library-samples/guidance-for-intelligent-document-processing-using-amazon-bedrock/blob/main/assets/screenshots/claims_review_docs/claims_review_output.jpg)
+![Claims Output](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/screenshots/claims_review_docs/claims_review_output.jpg)
 
 
  3. We can also look at available claim reference ids using the cli
