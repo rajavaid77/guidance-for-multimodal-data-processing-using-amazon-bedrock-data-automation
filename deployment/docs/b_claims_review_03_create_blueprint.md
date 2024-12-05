@@ -44,6 +44,11 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
    - Physician or Supplier Information
    - Diagnosis Codes
    - Service Lines (potentially multiple)
+> [!Note]
+>Your `Extractions` output may vary depending on if your entered a `Blueprint prompt` or based on the `AI Generated prompt for the current blueprint` 
+
+
+
    ![Extracted_fields][screenshot_extracted_fields]
 
 2. If needed, manually add or adjust fields to ensure all critical information is captured
