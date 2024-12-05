@@ -4,7 +4,7 @@ In this guide, we will create a custom blueprint for processing CMS 1500 medical
 
 ## Step 1: Prepare Sample Document
 
-To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can find some samples in `assets/data/claims_review/cms` folder of the repository.
+To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can find some samples in `assets/data/claims_review/cms_1500` folder of the repository.
 
 ## Step 2: Navigate to Bedrock Data Automation and Trigger Blueprint Generation
 
