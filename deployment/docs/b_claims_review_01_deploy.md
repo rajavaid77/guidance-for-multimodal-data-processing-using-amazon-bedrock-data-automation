@@ -72,7 +72,7 @@ The stack sets up the following key AWS resources:
   <summary>Click for Project Structure</summary>
 
 ```
-guidance-for-intelligent-document-processing-using-amazon-bedrock/
+guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/
 ├── assets/
 │   ├── data/
 │   │   ├── claims_review/
@@ -152,7 +152,8 @@ guidance-for-intelligent-document-processing-using-amazon-bedrock/
 
 1. Change to the `deployment` directory for the guidance repository <a name='deployment-directory'></a>
    ```
-   cd guidance-for-intelligent-document-processing-using-amazon-bedrock/deployment
+   cd guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/deployment
+
    ```
 
 <a name='create_venv'></a>
@@ -311,7 +312,7 @@ To update stack resources -
  
 1. Change to the `deployment` directory for the guidance repository
    ```
-   cd guidance-for-intelligent-document-processing-using-amazon-bedrock/deployment
+   cd guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation
    ```
  
 1. Destroy the stack

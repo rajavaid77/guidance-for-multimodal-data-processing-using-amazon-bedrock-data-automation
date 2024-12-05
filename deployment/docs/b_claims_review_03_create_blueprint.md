@@ -30,20 +30,21 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 8. Click on `Generate Blueprint` to start the BDA blueprint creation process. BDA will analyze the sample form and create a new reusable Blueprint for future CMS 1500 forms.
    ![screenshot_generate_blueprint][screenshot_generate_blueprint]
 
-9. Once the blueprint is ready, BDA prompts for a Blueprint name. Enter `claims-review-cms-1500` and click `Create Blueprint`. In a short while BDA would gather insights from the generate results 
+9. Once the blueprint is ready, BDA prompts for a Blueprint name. Enter `claims-review-cms-1500` and click `Create Blueprint`. In a short while BDA would gather insights from the extract fields for the blueprint
    ![name_blueprint][screenshot_name_blueprint]
 
 > [!Important]
->By default the claims review stack uses the blueprint name `claims-review-cms1500`. To use another name you would need to modify the cdk context variable in `cdk.json` and redeploy the stack. See [Customize Stack Parameters](b_claims_review_01_deploy.md#customize-stack-parameters-a-namecustomize_stack_parameters)
+>By default the claims review stack uses the blueprint name `claims-review-cms-1500`. To use another name you would need to modify the cdk context variable in `cdk.json` and redeploy the stack. See [Customize Stack Parameters](b_claims_review_01_deploy.md#customize-stack-parameters-a-namecustomize_stack_parameters)
 
 
 ## Step 3: Review and Refine the Blueprint
 
-1. Review the extracted fields. You should see various sections including:
+1. Review the extracted fields. You might see various sections including:
    - Patient and Insured Information
    - Physician or Supplier Information
    - Diagnosis Codes
    - Service Lines (potentially multiple)
+   ![Extracted_fields][screenshot_extracted_fields]
 2. If needed, manually add or adjust fields to ensure all critical information is captured
 
 
@@ -55,6 +56,8 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
    - Refine field names for clarity
    - Adjust the initial prompt if certain areas need more attention
 3. Repeat the testing process with various CMS 1500 forms to ensure consistency and accuracy
+4. Finally, you can save the blueprint
+![Save_Blueprint][screenshot_save_blueprint]
 
 By following these steps, you'll have created a custom blueprint in AWS Bedrock Document Automation specifically designed to extract key information from CMS 1500 medical claim forms. This blueprint can be used to process large volumes of claims efficiently, supporting tasks such as claims processing, auditing, and data analysis in healthcare administration.
 
@@ -65,3 +68,5 @@ By following these steps, you'll have created a custom blueprint in AWS Bedrock 
 [screenshot_blueprint_prompt]: ../../assets/screenshots/claims_review_docs/blueprint-prompt.jpg
 [screenshot_generate_blueprint]: ../../assets/screenshots/claims_review_docs/generate-blueprint.jpg
 [screenshot_name_blueprint]: ../../assets/screenshots/claims_review_docs/name-blueprint.jpg
+[screenshot_extracted_fields]: ../../assets/screenshots/claims_review_docs/extracted_fields.jpg
+[screenshot_save_blueprint]: ../../assets/screenshots/claims_review_docs/save_blueprint.jpg
