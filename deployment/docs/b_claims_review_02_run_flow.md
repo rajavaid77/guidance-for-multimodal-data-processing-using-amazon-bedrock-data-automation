@@ -44,8 +44,8 @@ In this step, we will use Bedrock in the AWS Console to view and access the Insu
 
 > [!Note]
 > Choose the model of your choice and please follow the model provider acceptable end user policy. Results will vary based on the foundational model chosen
-
 ![Select Mode to Test Knowledge Base][screenshot_select_model]
+
 
 4. With the model selected, we are ready to test our Claims Evidence of Coverage knowledge base. You can ask a question in natural language to retrieve relevant response. For example
 
@@ -68,6 +68,7 @@ We can use the claims-cli again to do this. A few sample claims forms are availa
 1. Upload a claim form using the cli. Keep a note of the `claim-reference-id` in the output 
  ```
  ./claims-cli.sh submit-claim --file assets/data/claims_review/cms_1500/sample1_cms-1500-P.pdf 
+
  ```
 When the form is succesfully uploaded, the cli outputs a success mesage with a unique `claim reference id`
 
@@ -75,8 +76,10 @@ When the form is succesfully uploaded, the cli outputs a success mesage with a u
 
 2. Wait for a few minutes and check the claim output using the cli.<a name=step2_claimreview></a>
  Keep a note of the `claim-reference-id` in the output 
-  ```
+  
+  ```bash
   ./claims-cli.sh view-claim-output --claim-reference-id <claim_reference_id_from_step1_output>
+
   ```
 An example output (screenshot below) of the command lists the summary of the automate review performed by the Bedrock Agent
 
@@ -88,8 +91,10 @@ An example output (screenshot below) of the command lists the summary of the aut
 
 
  3. We can also look at available claim reference ids using the cli
-  ```
+ 
+  ```bash
  ./claims-cli.sh list-claims
+
   ```
 
 ## Viewing Logs and Troubleshooting
