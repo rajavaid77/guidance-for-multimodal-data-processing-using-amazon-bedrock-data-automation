@@ -16,12 +16,12 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 3. In the Custom output setup screen, click on "Create Blueprint"
    ![navigate_create_blueprint][screenshot_nav_to_create_blueprint]
 
-4. In the Create blueprint screen, select upload from computer, then click choose file.
+4. In the Create blueprint screen, select upload from computer, then click `Choose file`.
    ![create_blueprint_view][screenshot_create_blueprint_view]
 
 5. Browse to the sample CMS 1500 form at `assets/data/claims_review/cms_1500/sample1_cms-1500-P.pdf` in your clone of the repo in your local computer, then select the file and choose open.
 
-6. Verify the document preview and click upload. BDA creates an S3 bucket, if one doesn't exists already for bda, in your account to save the file.
+6. Verify the document preview and click `Upload`. If you see a `Create bucket confirmation` then click `Confirm` to confirm creation of bucket.  BDA creates an S3 bucket in your AWS Account. This would be used to store user assets
    ![upload_blueprint_sample][screenshot_upload_blueprint_view]
 
 7. Once the sample is uploaded, the Generate Blueprint button is enable. You can optionally provide a prompt to create a blueprint.  If you do not provide a prompt the Blueprint prompt AI will instead generate one.
