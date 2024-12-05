@@ -81,4 +81,4 @@ By following these steps, you'll have created a custom blueprint in AWS Bedrock 
 [screenshot_name_blueprint]: ../../assets/screenshots/claims_review_docs/name-blueprint.jpg
 [screenshot_extracted_fields]: ../../assets/screenshots/claims_review_docs/extracted_fields.jpg
 [screenshot_save_blueprint]: ../../assets/screenshots/claims_review_docs/save_blueprint.jpg
-[screenshot_save_changes_to_blueprint]: ../../assets/screenshots/claims_review_docs/save_blueprint.jpg
+[screenshot_save_changes_to_blueprint]: ../../assets/screenshots/claims_review_docs/save_changes_to_blueprint.jpg
