@@ -151,45 +151,56 @@ guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/
 
 
 1. Change to the `deployment` directory for the guidance repository <a name='deployment-directory'></a>
+
    ```
    cd guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/deployment
 
    ```
+1. Create and activate a virtual environment:  <a name='create_venv'></a>
 
-<a name='create_venv'></a>
-2. Create and activate a virtual environment: 
    ```
    python -m venv .venv
    source .venv/bin/activate
+
    ```
+
 3. Install required dependencies:
    ```
    pip install -r requirements.txt
+
    ```
 4. Bootstrap AWS CDK (first-time only):
+   
    ```
    cdk bootstrap
+
    ```
 5. Go to the `layer` directory and install lambda layer dependencies into the `python` subdirectory:
+   
    ```
    cd lambda/claims_review/layer/
    pip install -r requirements.txt --target python
    cd ../../..
+
    ```
   
 6. Deploy the stack: <a name="deploy-the-stack"></a>
+   
    ```
    cdk synth claims-review # Synthesize CloudFormation template
    cdk diff claims-review   # Review changes
    cdk deploy claims-review # Deploy stack
+
    ```
 
    To protect you against unintended changes that affect your security posture, the CDK CLI prompts you to approve security-related changes before deploying them. When prompted, review the changes and Enter `y` for  `Do you wish to deploy these changes (y/n)?` if you intend to proceed.
 
    Alternatively, in one command
 
+   
    ```bash
    cdk deploy claims-review --require-approval never 
+
    ```
    Wait for the stack deploy to complete.
 
@@ -197,9 +208,10 @@ guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/
    
    ```
     aws cloudformation describe-stacks --stack-name claims-review --query 'Stacks[0].StackStatus' --output text
+
    ```
-  A successful initial deployment should show a 'CREATE_COMPLETE' status and a successful subsequent deployment should show
-  'UPDATE_COMPLETE' status
+  A successful initial deployment should show a <span style="color: green;">CREATE_COMPLETE</span> status and a successful subsequent deployment should show
+  <span style="color: green;">UPDATE_COMPLETE</span> status
 
 ## Using the Sample Application
 See the guide [here](./b_claims_review_02_run_flow.md) for steps to run the claims review application
@@ -237,7 +249,7 @@ Ensure you're in the right directory when running `cdk deploy`. see [Step 1](#de
 - "Resource not found": Ensure the required resources exist and the permissions are correct.
 - "Access denied": Check the IAM roles and policies.
 - "Invalid handler": Verify the Lambda function handler name.
-- "Access denied when calling Bedrock": Verify Bedrock Model Access for the model used by the Agent
+- "Access denied when calling Bedrock": Verify Bedrock Model is available in the region and Model Access has been granted
 
 ## Development
 
