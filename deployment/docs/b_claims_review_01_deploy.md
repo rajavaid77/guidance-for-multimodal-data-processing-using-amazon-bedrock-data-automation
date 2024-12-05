@@ -19,7 +19,7 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
   - **Choose the model of your choice and please follow the model provider acceptable end user policy**
   - Currently this guidance doesn't support those models that are accessible in some Regions only through cross-region inference. 
   - Before you can use a foundation model in Amazon Bedrock, you must request access to it. See [Add or remove access to Amazon Bedrock foundation model](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html)
-  - If choosing one of [Amazon Titan Text models](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-text-models.html) ensure  model supported use case includes `Agents Support`
+  - If choosing one of [Amazon Titan Text models](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-text-models.html) ensure the model **Supported use cases** include _Agents Support_
   - Take a note of the model id. This would be use later when running the `cdk deploy` command 
 
 > [!Important]
