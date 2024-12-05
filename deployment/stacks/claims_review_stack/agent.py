@@ -22,7 +22,9 @@ class ClaimsReviewAgentStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None: 
         super().__init__(scope, construct_id, **kwargs)
 
-
+        foundation_model_id = self.node.try_get_context("foundation_model_id")
+        if foundation_model_id is None:
+            raise ValueError("foundation_model_id must be provided in the context")
         aurora_postgres_cluster = AuroraPostgresCluster(self,"aurora")
         bedrock_service_role = self.create_bedrock_service_role (
                                            service_role_name = "ClaimsEoCKnowledgeBaseServiceRole")
@@ -50,8 +52,8 @@ class ClaimsReviewAgentStack(Stack):
         claims_review_agent = self.create_agent(
             claims_review_agent_actions_lambda_function=claims_review_agent_actions_lambda_function,
             claims_review_action_group_schema=self.get_claims_review_action_group_schema(),
+            foundation_model_id = foundation_model_id,
             knowledge_bases=knowledge_bases) 
-        
         claims_review_agent_alias = self.create_claims_review_agent_alias(claims_review_agent=claims_review_agent)
 
         document_automation = self.create_document_automation(
@@ -151,10 +153,10 @@ class ClaimsReviewAgentStack(Stack):
     def create_agent(self,
                     claims_review_agent_actions_lambda_function: _lambda.Function,
                     claims_review_action_group_schema,
+                    foundation_model_id,
                     knowledge_bases: list[bedrock.CfnKnowledgeBase]) -> bedrock.CfnAgent:
         # Get the current directory of the script
         agent_parameters = self.node.try_get_context('agent')
-        foundation_model_id = agent_parameters["foundation_model_id"]
 
         claims_review_agent_resource_role = self.create_bedrock_agent_resource_role(
             claims_review_agent_resource_role_name = agent_parameters["claims_review_agent_resource_role_name"],
