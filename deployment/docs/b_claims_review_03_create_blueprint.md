@@ -60,14 +60,18 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 3. Click `Save blueprint` and `Save changes` to the blueprint
 ![Save_Blueprint][screenshot_save_changes_to_blueprint]
 
-4. Once the blueprint is saved, you can also `Upload` other sample documents and `Generate result` using the newly create blueprint
+4. You can also `Upload` other sample documents and `Generate result` using the newly create blueprint
 ![Generate_results][screenshot_generate_results]
 5. Click `Download` to download the results to your local computer and review the extracted values along with confidence and explainability info
-6. If necessary, return to the blueprint and make adjustments:
+
+6. If necessary, return to the blueprint at a later time and make adjustments. 
+ - From the Amazon Bedrock console, Click `Custom output setup`-> `Custom Blueprints` to view a list of blueprints created by you. 
+ - Click on the blueprint name to view blueprint details. 
+ - `Upload` a sample document and `Generate result` to see `Extraction` result and continue editing
    - Add missing fields
    - Refine field names for clarity
    - Adjust the initial prompt if certain areas need more attention
-7 Repeat the testing process with various CMS 1500 forms to ensure consistency and accuracy
+7. Repeat the testing process with various CMS 1500 forms to ensure consistency and accuracy
 8. Finally, you can save the blueprint
 
 
