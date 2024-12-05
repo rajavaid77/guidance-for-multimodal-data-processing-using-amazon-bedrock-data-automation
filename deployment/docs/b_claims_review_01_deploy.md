@@ -19,7 +19,7 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
     - Take a note of the model id. This would be use later when running the `cdk deploy` command 
 
 > [!Important]
->Take a note of the model id. You would need to use the model id with the `cdk deploy ...` command in [Step 6](#deploy-the-stack)
+>Take a note of the model id. You would need to use the model id with the [`cdk deploy ...` command](#deploy-the-stack)
 
 ## Deployment Steps
 
