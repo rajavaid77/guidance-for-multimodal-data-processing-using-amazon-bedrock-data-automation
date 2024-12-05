@@ -79,7 +79,6 @@ When the form is succesfully uploaded, the cli outputs a success mesage with a u
   
   ```bash
   ./claims-cli.sh view-claim-output --claim-reference-id <<claim_reference_id_from_step1_output>>
-
   ```
 An example output (screenshot below) of the command lists the summary of the automate review performed by the Bedrock Agent
 
