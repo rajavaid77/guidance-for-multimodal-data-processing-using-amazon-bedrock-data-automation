@@ -97,8 +97,9 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
 ## Deployment Validation
 To validate that your AWS CloudFormation stack
 1. Log in to your personal AWS account in the AWS Console.
-2. Search for AWS CloudFormation in the search bar on the top of the AWS Console page.
-3. On the Stacks page, under Stack name, verify you have a stack titled `claims-review` with a Status of CREATE_COMPLETE.
+2. Navigate to the to the `AWS CloudFormation` Console by searching for AWS CloudFormation in the search bar at the top of the AWS Console page and Click on `CloudFormation` in the results.
+3. From the `AWS CloudFormation` in the `Stacks` list, look for a stack with Stack name `claims-review`. Validate that the status shows 'CREATE_COMPLETE'
+![Stack_create_complete][screenshot_stack_create_complete]
 
 Alternatively, you can use the AWS CLI
 
@@ -369,3 +370,6 @@ To update stack resources -
 - [AWS CDK Python Reference](https://docs.aws.amazon.com/cdk/api/v2/python/index.html)
 - [AWS Lambda Developer Guide](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
 - [Amazon Bedrock Developer Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html)
+
+
+[screenshot_stack_create_complete]: ../../assets/screenshots/claims_review_docs/stack_create_complete.jpg
