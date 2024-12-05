@@ -28,10 +28,10 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
 
 1. Create a new directory, navigate to that directory in a terminal and clone the GitHub repository:
 
-  ```
-  git clone https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation.git
+   ```
+   git clone https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation.git
 
-  ```
+   ```
 
 2. Change to the `deployment` directory for the guidance repository <a name='deployment-directory'></a>
 
