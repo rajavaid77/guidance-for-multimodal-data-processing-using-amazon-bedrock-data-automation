@@ -60,7 +60,8 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 3. Click `Save blueprint` and `Save changes` to the blueprint
 ![Save_Blueprint][screenshot_save_changes_to_blueprint]
 
-4. Once the blueprint is saved, you can also upload other sample documents and get results using the newly create blueprint
+4. Once the blueprint is saved, you can also `Upload` other sample documents and `Generate result` using the newly create blueprint
+![Generate_results][screenshot_generate_results]
 5. Click `Download` to download the results to your local computer and review the extracted values along with confidence and explainability info
 6. If necessary, return to the blueprint and make adjustments:
    - Add missing fields
@@ -82,3 +83,4 @@ By following these steps, you'll have created a custom blueprint in AWS Bedrock 
 [screenshot_extracted_fields]: ../../assets/screenshots/claims_review_docs/extracted_fields.jpg
 [screenshot_save_blueprint]: ../../assets/screenshots/claims_review_docs/save_blueprint.jpg
 [screenshot_save_changes_to_blueprint]: ../../assets/screenshots/claims_review_docs/save_changes_to_blueprint.jpg
+[screenshot_generate_results]: ../../assets/screenshots/claims_review_docs/generate_results.jpg
