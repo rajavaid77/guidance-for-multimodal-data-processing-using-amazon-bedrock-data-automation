@@ -4,7 +4,156 @@
 
 The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic architecture to automate the processing and review of medical insurance claim forms using Amazon Bedrock Data Automation.
 
-## Key Stack Resources
+
+## Prerequisites
+
+- Python 3.10 or higher
+- AWS CLI configured with appropriate credentials
+- Node.js and npm (for AWS CDK CLI)
+- AWS CDK CLI installed (`npm install -g aws-cdk`)
+
+
+## Select a Foundation Model to use with Bedrock Agent. 
+  Before deploying the stack, you need to choose a foundation model to use with Amazon Bedrock Agent created by the stack. See [Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+
+  - **Choose the model of your choice and please follow the model provider acceptable end user policy**
+  - Currently this guidance doesn't support those models that are accessible in some Regions only through cross-region inference. 
+  - Before you can use a foundation model in Amazon Bedrock, you must request access to it. See [Add or remove access to Amazon Bedrock foundation model](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html)
+  - If choosing one of [Amazon Titan Text models](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-text-models.html) ensure the model **Supported use cases** include _Agents Support_
+
+> [!Important]
+>Take a note of the model id. You would need to use the model id with the [`cdk deploy command`](#deploy-the-stack)
+
+## Deployment Steps
+
+> [!Note]
+>If you’re continuing this part from Installation part 1, you can skip step 1-4
+
+1. Create a new directory, navigate to that directory in a terminal and clone the GitHub repository:
+
+   ```
+   git clone https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation.git
+
+   ```
+
+2. Change to the `deployment` directory for the guidance repository <a name='deployment-directory'></a>
+
+
+   ```
+   cd guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/deployment
+
+   ```
+3. Create and activate a virtual environment:  <a name='create_venv'></a>
+
+   ```
+   python -m venv .venv
+   source .venv/bin/activate
+
+   ```
+
+4. Install required dependencies:
+   ```
+   pip install -r requirements.txt
+
+   ```
+5. Bootstrap AWS CDK (first-time only):
+   
+   ```
+   cdk bootstrap
+
+   ```
+6. Go to the `layer` directory and install lambda layer dependencies into the `python` subdirectory:
+   
+   ```
+   cd lambda/claims_review/layer/
+   pip install -r requirements.txt --target python
+   cd ../../..
+
+   ```
+  
+7. Deploy the stack: <a name="deploy-the-stack"></a>
+
+> [!Note]
+> You would need a model id. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
+
+   
+   ```bash
+   cdk deploy claims-review  --context foundation_model_id=<<your_chosen_model_id>>
+
+   ```
+
+   To protect you against unintended changes that affect your security posture, the CDK CLI prompts you to approve security-related changes before deploying them. When prompted, review the changes and Enter `y` for  `Do you wish to deploy these changes (y/n)?` if you intend to proceed.
+
+   Alternatively, in one command
+
+   
+   ```bash
+   cdk deploy claims-review --context foundation_model_id=<<your_chosen_model_id>> --require-approval never 
+
+   ```
+8. Wait for the stack deploy to complete. This may take a few minutes.
+
+
+## Deployment Validation
+To validate that your AWS CloudFormation stack
+1. Log in to your personal AWS account in the AWS Console.
+2. Navigate to the to the `AWS CloudFormation` Console by searching for AWS CloudFormation in the search bar at the top of the AWS Console page and Click on `CloudFormation` in the results.
+3. From the `AWS CloudFormation` in the `Stacks` list, look for a stack with Stack name `claims-review`. Validate that the status shows 'CREATE_COMPLETE'
+![Stack_create_complete][screenshot_stack_create_complete]
+
+Alternatively, you can use the AWS CLI
+
+  Check the stack status using the AWS CloudFormation service
+   
+   ```
+    aws cloudformation describe-stacks --stack-name claims-review --query 'Stacks[0].StackStatus' --output text
+
+   ```
+
+  A successful initial deployment should show a <span style="color: green;">CREATE_COMPLETE</span> status and a successful subsequent deployment should show
+  <span style="color: green;">UPDATE_COMPLETE</span> status
+
+
+## Running the Guidance
+See the guide [here](./b_claims_review_02_run_flow.md) for steps to run the claims review application
+### 
+
+## Security
+
+The stack enforces the following security measures:
+
+- The Bedrock Agent's Resource Role has the minimum permissions required to access the Foundation Model and invoke the Lambda function.
+- The Lambda function's execution role has the basic execution permissions.
+- The Lambda function is granted permission to be invoked by the Bedrock Agent.
+
+## Troubleshooting <a name="Troubleshooting"></a>
+
+### Deployment Issues:
+
+#### General 
+- Verify AWS credentials are configured correctly
+- Ensure CDK is bootstrapped in your account/region
+- Check the CloudFormation console for detailed error messages
+
+#### `--app is required either in command-line, in cdk.json or in ~/.cdk.json`
+Ensure you're in the right directory when running `cdk deploy`. see [Step 1](#deployment-directory)
+
+### Runtime Issues:
+
+- Check CloudWatch Logs for Lambda function errors
+- Verify the IAM permissions are correct
+- Ensure the Bedrock Agent and Action Group are configured correctly
+
+**Common errors you might encounter:**
+
+- "Resource not found": Ensure the required resources exist and the permissions are correct.
+- "Access denied": Check the IAM roles and policies.
+- "Invalid handler": Verify the Lambda function handler name.
+- "Access denied when calling Bedrock": Verify Bedrock Model is available in the region and Model Access has been granted
+
+## Development
+
+### Key Stack Resources
 
 The stack sets up the following key AWS resources: 
 
@@ -55,19 +204,7 @@ The stack sets up the following key AWS resources:
 - Lambda Function to trigger datasource Sync for Claims EoC Knowledge Base
   - function name prefix `claims-review-datasourcesynclambdafunction`
 
-
-## Prerequisites
-
-- Python 3.10 or higher
-- AWS CLI configured with appropriate credentials
-- Node.js and npm (for AWS CDK CLI)
-- AWS CDK CLI installed (`npm install -g aws-cdk`)
-- [Ensure Amazon Bedrock Model Access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html)
-  - **Choose the model of your choice and please follow the model provider acceptable end user policy**
-  - See [Change Amazon Bedrock Model used by the Bedrock Agent](#customize-the-foundation-model-used-by-bedrock-agent)
-    
-
-## Project Structure
+### Project Structure
 <details>
   <summary>Click for Project Structure</summary>
 
@@ -143,134 +280,22 @@ guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/
 ```
 </details>
 
-## Setup Instructions
 
-> [!Note]
->If you’re continuing this part from Installation part 1, you can skip step 1-4
+### Customize the Stack
+#### Customize Stack Parameters <a name="customize_stack_parameters"></a>
+The stack uses context values in `cdk.json` file to store default parameters used for stack creation. To use your own values, you can either:
+1. Modify the values for the specific keys in `cdk.json`, or;
+2. use --context parameter with the `cdk deploy` command to override the values, for example 
+`cdk deploy claims-review --context foundation-model-id=xxxxxxx, blueprint_name=yyyyy`
 
-
-
-1. Change to the `deployment` directory for the guidance repository <a name='deployment-directory'></a>
-
-   ```
-   cd guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/deployment
-
-   ```
-1. Create and activate a virtual environment:  <a name='create_venv'></a>
-
-   ```
-   python -m venv .venv
-   source .venv/bin/activate
-
-   ```
-
-3. Install required dependencies:
-   ```
-   pip install -r requirements.txt
-
-   ```
-4. Bootstrap AWS CDK (first-time only):
-   
-   ```
-   cdk bootstrap
-
-   ```
-5. Go to the `layer` directory and install lambda layer dependencies into the `python` subdirectory:
-   
-   ```
-   cd lambda/claims_review/layer/
-   pip install -r requirements.txt --target python
-   cd ../../..
-
-   ```
-  
-6. Deploy the stack: <a name="deploy-the-stack"></a>
-   
-   ```
-   cdk synth claims-review # Synthesize CloudFormation template
-   cdk diff claims-review   # Review changes
-   cdk deploy claims-review # Deploy stack
-
-   ```
-
-   To protect you against unintended changes that affect your security posture, the CDK CLI prompts you to approve security-related changes before deploying them. When prompted, review the changes and Enter `y` for  `Do you wish to deploy these changes (y/n)?` if you intend to proceed.
-
-   Alternatively, in one command
-
-   
-   ```bash
-   cdk deploy claims-review --require-approval never 
-
-   ```
-   Wait for the stack deploy to complete.
-
-7. Check the stack status using the AWS CloudFormation service
-   
-   ```
-    aws cloudformation describe-stacks --stack-name claims-review --query 'Stacks[0].StackStatus' --output text
-
-   ```
-  A successful initial deployment should show a <span style="color: green;">CREATE_COMPLETE</span> status and a successful subsequent deployment should show
-  <span style="color: green;">UPDATE_COMPLETE</span> status
-
-## Using the Sample Application
-See the guide [here](./b_claims_review_02_run_flow.md) for steps to run the claims review application
-### 
-
-## Security
-
-The stack enforces the following security measures:
-
-- The Bedrock Agent's Resource Role has the minimum permissions required to access the Foundation Model and invoke the Lambda function.
-- The Lambda function's execution role has the basic execution permissions.
-- The Lambda function is granted permission to be invoked by the Bedrock Agent.
-
-## Troubleshooting <a name="Troubleshooting"></a>
-
-
-### Deployment Issues:
-
-#### General 
-- Verify AWS credentials are configured correctly
-- Ensure CDK is bootstrapped in your account/region
-- Check the CloudFormation console for detailed error messages
-
-#### `--app is required either in command-line, in cdk.json or in ~/.cdk.json`
-Ensure you're in the right directory when running `cdk deploy`. see [Step 1](#deployment-directory)
-
-### Runtime Issues:
-
-- Check CloudWatch Logs for Lambda function errors
-- Verify the IAM permissions are correct
-- Ensure the Bedrock Agent and Action Group are configured correctly
-
-**Common errors you might encounter:**
-
-- "Resource not found": Ensure the required resources exist and the permissions are correct.
-- "Access denied": Check the IAM roles and policies.
-- "Invalid handler": Verify the Lambda function handler name.
-- "Access denied when calling Bedrock": Verify Bedrock Model is available in the region and Model Access has been granted
-
-## Development
-
-To modify the stack:
-
-### Customize Stack Parameters <a name="customize_stack_parameters"></a>
-The stack uses context values in `cdk.json` file to store default parameters used for stack creation. The values can be modified by modifying the `cdk.json`
-
-### Customize the Foundation Model used by Bedrock Agent
-- You can choose the model of your choice (Please follow the model provider acceptable end user policy)
-- See [Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
-- Change the "agent.foundation_model_id" property in `cdk.json` to the model id of you choice
-
-### Customize the Claims Review Bedrock Agent prompt
+#### Customize the Claims Review Bedrock Agent prompt
 The prompt instruction used to create the agent is in the `deployment/stacks/claims_review_stack/prompts/claims_review_agent.py`.
 To Customize the agent instruction: 
 1. Update the text set to variable `claims_review_agent_instruction`
 2. save the changes
 3. deploy the stack again using instructions in [6. Deploy the stack](#deploy-the-stack)
 
-### Manage Action Group schema 
+#### Manage Action Group schema 
 - The action group API schema used for the agent action group is in  `deployment/stacks/claims_review_stack/schemas/claims_review_openapi.json`
 - The Lambda functions backing the action group APIs are in `deployment/lambda/claims_review/claims_review_agent_actions/index.py`.
 - The Database schema for the claim database (Aurora Postgres Serverless) is in `deployment/stacks/claims_review_stack/schemas/create_database_schema.sql`
@@ -285,8 +310,7 @@ To Customize the action group API schema:
 > [!Important]
 >In case of breaking/incompatible changes to the database schema, it might be neccesary to delete and redeploy the stack. Follow the steps in [Cleanup](#cleanup) and [6. Deploy the stack](#deploy-the-stack)
 
-
-### Update stack resources
+#### Update stack resources
 The `claims-review` stack has the following main source code files associated with it - 
 
 - `deployment/stacks/claims_review_stack/agent.py` - The top-level `claims-review` stack that creates bedrock agent resources and uses custom construct to create and configure other related resources include the bedrock knowledge base, vector store, the aurora databaseand BDA automation.
@@ -346,3 +370,6 @@ To update stack resources -
 - [AWS CDK Python Reference](https://docs.aws.amazon.com/cdk/api/v2/python/index.html)
 - [AWS Lambda Developer Guide](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
 - [Amazon Bedrock Developer Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html)
+
+
+[screenshot_stack_create_complete]: ../../assets/screenshots/claims_review_docs/stack_create_complete.jpg

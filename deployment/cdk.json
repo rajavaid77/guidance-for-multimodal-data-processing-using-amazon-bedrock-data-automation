@@ -5,7 +5,6 @@
     "claims_submission_bucket_name": "claims-submission",
     "claims_review_bucket_name": "claims-review",
     "agent":{
-        "foundation_model_id":"amazon.titan-text-premier-v1:0",
         "claims_review_agent_resource_role_name": "claims_review_agent_resource_role"
     },
     "vector_store": {
