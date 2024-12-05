@@ -145,7 +145,7 @@ Ensure you're in the right directory when running `cdk deploy`. see [Step 1](#de
 
 ## Development
 
-## Key Stack Resources
+### Key Stack Resources
 
 The stack sets up the following key AWS resources: 
 
@@ -196,7 +196,7 @@ The stack sets up the following key AWS resources:
 - Lambda Function to trigger datasource Sync for Claims EoC Knowledge Base
   - function name prefix `claims-review-datasourcesynclambdafunction`
 
-## Project Structure
+### Project Structure
 <details>
   <summary>Click for Project Structure</summary>
 
@@ -273,9 +273,12 @@ guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/
 </details>
 
 
-##Customize the Stack
+### Customize the Stack
 #### Customize Stack Parameters <a name="customize_stack_parameters"></a>
-The stack uses context values in `cdk.json` file to store default parameters used for stack creation. The values can be modified by modifying the `cdk.json`
+The stack uses context values in `cdk.json` file to store default parameters used for stack creation. To use your own values, you can either:
+1. Modify the values for the specific keys in `cdk.json`, or;
+2. use --context parameter with the `cdk deploy` command to override the values, for example 
+`cdk deploy claims-review --context foundation-model-id=xxxxxxx, blueprint_name=yyyyy`
 
 #### Customize the Claims Review Bedrock Agent prompt
 The prompt instruction used to create the agent is in the `deployment/stacks/claims_review_stack/prompts/claims_review_agent.py`.
@@ -298,7 +301,6 @@ To Customize the action group API schema:
 
 > [!Important]
 >In case of breaking/incompatible changes to the database schema, it might be neccesary to delete and redeploy the stack. Follow the steps in [Cleanup](#cleanup) and [6. Deploy the stack](#deploy-the-stack)
-
 
 #### Update stack resources
 The `claims-review` stack has the following main source code files associated with it - 
