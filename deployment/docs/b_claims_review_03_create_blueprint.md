@@ -55,24 +55,21 @@ To create a blueprint, you need to obtain a sample CMS 1500 filled form. You can
 
 
 ## Step 4: Refine and Iterate
-1. Once the blueprint is create, you can manually refine the Blueprint in the `Blueprint` section of the page.
+1. Once the blueprint is created, you can manually refine the Blueprint in the `Blueprint` section of the page.
 2. You can add / update the extracted fields.
 3. Click `Save blueprint` and `Save changes` to the blueprint
 ![Save_Blueprint][screenshot_save_changes_to_blueprint]
 
-4. You can also `Upload` other sample documents and `Generate result` using the newly create blueprint
-![Generate_results][screenshot_generate_results]
-5. Click `Download` to download the results to your local computer and review the extracted values along with confidence and explainability info
-
-6. If necessary, return to the blueprint at a later time and make adjustments. 
+4. You can also return to the blueprint at a later time to view and make adjustments.
  - From the Amazon Bedrock console, Click `Custom output setup`-> `Custom Blueprints` to view a list of blueprints created by you. 
  - Click on the blueprint name to view blueprint details. 
- - `Upload` a sample document and `Generate result` to see `Extraction` result and continue editing
-   - Add missing fields
-   - Refine field names for clarity
-   - Adjust the initial prompt if certain areas need more attention
-7. Repeat the testing process with various CMS 1500 forms to ensure consistency and accuracy
-8. Finally, you can save the blueprint
+ - `Upload` a sample document and `Generate result` to see `Extraction` result
+ ![Generate_results][screenshot_generate_results]
+ - Continue editing the blueprint and `Save blueprint` when done editing
+
+5. Click `Download` to download the results to your local computer and review the extracted values along with confidence and explainability info
+6. Repeat the testing process with various CMS 1500 forms to ensure consistency and accuracy
+7. Finally, you can save the blueprint
 
 
 By following these steps, you'll have created a custom blueprint in AWS Bedrock Document Automation specifically designed to extract key information from CMS 1500 medical claim forms. This blueprint can be used to process large volumes of claims efficiently, supporting tasks such as claims processing, auditing, and data analysis in healthcare administration.
@@ -88,3 +85,4 @@ By following these steps, you'll have created a custom blueprint in AWS Bedrock 
 [screenshot_save_blueprint]: ../../assets/screenshots/claims_review_docs/save_blueprint.jpg
 [screenshot_save_changes_to_blueprint]: ../../assets/screenshots/claims_review_docs/save_changes_to_blueprint.jpg
 [screenshot_generate_results]: ../../assets/screenshots/claims_review_docs/generate_results.jpg
+[screenshot_blueprint_view]: ../../assets/screenshots/claims_review_docs/blueprint_view.jpg
