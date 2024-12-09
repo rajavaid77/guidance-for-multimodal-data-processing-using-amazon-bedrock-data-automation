@@ -2,12 +2,8 @@ import boto3
 import json
 import os
 
-ENDPOINT = os.environ.get('ENDPOINT', None)
-
 # Create a Bedrock client
-bda_client = boto3.client("bedrock-data-automation-runtime", 
-                                **({'endpoint_url': ENDPOINT} if ENDPOINT is not None else {}),
-                                verify=False)
+bda_client = boto3.client("bedrock-data-automation-runtime") 
 
 def invoke_insight_generation_async(
         claim_reference_id, 

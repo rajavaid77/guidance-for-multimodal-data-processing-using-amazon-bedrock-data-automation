@@ -2,5 +2,4 @@ pytz
 requests
 opensearch-py
 requests_aws4auth
-./boto3-1.35.72-py3-none-any.whl
-./botocore-1.35.72-py3-none-any.whl
+boto3>=1.35.76

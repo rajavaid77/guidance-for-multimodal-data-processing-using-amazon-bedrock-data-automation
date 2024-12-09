@@ -1,7 +1,7 @@
 {
   "app": "python3 app.py",
   "context":{
-    "blueprint_name":"claims-review-cms-1500",
+    "blueprint_name":"cms-1500",
     "claims_submission_bucket_name": "claims-submission",
     "claims_review_bucket_name": "claims-review",
     "agent":{
