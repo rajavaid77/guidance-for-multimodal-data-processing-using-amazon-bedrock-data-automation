@@ -1,107 +1,34 @@
-import os
 import boto3
-from botocore.auth import SigV4Auth
-from botocore.awsrequest import AWSRequest
-import requests
 import json
-from urllib.parse import quote_plus
-from enum import Enum
-import re
-
-ENDPOINT = os.environ.get('ENDPOINT', None)
-BLUEPRINT_NAME = os.environ.get('BLUEPRINT_NAME', None)
-from requests_aws4auth import AWS4Auth
 
 class InvalidRequestTypeError(ValueError):
     pass
 
-class BlueprintNotFoundError(ValueError):
-    pass
-
     
 # Create a Bedrock client
-bda_client = boto3.client("bedrock-data-automation-runtime", 
-                                **({'endpoint_url': ENDPOINT} if ENDPOINT is not None else {}),
-                                verify=False)
+bda_client = boto3.client("bedrock-data-automation")
+s3 = boto3.client("s3")
+def update_blueprint(physical_resource_id:str, resourceProperties):
 
-SERVICE_NAME ="bedrock"
+    if "blueprintStage" not in resourceProperties:
+        raise ValueError("blueprintStage not provided in the resource properties")
 
+    response = bda_client.update_blueprint(
+        blueprintArn=physical_resource_id,
+        schema=resourceProperties["blueprintSchema"],
+        blueprintStage=load_blueprint_schema(resourceProperties)
+    )
+    return  response["blueprint"]
 
-def get_bda_endpoint(control_plane:bool):
-    if(control_plane):
-        return re.sub(r'.runtime+', '', bda_client.meta.endpoint_url)
-    else:
-        return bda_client.meta.endpoint_url
-
-def send_request(url, method, payload=None):
-    host = url.split("/")[2]
-    request = AWSRequest(
-            method,
-            url,
-            data=payload,
-            headers={'Host': host, 'Content-Type':'application/json'}
-    )    
-    session = boto3.Session()
-    region_name = session.region_name
-    credentials = session.get_credentials().get_frozen_credentials()
-
-    SigV4Auth(credentials, SERVICE_NAME, region_name).add_auth(request)
-    response = requests.request(method, url, headers=dict(request.headers), data=payload, timeout=50)
-    response.raise_for_status()
-    print(response)
-    content = response.content.decode("utf-8")
-    print(content)
-    data = json.loads(content)
-    return data
-
-
-def load_blueprint_schema():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    schema_path = os.path.join(current_dir, "blueprint_schema.json")
-    with open(schema_path, "r") as f:
-        return json.dumps(json.load(f))
-
-def create_payload(blueprint_name, schema, blueprint_stage="LIVE"):
-    payload = {
-        "blueprintName": blueprint_name,
-        "schema": schema,
-        "type": "DOCUMENT",
-        "blueprintStage": blueprint_stage
-    }
-    return payload
-
-def update_blueprint(event):
-    print(event)
 
 def delete_blueprint(event):
     print(event)
-
-def get_blueprint(event):
-    #strip trailing / 
-    url = f"{get_bda_endpoint(control_plane=True).rstrip('/')}/blueprints/"
-    response = send_request(
-        url = url,
-        method = "POST"
+    physical_resource_id = event["PhysicalResourceId"]
+    print("delete resource %s" % physical_resource_id)
+    response = bda_client.delete_blueprint(
+        blueprintArn=physical_resource_id
     )
-    blueprint = next((blueprint for blueprint in response["blueprints"] if blueprint["blueprintName"]==BLUEPRINT_NAME), None)    
-    if not blueprint:
-        raise BlueprintNotFoundError(f"Blueprint {BLUEPRINT_NAME} not found")
-    return blueprint
-    
-def create_blueprint(event):
-    url = f"{bda_client.meta.endpoint_url}/blueprints/"
-    print(url)
-    list_results = send_request(
-        url = url,
-        method = "PUT", 
-        payload=create_payload(
-            blueprint_name=BLUEPRINT_NAME,
-            schema=load_blueprint_schema(),
-            blueprint_stage="LIVE"
-        )
-    )
-    print(list_results)
-
+    print(response)
 
 def on_event(event, context):
     """
@@ -109,12 +36,34 @@ def on_event(event, context):
     It receives an event and a context object, and based on the request type
     in the event, it calls the appropriate function to handle the request.
     """
-    print(event)
     request_type = event['RequestType']
     if request_type == 'Create': return on_create(event)
     if request_type == 'Update': return on_update(event)
     if request_type == 'Delete': return on_delete(event)
     raise InvalidRequestTypeError(f"Invalid request type: {request_type}")
+
+def load_blueprint_schema(resourceProperties):
+    if "BlueprintSchemaUri" not in resourceProperties:
+        raise ValueError("BlueprintSchemaUri not provided in the resource properties")
+
+    blueprintSchema = s3.get_object(
+        Bucket=resourceProperties["BlueprintSchemaUri"].split("/",3)[2], 
+        Key=resourceProperties["BlueprintSchemaUri"].split("/",3)[3])["Body"].read().decode("utf-8")
+    return blueprintSchema
+
+
+def create_blueprint(resourceProperties):
+
+    if "BlueprintName" not in resourceProperties:
+        raise ValueError("BlueprintName not provided in the resource properties")
+
+    response = bda_client.create_blueprint(
+        blueprintName=resourceProperties["BlueprintName"],
+        type='DOCUMENT',
+        blueprintStage=resourceProperties["blueprintStage"],
+        schema=load_blueprint_schema(resourceProperties)
+    )
+    return response["blueprint"]
 
 def on_create(event):
     """
@@ -122,14 +71,14 @@ def on_create(event):
     It prints the resource properties, calls the create_or_update_index function
     to create or update the index, and returns the response from that function.
     """
-    response = {}
-    props = event["ResourceProperties"]
-    print("create new resource with props %s" % props)
-    #response = create_blueprint(event)
-    response = get_blueprint(event)
+    resourceProperties = event["ResourceProperties"]
+    print("create new resource with props %s" % resourceProperties)
+    blueprint = create_blueprint(resourceProperties=resourceProperties)
+
     return {
+        'PhysicalResourceId': blueprint["blueprintArn"],
         "Data": {
-            "blueprintArn": response["blueprintArn"]
+            "blueprintArn": blueprint["blueprintArn"]
         }
     }
 
@@ -139,16 +88,17 @@ def on_update(event):
     It prints the resource properties, calls the create_or_update_index function
     to create or update the index, and returns the response from that function.
     """
-    response = {}
-    props = event["ResourceProperties"]
-    print("update new resource with props %s" % props)
-    #response = create_blueprint(event)
-    response = get_blueprint(event)
+    resourceProperties = event["ResourceProperties"]
+    physical_resource_id = event["PhysicalResourceId"]
+    print("update  resource with props %s" % resourceProperties)
+    blueprint = update_blueprint(physical_resource_id, resourceProperties=resourceProperties)
     return {
+        "PhysicalResourceId": blueprint["blueprintArn"], 
         "Data": {
-            "blueprintArn": response["blueprintArn"]
+            "blueprintArn": blueprint["blueprintArn"]
         }
     }
+    
 
 def on_delete(event):
     """
@@ -156,6 +106,7 @@ def on_delete(event):
     It returns the physical resource ID of the resource being deleted.
     """
     physical_id = event["PhysicalResourceId"]
+    delete_blueprint(event)
     return {'PhysicalResourceId': physical_id}
 
 def is_complete(event, context):

@@ -78,7 +78,7 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
 
    
    ```bash
-   cdk deploy claims-review  --context foundation_model_id=<<your_chosen_model_id>>
+   cdk deploy claims-review  --parameters FoundationModelId=<<your_chosen_model_id>>
 
    ```
 
@@ -88,7 +88,7 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
 
    
    ```bash
-   cdk deploy claims-review --context foundation_model_id=<<your_chosen_model_id>> --require-approval never 
+   cdk deploy claims-review --parameters FoundationModelId=<<your_chosen_model_id>> --require-approval never 
 
    ```
 8. Wait for the stack deploy to complete. This may take a few minutes.
@@ -286,7 +286,7 @@ guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/
 The stack uses context values in `cdk.json` file to store default parameters used for stack creation. To use your own values, you can either:
 1. Modify the values for the specific keys in `cdk.json`, or;
 2. use --context parameter with the `cdk deploy` command to override the values, for example 
-`cdk deploy claims-review --context foundation-model-id=xxxxxxx, blueprint_name=yyyyy`
+`cdk deploy claims-review --context blueprint_name=yyyyy`
 
 #### Customize the Claims Review Bedrock Agent prompt
 The prompt instruction used to create the agent is in the `deployment/stacks/claims_review_stack/prompts/claims_review_agent.py`.
