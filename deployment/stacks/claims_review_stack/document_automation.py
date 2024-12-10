@@ -31,7 +31,8 @@ class DocumentAutomation(Construct):
         data_project_arn = self.node.try_get_context("data_project_arn")
         blueprint_name= self.node.try_get_context("blueprint_name")
 
-        blueprint_creation_custom_resource = self.create_blueprint_creation_lambda_function(blueprint_name=blueprint_name)
+        lambda_layer = self.create_lambda_layer()
+        blueprint_creation_custom_resource = self.create_blueprint_creation_lambda_function(blueprint_name=blueprint_name, lambda_layer=lambda_layer)
         blueprint_arn = blueprint_creation_custom_resource.get_att_string("blueprintArn")
         # Bucket to store claim form submissions
         claims_submission_bucket = self.create_claims_submission_bucket()
@@ -42,6 +43,7 @@ class DocumentAutomation(Construct):
         # Lambda function to trigger bedrock data insight on submitted claim forms
         invoke_data_automation_lambda_function = self.create_invoke_data_automation_function(
             self.claims_review_bucket, 
+            lambda_layer=lambda_layer,
             **({'blueprint_arn': blueprint_arn} if blueprint_arn is not None else {}),
             **({'data_project_arn': data_project_arn} if data_project_arn is not None else {})
         )
@@ -71,19 +73,41 @@ class DocumentAutomation(Construct):
         with open(schema_path, "r") as f:
             return json.dumps(json.load(f))
 
+    def upload_blueprint_schema(self):
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        blueprint_schema_s3_asset = s3_assets.Asset(
+            self,
+            "blueprint_schema_asset",
+            path=os.path.join(current_dir, "schemas/blueprint_schema.json")
+        )
+        return blueprint_schema_s3_asset
 
-    def create_blueprint_creation_lambda_function(self, blueprint_name:str):
- 
+    def create_lambda_layer(self):
+        # Create layer
+        layer = _lambda.LayerVersion(self, 'blueprint_creation_lambda_layer',
+            description='Dependencies for the Blueprint creation lambda function',
+            code= _lambda.Code.from_asset( 'lambda/claims_review/layer/'), # required
+            compatible_runtimes=[
+                _lambda.Runtime.PYTHON_3_10
+            ],
+        )
+        return layer
+    
+
+    def create_blueprint_creation_lambda_function(self, blueprint_name:str, lambda_layer: _lambda.LayerVersion):
+         
+        blueprint_schema_s3_asset = self.upload_blueprint_schema()
         blueprint_creation_lambda_function = _lambda.Function(
             self, 'blueprint-creation',
             runtime=_lambda.Runtime.PYTHON_3_10,
             code=_lambda.Code.from_asset('lambda/claims_review/blueprint_creation'),
             handler='index.on_event',
-            timeout=Duration.seconds(300)
+            timeout=Duration.seconds(300),
+            layers=[lambda_layer]
         )
 
         blueprint_creation_lambda_function.add_to_role_policy(iam.PolicyStatement(
-            actions=["bedrock:ListBlueprints", "bedrock:GetBlueprint"],
+            actions=["bedrock:ListBlueprints", "bedrock:GetBlueprint",  "bedrock:UpdateBlueprint"],
             resources=[
                  f"arn:aws:bedrock:{Stack.of(self).region}:{Stack.of(self).account}:blueprint/*"
             ]
@@ -92,6 +116,7 @@ class DocumentAutomation(Construct):
             actions=["bedrock:CreateBlueprint"],
             resources=["*"]
         ))
+        blueprint_schema_s3_asset.grant_read(blueprint_creation_lambda_function)
 
         #Create the Custom Resource Provider backed by Lambda Function
         claims_review_blueprint_creation_provider = custom_resources.Provider(
@@ -100,22 +125,13 @@ class DocumentAutomation(Construct):
             provider_function_name="claims-review_blueprint_creation_provider"
         )
 
-        blueprint_schema_uri = s3.
-
-        create_schema_file = s3_assets.Asset(
-            self,
-            "CreateSQLSchemaAsset",
-            path=os.path.join(current_dir, "schemas/create_database_schema.sql"),
-        )
-
         blueprint_creation_custom_resource = CustomResource (
             self, f"claims_review_blueprint_creation_custom_resource",
             service_token=claims_review_blueprint_creation_provider.service_token,
             properties={
                 "BlueprintName": f"{blueprint_name}-{Names.unique_resource_name(self)}",
-                "BlueprintSchemaUri":blueprint_schema_uri
-                "blueprintStage": "LIVE",
-                "blueprintSchema": self.load_blueprint_schema()
+                "BlueprintSchemaUri": blueprint_schema_s3_asset.s3_object_url,
+                "blueprintStage": "LIVE"
             }
         )
 
@@ -156,6 +172,7 @@ class DocumentAutomation(Construct):
 
     def create_invoke_data_automation_function(self,
                     claims_review_bucket: s3.Bucket,
+                    lambda_layer:_lambda.LayerVersion,
                     blueprint_arn: Optional[str]=None,
                     data_project_arn: Optional[str]=None):
          
@@ -169,6 +186,7 @@ class DocumentAutomation(Construct):
             code=_lambda.Code.from_asset('lambda/claims_review/invoke_data_automation'),
             handler='index.lambda_handler',
             timeout=Duration.seconds(300),
+            layers=[lambda_layer],
             environment={k:v for k,v in {
                 'CLAIMS_REVIEW_BUCKET_NAME': claims_review_bucket.bucket_name,
                 'DATA_PROJECT_ARN':data_project_arn,
