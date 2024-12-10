@@ -6,7 +6,8 @@ from aws_cdk import (
     Duration,
     Stack,
     CustomResource,
-    CfnOutput
+    CfnOutput,
+    CfnParameter
 )
 
 import json
@@ -22,9 +23,14 @@ class ClaimsReviewAgentStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None: 
         super().__init__(scope, construct_id, **kwargs)
 
-        foundation_model_id = self.node.try_get_context("foundation_model_id")
-        if foundation_model_id is None:
-            raise ValueError("foundation_model_id must be provided in the context")
+        foundation_model_id = CfnParameter(
+            self,
+            "FoundationModelId",
+            type="String",
+            description="The foundation model id to use for the agent",
+            default=None
+        )
+
         aurora_postgres_cluster = AuroraPostgresCluster(self,"aurora")
         bedrock_service_role = self.create_bedrock_service_role (
                                            service_role_name = "ClaimsEoCKnowledgeBaseServiceRole")
@@ -52,7 +58,7 @@ class ClaimsReviewAgentStack(Stack):
         claims_review_agent = self.create_agent(
             claims_review_agent_actions_lambda_function=claims_review_agent_actions_lambda_function,
             claims_review_action_group_schema=self.get_claims_review_action_group_schema(),
-            foundation_model_id = foundation_model_id,
+            foundation_model_id = foundation_model_id.value_as_string,
             knowledge_bases=knowledge_bases) 
         claims_review_agent_alias = self.create_claims_review_agent_alias(claims_review_agent=claims_review_agent)
 
