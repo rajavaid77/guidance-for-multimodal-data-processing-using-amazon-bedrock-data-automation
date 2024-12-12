@@ -16,7 +16,6 @@ from .prompts.claims_review_agent import claims_review_agent_instruction
 from stacks.claims_review_stack.vector_store import VectorStore
 from stacks.claims_review_stack.knowledge_base import KnowledgeBase
 from stacks.claims_review_stack.document_automation import DocumentAutomation
-from stacks.claims_review_stack.aurora_postgres import AuroraPostgresCluster
 from .prompts.prompt_overrides import prompt_overrides
 from stacks.claims_review_stack.database import Database
 class ClaimsReviewAgentStack(Stack):
