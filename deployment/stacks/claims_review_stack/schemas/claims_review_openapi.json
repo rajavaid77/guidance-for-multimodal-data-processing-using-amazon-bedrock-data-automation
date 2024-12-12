@@ -6,6 +6,125 @@
         "description": "APIs for managing insurance claims by pulling a list of open claims, identifying outstanding paperwork for each claim, and sending reminders to policy holders."
     },
     "paths": {
+        "member_and_patient": {
+            "get": {
+                "summary": "Get Insured Member and Patient details from the claims database using the Insured ID Number, Patient Birt Date and Patient Last Name from claim for data",
+                "description": "Get Insured Member and Patient details from the claims database using the Insured ID Number, Patient Birt Date and Patient Last Name from claim for data",
+                "operationId": "getMemberAndPatientDetails",
+                "parameters": [
+                    {
+                        "name": "insured_id_number",
+                        "in": "query",
+                        "description": "Unique ID of the insured person",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "patient_birth_date",
+                        "in": "query",
+                        "description": "The patient's birth date in YYYY-MM-DD format",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "patient_last_name",
+                        "in": "query",
+                        "description": "The patient's last name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "insuredId": {
+                                            "type": "integer",
+                                            "description": "A unique Id for the member in the claims database"
+                                        },
+                                        "memberName": {
+                                            "type": "string",
+                                            "description": "The member's full name"
+                                        },
+                                        "memberAddress": {
+                                            "type": "object",
+                                            "description": "The member's address"
+                                        },
+                                        "memberDateOfBirth": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "description": "The member's date of birth"
+                                        },
+                                        "memberPlanDetails": {
+                                            "type": "object",
+                                            "properties": {
+                                                "planName": {
+                                                    "type": "string",
+                                                    "description": "The member's plan name"
+                                                },
+                                                "groupNumber": {
+                                                    "type": "string",
+                                                    "description": "The member's group number"
+                                                },
+                                                "planNumber": {
+                                                    "type": "string",
+                                                    "description": "The member's subscriber number"
+                                                }
+                                            }
+                                        },
+                                        "memberPhoneNumber": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "description": "The member's phone number"
+                                        },
+                                        "patientId": {
+                                            "type": "string",
+                                            "description": "A unique Id for the patient in the claims database"
+                                        },
+                                        "patientFirstName": {
+                                            "type": "string",
+                                            "description": "The patient's first name"
+                                        },
+                                        "patientLastName": {
+                                            "type": "string",
+                                            "description": "The patient's last name"
+                                        },
+                                        "patientAddress": {
+                                            "type": "object",
+                                            "description": "The patient's address"
+                                        },
+                                        "patientDateOfBirth": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "description": "The patient's date of birth in YYYY-MM-DD format"
+                                        },
+                                        "relationship_to_insured": {
+                                            "type": "string",
+                                            "description": "The patient's relation to the insured member"
+                                        },
+                                        "patientSex": {
+                                            "type": "string",
+                                            "description": "The patient's gender"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/get_claims_form_data": {
             "get": {
                 "summary": "get the claim form data from S3 using the input S3 URI",
@@ -290,7 +409,7 @@
                         "schema": {
                             "type": "string",
                             "enum": [
-                                "claimNumber",
+                                "claim_id",
                                 "createdAt",
                                 "updatedAt",
                                 "status"
@@ -391,34 +510,7 @@
                                     },
                                     "diagnosis_4": {
                                         "type": "string"
-                                    },
-                                    "services":{
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "date_of_service": {
-                                                    "type": "string",
-                                                    "format": "date",
-                                                    "description": "The date of service in YYYY-MM-DD format",
-                                                    "pattern": "^\\d{4}-((0[1-9])|(1[012]))-((0[1-9]|[12]\\d)|3[01])$",
-                                                    "example": "2024-12-02"                                               
-                                                },
-                                                "type_of_service": {
-                                                    "type": "string"
-                                                },
-                                                "place_of_service": {
-                                                    "type": "string"
-                                                },
-                                                "procedure_code": {
-                                                    "type": "int"
-                                                },
-                                                "amount": {
-                                                    "type": "number"
-                                                }
-                                            }
-                                        }
-                                    }
+                                    }                                
                                 },
                                 "required": [
                                     "patient_id",
@@ -426,8 +518,7 @@
                                     "total_charges",
                                     "amount_paid",
                                     "balance",
-                                    "diagnosis_1",
-                                    "services"
+                                    "diagnosis_1"
                                 ]
                             }
                         }
@@ -441,7 +532,7 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "claimNumber": {
+                                        "claim_id": {
                                             "type": "integer"
                                         }
                                     }
@@ -455,14 +546,91 @@
                 }
             }
         },
-        "/claims/{claimNumber}": {
+        "claims/{claim_id}/service": {
+            "post": {
+                "summary": "Create a new service",
+                "description": "Create a service using the details of the service, treatment or procedure from claim form data and claim number",
+                "operationId": "createService",
+                "parameters": [
+                    {
+                        "name": "claim_id",
+                        "in": "path",
+                        "description": "The Unique Id for the Claim",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "date_of_service": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "description": "The date of service in YYYY-MM-DD format",
+                                        "pattern": "^\\d{4}-((0[1-9])|(1[012]))-((0[1-9]|[12]\\d)|3[01])$",
+                                        "example": "2024-12-02"                                               
+                                    },
+                                    "type_of_service": {
+                                        "type": "string"
+                                    },
+                                    "place_of_service": {
+                                        "type": "string"
+                                    },
+                                    "procedure_code": {
+                                        "type": "int"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    }
+                                },
+                                "required": [
+                                    "date_of_service",
+                                    "type_of_service",
+                                    "place_of_service",
+                                    "procedure_code",
+                                    "amount"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Service created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "service_id": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+           
+        },
+        "/claims/{claim_id}": {
             "get": {
                 "summary": "Get claim details",
                 "description": "Retrieve claim details given a claim number",
                 "operationId": "getClaim",
                 "parameters": [
                     {
-                        "name": "claimNumber",
+                        "name": "claim_id",
                         "description": "The Unique Id for the Claim",
                         "in": "path",
                         "required": true,
@@ -493,7 +661,7 @@
                 "operationId": "updateClaim",
                 "parameters": [
                     {
-                        "name": "claimNumber",
+                        "name": "claim_id",
                         "description": "The Unique Id for the Claim",
                         "in": "path",
                         "required": true,
@@ -574,7 +742,7 @@
             "Claim": {
                 "type": "object",
                 "properties": {
-                    "claimNumber": {
+                    "claim_id": {
                         "type": "string"
                     }
                 }

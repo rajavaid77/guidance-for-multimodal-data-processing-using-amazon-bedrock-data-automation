@@ -26,6 +26,14 @@ PATIENT_DETAILS_QUERY = """
     AND patient_lastname=:patient_lastname AND patient_birth_date=TO_DATE(:patient_birth_date,'YYYY-MM-DD');
 """
 
+MEMBER_AND_PATIENT_DETAILS_QUERY = """
+    SELECT 
+    i.insured_id,i.insured_name,i.insured_group_number,i.insured_plan_name,i.insured_birth_date,i.insured_policy_number,i.address insured_address,i.phone_number insured_phone_number,
+    p.patient_id,p.patient_firstname,p.patient_lastname,p.patient_birth_date,p.relationship_to_insured,p.phone_number patient_phone_number,p.sex patient_sex,p.address patient_address
+    FROM Patient p, Insured_Person i WHERE i.insured_id = p.insured_id AND i.insured_policy_number = :insured_id_number 
+    AND patient_lastname=:patient_lastname AND patient_birth_date=TO_DATE(:patient_birth_date,'YYYY-MM-DD');
+"""
+
 CREATE_CLAIM_QUERY = """
     INSERT INTO Claim (patient_id,claim_date,diagnosis_1,diagnosis_2,diagnosis_3,diagnosis_4,total_charges,balanceDue, amountPaid,claim_status) VALUES 
     (:patient_id, TO_DATE(:claim_date, 'YYYY-MM-DD'), :diagnosis_1, :diagnosis_2, :diagnosis_3, :diagnosis_4, :total_charges,:balanceDue, :amountPaid, :claim_status)
@@ -152,6 +160,99 @@ def create_param(name, value):
     else:
         raise ValueError(f"Unsupported type for {name}: {type(value)}")
 
+def getMemberAndPatientDetails(event) :
+
+    insured_policy_number = get_parameter(event, "insured_id_number")
+    patient_lastname = get_parameter(event, "patient_last_name")
+    patient_birth_date = get_parameter(event, "patient_birth_date")
+    parameters=[
+        {
+            'name':'insured_policy_number', 
+            'value':{'stringValue':insured_policy_number}
+        },
+        {
+            'name':'patient_lastname', 
+            'value':{'stringValue':patient_lastname}
+        },
+        {
+            'name':'patient_birth_date', 
+            'value':{'stringValue':patient_birth_date}
+        }
+    ] 
+
+    result = run_command(MEMBER_AND_PATIENT_DETAILS_QUERY, parameters)
+    print(result)
+    data = results_by_column_name(result)
+    if not data:
+        return f"""
+            Unable to get Member and/or Patient details with 
+            Insured Id Number={insured_policy_number},
+            Patient Last Name={patient_lastname},
+            Patient Birth Date={patient_birth_date}
+        """
+    member = data[0]
+    response = {
+        "insuredId": member['insured_id'],
+        "memberName": member['insured_name'],
+        "memberAddress": member['insured_address'],
+        "memberDateOfBirth": member['insured_birth_date'],
+        "memberPlanDetails": {
+            "memberGroupNumber": member['insured_group_number'],
+            "memberPlanName": member['insured_plan_name'],
+            "memberPlanNumber": member['insured_policy_number'],
+        },
+        "memberPhoneNumber": member['insured_phone_number'],
+        "patientId": member['patient_id'],
+        "patientFirstName": member['patient_firstname'],
+        "patientLastName":  member['patient_lastname'],
+        "patientDateOfBirth": member['patient_birth_date'],
+        "patientRelationshipToInsured": member['relationship_to_insured'],
+        "patientPhoneNumber": member['patient_phone_number'],
+        "patientSex": member['patient_sex'],
+        "patientAddress": member['patient_address'],
+    }
+
+    return response
+
+def getPatientDetails(event) :
+
+    insured_policy_number = get_parameter(event, "insured_id_number")
+    patient_lastname = get_parameter(event, "patient_lastName")
+    patient_birth_date = get_parameter(event, "patient_birth_date")
+    parameters=[
+        {
+            'name':'insured_policy_number',
+            'value':{'stringValue':insured_policy_number}
+        },
+        {
+            'name':'patient_lastname',
+            'value':{'stringValue':patient_lastname}
+        },
+        {
+            'name':'patient_birth_date',
+            'value':{'stringValue':patient_birth_date}
+        }
+    ]
+
+    result = run_command(PATIENT_DETAILS_QUERY, parameters)
+    print(result)
+    data = results_by_column_name(result)
+    if not data:
+        return f"Patient with last name {insured_policy_number}  not found"
+    member = data[0]
+    response = {"memberName": member['insured_name'],
+                "memberAddress": member['address'],
+                "memberDateOfBirth": member['insured_birth_date'],
+                "memberPlanDetails": {
+                    "memberGroupNumber": member['insured_group_number'],
+                    "memberPlanName": member['insured_plan_name'],
+                    "memberPlanNumber": member['insured_policy_number'],
+                },
+                "memberPhoneNumber": member['phone_number']
+              }
+
+    return response
+
 def getMemberDetails(event) :
 
     insured_policy_number = get_parameter(event, "insured_id_number")
@@ -218,24 +319,30 @@ def create_claim(event) :
     data = results_by_column_name(result)
     if not data:
         raise ParameterNotFoundError(f"Missing return record after Insert")
-    services_text = get_request_property(event,"services")
-    services = json.loads(services_text)
-    print(services)
-    for service in services: # type: ignore
-        parameters = [
-            create_param("claim_id", data[0]["claim_id"]),
-            create_param("date_of_service", service["date_of_service"]),
-            create_param("place_of_service", service["place_of_service"]),
-            create_param("type_of_service", service["type_of_service"]),
-            create_param("procedure_code", service["procedure_code"]),
-            create_param("amount", service["charge_amount"])
-        ]
-        result = run_command(sql_statement=CREATE_SERVICE_QUERY, parameters=parameters)
     response = {
         "claim_id": data[0]["claim_id"]
     }
     return response
 
+def create_claim_service(event):
+    claim_id = get_parameter(event, "claim_id")
+    response = {
+        "claimId": claim_id,
+        "claim_description": "Not Implemented"}
+    # services_text = get_request_property(event,"services")
+    # services = json.loads(services_text)
+    # print(services)
+    # for service in services: # type: ignore
+    #     parameters = [
+    #         create_param("date_of_service", get_request_property(event,"date_of_service")),
+    #         create_param("place_of_service", get_request_property(event,"place_of_service")),
+    #         create_param("type_of_service", get_request_property(event,"type_of_service")),
+    #         create_param("procedure_code", get_request_property(event,"procedure_code")),
+    #         create_param("amount", get_request_property(event,"charge_amount"))
+    #     ]
+    #     result = run_command(sql_statement=CREATE_SERVICE_QUERY, parameters=parameters)
+
+    return response
 
 
 def getPatient(event):
@@ -291,6 +398,8 @@ def lambda_handler(event, context):
     response = None
     try:
         match api_path:
+            case '/member_and_patient':
+                response = getMemberAndPatientDetails(event)
             case '/member/{insured_id_number}':
                 response = getMemberDetails(event)
             case '/claims' :
@@ -305,10 +414,12 @@ def lambda_handler(event, context):
                     response = createPatient(event)
             case '/get_claims_form_data':
                 response = getClaimsFormData(event)
-            case '/claims/{claimNumber}':
+            case '/claims/{claim_id}':
                 response = getClaim(event)
-            case '"/claims/insured/{insuredId}':
+            case '/claims/insured/{insuredId}':
                 response = listClaimsForInsured(event)
+            case 'claims/{claim_id}/service':
+                response = create_claim_service(event)
             case _:
                 response_code = 404
                 response = {"error": f"{action}::{api_path} is not a valid API, try another one."}
