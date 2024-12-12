@@ -85,3 +85,29 @@ Now that we have our project with all the needed blueprints (six), we can procee
 * Click “Generate Results”. BDA will analyze each page, and find the Homeowners Insurance document, and apply the “homeowners-insurance-application” blueprint. 
 
 
+
+The Document Splitting is disabled by default, lets activate it by running the following code:
+
+```bash
+# to be run from the deployment/ folder
+python ../source/lending_flow/activate_document_splitting.py my-lending-project
+```
+
+This should result in the following output, which has the document splitter now enabled.
+
+```bash
+(.venv) ~/projects/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/deployment python ../source/lending_flow/activate_document_splitting.py my-lending-project
+Get project list and find matching project for my-lending-project
+Activating document splitting for project: my-lending-project, arn:aws:bedrock:us-west-2:626723862963:data-automation-project/8be4e4fd3f6f
+
+Updated override configuration of project:
+{
+  "document": {
+    "splitter": {
+      "state": "ENABLED"
+    }
+  }
+}
+
+
+```
