@@ -25,13 +25,15 @@ def main():
 
     # Get project details
     project = client.get_data_automation_project(projectArn=project_arn)["project"]
+    # Get project blueprints
+    blueprints = client.list_blueprints(projectFilter={'projectArn': project["projectArn"]})["blueprints"]
 
     print(f"Activating document splitting for project: {args.project_name}, {project_arn}")
-
     # Update project configuration
     update_response = client.update_data_automation_project(
         projectArn=project_arn,
         standardOutputConfiguration=project["standardOutputConfiguration"],
+        customOutputConfiguration={"blueprints": blueprints},
         overrideConfiguration={'document': {'splitter': {'state': 'ENABLED'}}}
     )
 

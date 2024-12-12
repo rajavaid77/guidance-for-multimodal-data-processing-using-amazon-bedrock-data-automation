@@ -53,12 +53,28 @@ You can use the command below to copy the BDA result.
 # Lets get the bucket name of your deployment
 bucket_name=$(aws s3api list-buckets --query 'Buckets[?starts_with(Name, `lending-flow-bucket`)].[Name]' --output text)
 
-# First, get the matching keys and format them for copying
-aws s3api list-objects-v2 \
---bucket $bucket_name \
---prefix documents-output/lending_package.pdf \
---query "Contents[?contains(Key, 'custom_output')].Key" \
---output text | \
-xargs -I {} aws s3 cp s3://$bucket_name/{} ./results_lending_package.json
+# Lets copy the results to our local directory
+aws s3 cp --recursive s3://$bucket_name/documents-output/lending_package.pdf ./results_lending_package/
 ```
-3. Review the `results_lending_package.json` that has been copied to your local directory.
+3. List the local files:
+```bash
+find ./results_lending_package/ -name "*.json" 
+```
+Resulting in 
+
+(.venv) ~/projects/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/deployment git:[fix/document-splitting] find ./results_lending_package/ -name "*.json"
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/0/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/1/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/4/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/3/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/2/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/0/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/1/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/4/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/3/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/2/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/5/result.json
+./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/job_metadata.json
+
+
+4. Review the `results_lending_package.json` that has been copied to your local directory.
