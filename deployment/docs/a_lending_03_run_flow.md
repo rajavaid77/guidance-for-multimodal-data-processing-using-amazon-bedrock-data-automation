@@ -58,23 +58,81 @@ aws s3 cp --recursive s3://$bucket_name/documents-output/lending_package.pdf ./r
 ```
 3. List the local files:
 ```bash
-find ./results_lending_package/ -name "*.json" 
+find ./results_lending_package/ -name "result.json"
 ```
 Resulting in 
 
-(.venv) ~/projects/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/deployment git:[fix/document-splitting] find ./results_lending_package/ -name "*.json"
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/0/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/1/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/4/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/3/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/custom_output/2/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/0/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/1/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/4/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/3/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/2/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/0/standard_output/5/result.json
-./results_lending_package//01f627a1-7c27-4bef-be01-d07833429160/job_metadata.json
+```terminal
+(.venv) ~/projects/guidance-...-automation/deployment $ `find ./results_lending_package/ -name "result.json"`
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/custom_output/0/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/custom_output/1/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/custom_output/4/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/custom_output/3/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/custom_output/2/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/custom_output/5/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/standard_output/0/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/standard_output/1/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/standard_output/4/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/standard_output/3/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/standard_output/2/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/0/standard_output/5/result.json
+./results_lending_package//9f5f5fdc-4d7f-4210-8b84-34e173ea5e8c/job_metadata.json
+```
 
+4. Review each of the `result.json` that has been copied to your local directory. Each of them will contained the extracted and mapped information from a specific blueprint.
 
-4. Review the `results_lending_package.json` that has been copied to your local directory.
+If you have `jq` installed you can also run the following command to see a partial output of e.g. the first JSON file 
+
+```bash
+find . -path "*/0/result.json" -exec jq '. | {matched_blueprint, document_class, split_document, inference_result} | with_entries(select(.value != null))' {} \;
+```
+ 
+Below you can find an excerpt of how the result will look like for the Payslip blueprint.
+
+```
+{
+  "matched_blueprint": {
+    "arn": "arn:aws:bedrock:us-west-2:aws:blueprint/bedrock-data-automation-public-payslip",
+    "name": "Payslip",
+    "confidence": 0.9992658
+  },
+  "document_class": {
+    "type": "Payslip"
+  },
+  "split_document": {
+    "page_indices": [
+      0
+    ]
+  },
+  "inference_result": {
+    ...
+    "PayPeriodEndDate": "2008-07-18",
+    "PayDate": "2008-07-25",
+    "currency": "USD",
+    "EmployeeAddress": {
+      "State": "USA",
+      "ZipCode": "12345",
+      "City": "ANYTOWN",
+      "Line1": "101 MAIN STREET",
+      "Line2": ""
+    },
+    "YTDGrossPay": 23526.8,
+    "is_gross_pay_valid": "",
+    "StateFilingStatus": "",
+    "YTDCityTax": 308.88,
+    "EmployeeNumber": "",
+    "RegularHourlyRate": 10,
+    "are_field_names_sufficient": false,
+    "YTDTotalDeductions": "",
+    "is_ytd_gross_pay_highest": true,
+    "StateTaxes": [
+      {
+        "YTD": 438.36,
+        "Period": 8.43,
+        "ItemDescription": "NY State Income Tax"
+      }
+    ],
+    ...
+  }
+}
+```
