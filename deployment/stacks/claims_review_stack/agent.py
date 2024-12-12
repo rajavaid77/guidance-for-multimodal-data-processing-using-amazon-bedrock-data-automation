@@ -18,6 +18,7 @@ from stacks.claims_review_stack.knowledge_base import KnowledgeBase
 from stacks.claims_review_stack.document_automation import DocumentAutomation
 from stacks.claims_review_stack.aurora_postgres import AuroraPostgresCluster
 from .prompts.prompt_overrides import prompt_overrides
+from stacks.claims_review_stack.database import Database
 class ClaimsReviewAgentStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None: 
@@ -31,12 +32,13 @@ class ClaimsReviewAgentStack(Stack):
             default=None
         )
 
-        aurora_postgres_cluster = AuroraPostgresCluster(self,"aurora")
+        aurora_serverless_v2 = Database(self,"auroraV2")
+        database_cluster = aurora_serverless_v2.database_cluster
         bedrock_service_role = self.create_bedrock_service_role (
                                            service_role_name = "ClaimsEoCKnowledgeBaseServiceRole")
 
         claims_review_agent_actions_role = self.create_claims_review_agent_actions_role()
-        aurora_postgres_cluster.aurora_cluster.grant_data_api_access(claims_review_agent_actions_role)
+        database_cluster.grant_data_api_access(claims_review_agent_actions_role)
         vector_store =  self.create_vector_store(
             bedrock_service_role = bedrock_service_role
         )
@@ -51,9 +53,9 @@ class ClaimsReviewAgentStack(Stack):
 
         claims_review_agent_actions_lambda_function = self.create_claims_review_agent_actions_lambda_function(
             claims_review_agent_actions_role=claims_review_agent_actions_role,
-            database_cluster_arn=aurora_postgres_cluster.aurora_cluster.cluster_arn,
-            database_credentials_secret=aurora_postgres_cluster.db_credentials_secret,
-            default_database_name=aurora_postgres_cluster.default_database_name
+            database_cluster_arn=database_cluster.cluster_arn,
+            database_credentials_secret=database_cluster.secret.secret_arn,
+            default_database_name=aurora_serverless_v2.database_name
         )
         claims_review_agent = self.create_agent(
             claims_review_agent_actions_lambda_function=claims_review_agent_actions_lambda_function,
