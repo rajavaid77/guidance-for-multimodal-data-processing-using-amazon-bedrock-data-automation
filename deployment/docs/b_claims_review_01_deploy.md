@@ -14,15 +14,37 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
 
 
 ## Select a Foundation Model to use with Bedrock Agent. 
-  Before deploying the stack, you need to choose a foundation model to use with Amazon Bedrock Agent created by the stack. See [Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+Before deploying the stack, you need to choose a foundation model (FM) that the agent invokes to interpret user input and subsequent prompts in its orchestration process. The agent also invokes the FM to generate responses and follow-up steps in its process. The following sections provide information on selecting a foundation model and enabling access to the model.
 
-  - **Choose the model of your choice and please follow the model provider acceptable end user policy**
-  - Currently this guidance doesn't support those models that are accessible in some Regions only through cross-region inference. 
-  - Before you can use a foundation model in Amazon Bedrock, you must request access to it. See [Add or remove access to Amazon Bedrock foundation model](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html)
-  - If choosing one of [Amazon Titan Text models](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-text-models.html) ensure the model **Supported use cases** include _Agents Support_
+For more details see [How Amazon Bedrock Agents works](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-how.html).
+
+
+### Choosing a Model or an Inference Profile
+
+**When choosing a model please follow the model provider acceptable end user policy**
+
+#### Model Support By Feature and By Region
+
+- Foundation models differ in the Amazon Bedrock features that they support. See [Model support by feature](https://docs.aws.amazon.com/bedrock/latest/userguide/models-features.html) 
+
+- Amazon Bedrock foundation models differ in their regional support. See [Model support by AWS Region in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-regions.html)
+
+ > [!Note] Some models are accessible in some Regions only through cross-region inference. To learn more about cross-region inference, see [Increase throughput with cross-region
+ >inference](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) and [Supported Regions and models for inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html).
+
+#### Access Amazon Bedrock foundation models
+Before you can use a foundation model in Amazon Bedrock, you must request access to it. 
+* See [Add or remove access to Amazon Bedrock foundation model](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html)
+* If choosing one of [Amazon Titan Text models](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-text-models.html) ensure the model **Supported use cases** include _Agents Support_
+
+#### Using Inference Profiles
+You can use a cross region inference profile in place of a foundation model to route requests to multiple Regions. When using inference profiles, make sure you've requested access to the models and the regions defined in the inference profiles that you want to use. For example, to gain access to make calls to the US Anthropic Claude 3 Haiku inference profile from the US West (Oregon) Region, do the following:
+
+  1. Sign into the AWS Management Console in the US East (N. Virginia) Region and request model access to Anthropic Claude 3 Haiku by following the steps at Access Amazon  Bedrock foundation models.
+  2. Change to the US West (Oregon) Region and request model access to Anthropic Claude 3 Haiku. 
 
 > [!Important]
->Take a note of the model id. You would need to use the model id with the [`cdk deploy command`](#deploy-the-stack)
+>Take a note of the foundation model id or the inference profile id. You would need to use the model id with the [`cdk deploy command`](#deploy-the-stack)
 
 ## Deployment Steps
 
@@ -73,24 +95,37 @@ The `claims-review` is an AWS CDK stack that sets up an Amazon Bedrock agentic a
   
 7. Deploy the stack: <a name="deploy-the-stack"></a>
 
-> [!Note]
-> You would need a model id. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
+   > [!Note]
+   > You would need a model id or an inference profile id. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
 
-   
+   Using a foundation model 
    ```bash
-   cdk deploy claims-review  --parameters FoundationModelId=<<your_chosen_model_id>>
-
+   cdk deploy claims-review  --context foundation_model_id=<<your_chosen_model_id>>
    ```
+   
+   Using an inference profile 
+   ```bash
+   cdk deploy claims-review  --context inference_profile_id=<<your_chosen_inference_profile_id>>
+   ```
+   > [!Important]
+   > You must provide one of foundation model id or inference profile id, but not both
+
+
 
    To protect you against unintended changes that affect your security posture, the CDK CLI prompts you to approve security-related changes before deploying them. When prompted, review the changes and Enter `y` for  `Do you wish to deploy these changes (y/n)?` if you intend to proceed.
 
    Alternatively, in one command
 
-   
+   Using a foundation model 
    ```bash
-   cdk deploy claims-review --parameters FoundationModelId=<<your_chosen_model_id>> --require-approval never 
-
+   cdk deploy claims-review  --context foundation_model_id=<<your_chosen_model_id>> --require-approval never 
    ```
+   
+   Using an inference profile 
+   ```bash
+   cdk deploy claims-review  --context inference_profile_id=<<your_chosen_inference_profile_id>> --require-approval never 
+   ```
+
 8. Wait for the stack deploy to complete. This may take a few minutes.
 
 
