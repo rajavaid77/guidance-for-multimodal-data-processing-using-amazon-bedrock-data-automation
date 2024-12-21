@@ -71,9 +71,8 @@ By using this dataset and guidance, you acknowledge that you have read, understo
 3. [Process lending documents](deployment/docs/a_lending_03_run_flow.md)
 
 #### Claims Review Setup
-1. [Create BDA blueprint](deployment/docs/b_claims_review_03_create_blueprint.md)
-2. [Deploy claims review stack](deployment/docs/b_claims_review_01_deploy.md)
-3. [Process claims](deployment/docs/b_claims_review_02_run_flow.md)
+1. [Deploy claims review stack](deployment/docs/b_claims_review_01_deploy.md)
+2. [Process claims](deployment/docs/b_claims_review_02_run_flow.md)
 
 ## Cost Estimation
 - Approximate cost: The Lending Flow will cost $42 month for 1,000 pages (US-West-2 Region, December 2024)
