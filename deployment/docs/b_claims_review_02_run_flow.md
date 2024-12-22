@@ -118,4 +118,4 @@ This means an error in the claims review process. We can look at CloudWatch Logs
 [screenshot_claim_submitted]: ../../assets/screenshots/claims_review_docs/claimsubmission-output.jpg
 [screenshot_claim_eoc_ingestion]: ../../assets/screenshots/claims_review_docs/claim-eoc-ingestion.jpg
 [screenshot_claims_review_output]: ../../assets/screenshots/claims_review_docs/claims_review_output.jpg
-[screenshot_claims_eoc_ingestion]: https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/assets/
+[screenshot_claims_eoc_ingestion]: ../../assets/screenshots/claims_review_docs/claim-eoc-ingestion.jpg
