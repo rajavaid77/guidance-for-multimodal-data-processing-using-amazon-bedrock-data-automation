@@ -36,6 +36,7 @@ class ClaimsReviewAgentStack(Stack):
             raise ValueError("Please provide only one of foundation_model_id or inference_profile_id")
         
         #Create a custom resource to get the inference profile
+        model_arns=None
         if inference_profile_id:
             get_inference_profile_custom_resource = self.create_get_inference_profile_custom_resource(inference_profile_id)
             model_arns = get_inference_profile_custom_resource.get_att_string("model_arns")
