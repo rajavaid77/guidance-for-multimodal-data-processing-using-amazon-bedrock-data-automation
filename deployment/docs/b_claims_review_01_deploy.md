@@ -81,7 +81,7 @@ You can use a cross region inference profile in place of a foundation model to r
 5. Bootstrap AWS CDK (first-time only):
    
 > [!Note]
-> You would need a model id or an inference profile id for this Step. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
+> You would need a model id or an inference profile id for this step. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
 
    Using a foundation model 
    ```bash
@@ -108,7 +108,7 @@ You can use a cross region inference profile in place of a foundation model to r
 7. Deploy the stack: <a name="deploy-the-stack"></a>
 
 > [!Note]
-> You would need a model id or an inference profile id for this Step. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
+> You would need a model id or an inference profile id for this step. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
 
    Using a foundation model 
    ```bash
