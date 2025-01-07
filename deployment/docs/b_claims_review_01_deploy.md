@@ -146,6 +146,7 @@ To validate that your AWS CloudFormation stack
 1. Log in to your personal AWS account in the AWS Console.
 2. Navigate to the to the `AWS CloudFormation` Console by searching for AWS CloudFormation in the search bar at the top of the AWS Console page and Click on `CloudFormation` in the results.
 3. From the `AWS CloudFormation` in the `Stacks` list, look for a stack with Stack name `claims-review`. Validate that the status shows 'CREATE_COMPLETE'
+
 ![Stack_create_complete][screenshot_stack_create_complete]
 
 Alternatively, you can use the AWS CLI
