@@ -22,7 +22,7 @@ MEMBER_DETAILS_QUERY = """
 
 PATIENT_DETAILS_QUERY = """
     SELECT p.patient_id,i.insured_id,p.patient_firstname,p.patient_lastname,p.patient_birth_date,p.relationship_to_insured,p.phone_number,p.sex,p.address 
-    FROM Patient p, Insured_Person i WHERE i.insured_id = p.insured_id AND i.insured_policy_number = :insured_id_number 
+    FROM Patient p, Insured_Person i WHERE i.insured_id = p.insured_id AND i.insured_policy_number = :insured_policy_number 
     AND patient_lastname=:patient_lastname AND patient_birth_date=TO_DATE(:patient_birth_date,'YYYY-MM-DD');
 """
 
@@ -30,7 +30,7 @@ MEMBER_AND_PATIENT_DETAILS_QUERY = """
     SELECT 
     i.insured_id,i.insured_name,i.insured_group_number,i.insured_plan_name,i.insured_birth_date,i.insured_policy_number,i.address insured_address,i.phone_number insured_phone_number,
     p.patient_id,p.patient_firstname,p.patient_lastname,p.patient_birth_date,p.relationship_to_insured,p.phone_number patient_phone_number,p.sex patient_sex,p.address patient_address
-    FROM Patient p, Insured_Person i WHERE i.insured_id = p.insured_id AND i.insured_policy_number = :insured_id_number 
+    FROM Patient p, Insured_Person i WHERE i.insured_id = p.insured_id AND i.insured_policy_number = :insured_policy_number 
     AND patient_lastname=:patient_lastname AND patient_birth_date=TO_DATE(:patient_birth_date,'YYYY-MM-DD');
 """
 
@@ -214,45 +214,6 @@ def getMemberAndPatientDetails(event) :
 
     return response
 
-def getPatientDetails(event) :
-
-    insured_policy_number = get_parameter(event, "insured_id_number")
-    patient_lastname = get_parameter(event, "patient_lastName")
-    patient_birth_date = get_parameter(event, "patient_birth_date")
-    parameters=[
-        {
-            'name':'insured_policy_number',
-            'value':{'stringValue':insured_policy_number}
-        },
-        {
-            'name':'patient_lastname',
-            'value':{'stringValue':patient_lastname}
-        },
-        {
-            'name':'patient_birth_date',
-            'value':{'stringValue':patient_birth_date}
-        }
-    ]
-
-    result = run_command(PATIENT_DETAILS_QUERY, parameters)
-    print(result)
-    data = results_by_column_name(result)
-    if not data:
-        return f"Patient with last name {insured_policy_number}  not found"
-    member = data[0]
-    response = {"memberName": member['insured_name'],
-                "memberAddress": member['address'],
-                "memberDateOfBirth": member['insured_birth_date'],
-                "memberPlanDetails": {
-                    "memberGroupNumber": member['insured_group_number'],
-                    "memberPlanName": member['insured_plan_name'],
-                    "memberPlanNumber": member['insured_policy_number'],
-                },
-                "memberPhoneNumber": member['phone_number']
-              }
-
-    return response
-
 def getMemberDetails(event) :
 
     insured_policy_number = get_parameter(event, "insured_id_number")
@@ -349,15 +310,15 @@ def getPatient(event):
 
     patient_lastname = get_parameter(event, "patient_lastName")
     patient_birth_date = get_parameter(event, "patient_birth_date")
-    insured_id_number = get_parameter(event, "insured_id_number")
+    insured_policy_number = get_parameter(event, "insured_id_number")
     parameters=[
         {
             'name':'patient_lastname', 
             'value':{'stringValue':patient_lastname}
         },
         {
-            'name':'insured_id_number', 
-            'value':{'stringValue':insured_id_number}
+            'name':'insured_policy_number', 
+            'value':{'stringValue':insured_policy_number}
         },
         {
             'name':'patient_birth_date', 
