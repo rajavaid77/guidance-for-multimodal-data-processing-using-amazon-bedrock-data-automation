@@ -113,7 +113,7 @@ class DocumentAutomation(Construct):
             ]
         ))
         blueprint_creation_lambda_function.add_to_role_policy(iam.PolicyStatement(
-            actions=["bedrock:CreateBlueprint", "CreateBlueprintVersion"],
+            actions=["bedrock:CreateBlueprint", "bedrock:CreateBlueprintVersion"],
             resources=["*"]
         ))
         blueprint_schema_s3_asset.grant_read(blueprint_creation_lambda_function)
