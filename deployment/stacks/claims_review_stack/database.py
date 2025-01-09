@@ -139,7 +139,7 @@ class Database(Construct):
             runtime=_lambda.Runtime.PYTHON_3_10,
             handler="index.handler",
             code=_lambda.Code.from_asset("lambda/claims_review/manage_schema"),
-            Duration=Duration.seconds(300),
+            timeout=Duration.seconds(300),
             environment={
                 "CLUSTER_ARN": cluster.cluster_arn,
                 "SECRET_ARN": cluster.secret.secret_arn,

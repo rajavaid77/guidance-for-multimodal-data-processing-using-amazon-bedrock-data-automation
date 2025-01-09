@@ -6,7 +6,7 @@
         "description": "APIs for managing insurance claims by pulling a list of open claims, identifying outstanding paperwork for each claim, and sending reminders to policy holders."
     },
     "paths": {
-        "member_and_patient": {
+        "/member_and_patient": {
             "get": {
                 "summary": "Get Insured Member and Patient details from the claims database using the Insured ID Number, Patient Birt Date and Patient Last Name from claim for data",
                 "description": "Get Insured Member and Patient details from the claims database using the Insured ID Number, Patient Birt Date and Patient Last Name from claim for data",
@@ -546,7 +546,7 @@
                 }
             }
         },
-        "claims/{claim_id}/service": {
+        "/claims/{claim_id}/service": {
             "post": {
                 "summary": "Create a new service",
                 "description": "Create a service using the details of the service, treatment or procedure from claim form data and claim number",
@@ -583,7 +583,7 @@
                                         "type": "string"
                                     },
                                     "procedure_code": {
-                                        "type": "int"
+                                        "type": "integer"
                                     },
                                     "amount": {
                                         "type": "number"
