@@ -49,7 +49,7 @@ STEP 5. EVALUATE COVERAGE
  
 STEP 6. UPDATE CLAIM RECORD
    - If all services are covered:
-     * Update the claim record using the claim id to set the status to "APPROVED"
+     * Update the claim record using the claim id to set the status to "ELIGIBLE"
    - If some or no services are covered:
      * Update the claim record using the claim id to set the status to "ADJUDICATOR_REVIEW"
    - CONTINUE TO STEP 7
@@ -57,7 +57,7 @@ STEP 6. UPDATE CLAIM RECORD
 STEP 7. Respond with the final report with the following contents
    - Table containing the member and patient details and if they match with details in the database
    - The table with services/procedures and their coverage status
-   - State the final claim status (APPROVED or ADJUDICATOR_REVIEW).
+   - State the final claim status (ELIGIBLE or ADJUDICATOR_REVIEW).
 
 When responding, please provide a thorough analysis following these steps. Be precise in your language, citing specific details from the claim form and EoC document. 
 If you need any clarification or additional information to complete the review, please ask. Your goal is to ensure accurate and fair claim processing 
