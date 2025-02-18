@@ -79,22 +79,10 @@ You can use a cross region inference profile in place of a foundation model to r
 
    ```
 5. Bootstrap AWS CDK (first-time only):
-   
-> [!Note]
-> You would need a model id or an inference profile id for this step. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
-
-   Using a foundation model 
-   ```bash
-   cdk bootstrap --context foundation_model_id=<<your_chosen_model_id>>
    ```
-   
-   Using an inference profile 
-   ```bash
-   cdk bootstrap  --context inference_profile_id=<<your_chosen_inference_profile_id>>
-   ```
-> [!Important]
-> You must provide one of foundation model id or inference profile id, but not both
+   cdk bootstrap
 
+   ```
 
 6. Go to the `layer` directory and install lambda layer dependencies into the `python` subdirectory:
    
@@ -104,24 +92,19 @@ You can use a cross region inference profile in place of a foundation model to r
    cd ../../..
 
    ```
-  
-7. Deploy the stack: <a name="deploy-the-stack"></a>
+7. Deploy the stack: <a name="deploy-the-stack"></a>. Please use a foundation model or an inference profile of your choice for this step. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
 
-> [!Note]
-> You would need a model id or an inference profile id for this step. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
-
-   Using a foundation model 
+   
+   Using a foundation model
    ```bash
    cdk deploy claims-review  --context foundation_model_id=<<your_chosen_model_id>>
-   ```
-   
-   Using an inference profile 
+   ```   
+   Using an inference profile
    ```bash
    cdk deploy claims-review  --context inference_profile_id=<<your_chosen_inference_profile_id>>
-   ```
+   ```   
 > [!Important]
 > You must provide one of foundation model id or inference profile id, but not both
-
 
 
    To protect you against unintended changes that affect your security posture, the CDK CLI prompts you to approve security-related changes before deploying them. When prompted, review the changes and Enter `y` for  `Do you wish to deploy these changes (y/n)?` if you intend to proceed.

@@ -28,12 +28,6 @@ class ClaimsReviewAgentStack(Stack):
 
         foundation_model_id = self.node.try_get_context("foundation_model_id")
         inference_profile_id = self.node.try_get_context("inference_profile_id")
-
-        #raise exception if both foundation_model_id and inference_profile_id are not provided or if both are provided
-        if not foundation_model_id and not inference_profile_id:
-            raise ValueError("Please provide either foundation_model_id or inference_profile_id")
-        if foundation_model_id and inference_profile_id:
-            raise ValueError("Please provide only one of foundation_model_id or inference_profile_id")
         
         #Create a custom resource to get the inference profile
         model_arns=None
