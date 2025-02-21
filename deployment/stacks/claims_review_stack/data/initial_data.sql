@@ -9,5 +9,5 @@ VALUES
 INSERT INTO PATIENT (insured_id, patient_firstname, patient_lastname, patient_birth_date, relationship_to_insured, phone_number, sex, address)
 VALUES
 (1, 'John', 'Doe', '1960-10-10', 'Spouse', '858 555 0100', 'M', '123 Any Street, Any City, CA 92127'),
-(2, 'Ana', 'Carolina Silva', '1992-06-15', 'Self', '555 555 0192', 'M', '100 Main Street, Anytown, USA'),
+(2, 'Ana', 'Silva', '1992-06-15', 'Self', '555 555 0192', 'M', '100 Main Street, Anytown, USA'),
 (3, 'Mateo', 'Jackson', '1985-11-03', 'Self', '555 555 0194', 'N', '404 Anywhere Street, Nowhere Town, USA');
