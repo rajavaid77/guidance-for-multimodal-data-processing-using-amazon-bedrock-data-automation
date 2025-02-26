@@ -31,7 +31,7 @@ class ClaimsReviewAgentStack(Stack):
         
         #Create a custom resource to get the inference profile
         model_arns=None
-        if inference_profile_id:
+        if inference_profile_id and foundation_model_id is None:
             get_inference_profile_custom_resource = self.create_get_inference_profile_custom_resource(inference_profile_id)
             model_arns = get_inference_profile_custom_resource.get_att_string("model_arns")
 
@@ -125,7 +125,7 @@ class ClaimsReviewAgentStack(Stack):
         resources = []
         if(foundation_model_id):
             resources.append(f"arn:aws:bedrock:{self.region}::foundation-model/{foundation_model_id}")
-        if(model_arns):
+        elif(model_arns):
             resources.append(model_arns)
 
         #add policy to allow model access
