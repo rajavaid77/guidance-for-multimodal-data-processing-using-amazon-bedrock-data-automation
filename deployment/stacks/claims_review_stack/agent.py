@@ -122,30 +122,42 @@ class ClaimsReviewAgentStack(Stack):
             assumed_by=iam.ServicePrincipal("bedrock.amazonaws.com", conditions={"StringEquals": {"aws:SourceAccount": self.account}})
         )
 
-        resources = []
         if(foundation_model_id):
-            resources.append(f"arn:aws:bedrock:{self.region}::foundation-model/{foundation_model_id}")
-        elif(model_arns):
-            resources.append(model_arns)
-
-        #add policy to allow model access
-        claims_review_agent_resource_role.add_to_policy(
-            iam.PolicyStatement(
-                actions=[
-                    "bedrock:InvokeModel*",
-                    "bedrock:GetFoundationModel"
-                ],
-                resources=resources
+            #add policy to allow model access
+            claims_review_agent_resource_role.add_to_policy(
+                iam.PolicyStatement(
+                    actions=[
+                        "bedrock:InvokeModel*",
+                        "bedrock:GetFoundationModel"
+                    ],
+                    resources=[
+                        f"arn:aws:bedrock:{self.region}::foundation-model/{foundation_model_id}"
+                    ]
+                )
             )
-        )
-        if(inference_profile_id):
+        if model_arns:
+            if isinstance(model_arns, str):
+                model_arns = [model_arns]
+            claims_review_agent_resource_role.add_to_policy(
+                iam.PolicyStatement(
+                    effect=iam.Effect.ALLOW,
+                    actions=[
+                        "bedrock:InvokeModel"
+                    ],
+                    resources=model_arns
+                )
+            )
+
+        if inference_profile_id is not None and foundation_model_id is None:
             claims_review_agent_resource_role.add_to_policy(
                 iam.PolicyStatement(
                     actions=[
                         "bedrock:InvokeModel*",
                         "bedrock:GetInferenceProfile"
                     ],
-                    resources=[f"arn:aws:bedrock:{self.region}:{self.account}:inference-profile/{inference_profile_id}"]
+                    resources=[
+                        f"arn:aws:bedrock:{self.region}:{self.account}:inference-profile/{inference_profile_id}"
+                    ]
                 )
             )
 
