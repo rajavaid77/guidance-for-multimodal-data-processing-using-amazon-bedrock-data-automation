@@ -31,7 +31,7 @@ class ClaimsReviewAgentStack(Stack):
         
         #Create a custom resource to get the inference profile
         model_arns=None
-        if inference_profile_id:
+        if inference_profile_id and foundation_model_id is None:
             get_inference_profile_custom_resource = self.create_get_inference_profile_custom_resource(inference_profile_id)
             model_arns = get_inference_profile_custom_resource.get_att_string("model_arns")
 
@@ -122,30 +122,42 @@ class ClaimsReviewAgentStack(Stack):
             assumed_by=iam.ServicePrincipal("bedrock.amazonaws.com", conditions={"StringEquals": {"aws:SourceAccount": self.account}})
         )
 
-        resources = []
         if(foundation_model_id):
-            resources.append(f"arn:aws:bedrock:{self.region}::foundation-model/{foundation_model_id}")
-        if(model_arns):
-            resources.append(model_arns)
-
-        #add policy to allow model access
-        claims_review_agent_resource_role.add_to_policy(
-            iam.PolicyStatement(
-                actions=[
-                    "bedrock:InvokeModel*",
-                    "bedrock:GetFoundationModel"
-                ],
-                resources=resources
+            #add policy to allow model access
+            claims_review_agent_resource_role.add_to_policy(
+                iam.PolicyStatement(
+                    actions=[
+                        "bedrock:InvokeModel*",
+                        "bedrock:GetFoundationModel"
+                    ],
+                    resources=[
+                        f"arn:aws:bedrock:{self.region}::foundation-model/{foundation_model_id}"
+                    ]
+                )
             )
-        )
-        if(inference_profile_id):
+        if model_arns:
+            if isinstance(model_arns, str):
+                model_arns = [model_arns]
+            claims_review_agent_resource_role.add_to_policy(
+                iam.PolicyStatement(
+                    effect=iam.Effect.ALLOW,
+                    actions=[
+                        "bedrock:InvokeModel"
+                    ],
+                    resources=model_arns
+                )
+            )
+
+        if inference_profile_id is not None and foundation_model_id is None:
             claims_review_agent_resource_role.add_to_policy(
                 iam.PolicyStatement(
                     actions=[
                         "bedrock:InvokeModel*",
                         "bedrock:GetInferenceProfile"
                     ],
-                    resources=[f"arn:aws:bedrock:{self.region}:{self.account}:inference-profile/{inference_profile_id}"]
+                    resources=[
+                        f"arn:aws:bedrock:{self.region}:{self.account}:inference-profile/{inference_profile_id}"
+                    ]
                 )
             )
 
