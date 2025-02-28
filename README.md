@@ -10,6 +10,8 @@ This solution uses Amazon Bedrock's Generative AI capabilities to:
 2. Extract content
 3. Process information using foundation models
 
+**Warning: This guidance was developed with the Public Preview of Bedrock Data Automation. With the expected GA launch of BDA, this codebase will need some minor changes to function correctly. The team behind this Solution Guidance is working on these code changes. This warning will be removed once the changes are tested and uploaded to this repo. **
+
 <details>
   <summary>Note on dataset and Acceptable End User Policy from the model provider</summary>
 
