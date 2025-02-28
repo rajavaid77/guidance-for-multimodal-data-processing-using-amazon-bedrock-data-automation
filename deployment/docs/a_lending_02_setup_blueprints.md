@@ -59,7 +59,9 @@ To process our Lending Package, we need one more blueprint. BDA does not have a 
 * Name the blueprint “homeowners-insurance-application”
 * Click “Add to Project” and “Add to existing project”, add add this new blueprint to our project named “my-lending-project”. 
 * Click “Save and exit blueprint prompt”
-* Examine the results from the blueprint. Note that BDA has read all the fields from the form (31 fields in total). It has also been able to distinguish the primary applicant from the co-applicant, for example extracting two Drivers License IDs: primary_applicant_drivers_license and co_applicant_drivers_license. Note on the original form these two fields have identical labels “Drivers License Number”. 
+* Examine the results from the blueprint. Note that BDA has read all the fields from the form. Depending on your initial prompt, you should see more than 40 fields extracted. If you see fewer than 40, you can tweak the wording of the initial prompt, or choose "Manually create blueprint" and specify each field you want to extract.
+
+Note that BDA has also been able to distinguish the primary applicant from the co-applicant, for example extracting two Drivers License IDs: primary_applicant_drivers_license and co_applicant_drivers_license. Note on the original form these two fields have identical labels “Drivers License Number”. 
 
 <img src="../../assets/screenshots/AWS_Console_Screenshot_7_-_extraction_complete.png" width="800" />
 
