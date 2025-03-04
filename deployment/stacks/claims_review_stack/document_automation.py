@@ -198,7 +198,7 @@ class DocumentAutomation(Construct):
         data_automation_profile_regions = self.node.try_get_context("data_automation_profile_regions")
         if data_automation_profile_regions is not None:
             resources += [f"arn:aws:bedrock:{region}:{Stack.of(self).account}:data-automation-profile/us.data-automation-v1" for region in data_automation_profile_regions]
-        #TODO: Update policy after BDA SDK is available
+        
         document_automation_lambda_function.add_to_role_policy(iam.PolicyStatement(
             actions=["bedrock:InvokeDataAutomationAsync"],
             resources=resources
@@ -224,7 +224,7 @@ class DocumentAutomation(Construct):
             }
         )
 
-        #TODO: Update policy after BDA SDK is available
+        
         claims_verification_lambda_function.add_to_role_policy(iam.PolicyStatement(
             actions=["bedrock:InvokeAgent"],
             resources=[claims_review_agent_arn, claims_review_agent_alias_arn]
