@@ -195,7 +195,10 @@ class DocumentAutomation(Construct):
         )
         
         resources = [resource for resource in [blueprint_arn, data_project_arn] if resource is not None]
-        #TODO: Update policy after BDA SDK is available
+        data_automation_profile_regions = self.node.try_get_context("data_automation_profile_regions")
+        if data_automation_profile_regions is not None:
+            resources += [f"arn:aws:bedrock:{region}:{Stack.of(self).account}:data-automation-profile/us.data-automation-v1" for region in data_automation_profile_regions]
+        
         document_automation_lambda_function.add_to_role_policy(iam.PolicyStatement(
             actions=["bedrock:InvokeDataAutomationAsync"],
             resources=resources
@@ -221,7 +224,7 @@ class DocumentAutomation(Construct):
             }
         )
 
-        #TODO: Update policy after BDA SDK is available
+        
         claims_verification_lambda_function.add_to_role_policy(iam.PolicyStatement(
             actions=["bedrock:InvokeAgent"],
             resources=[claims_review_agent_arn, claims_review_agent_alias_arn]
@@ -259,8 +262,17 @@ class DocumentAutomation(Construct):
         # Create an EventBridge rule.
             claim_review_trigger_rule = events.Rule(self, "data_automation_completed",
                 event_pattern=events.EventPattern(
-                    source= ["aws.bedrock-data-insights", "aws.bedrock-data-insights-test"],
-                    detail_type=["Insights Extraction Job Completed"]
+                    source= ["aws.bedrock", "aws.bedrock-test"],
+                    detail_type=[
+                         "Bedrock Data Automation Job Succeeded", 
+                         "Bedrock Data Automation Job Failed With Client Error", 
+                         "Bedrock Data Automation Job Failed With Service Error"
+                    ],
+                    detail={
+                         "input_s3_object": {
+                            "s3_bucket": [ {"prefix": "claims-review" } ]
+                        }
+                    }
                 )
             )
 

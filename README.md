@@ -26,16 +26,27 @@ By using this dataset and guidance, you acknowledge that you have read, understo
 
 ## Table of Contents
 
-- [Architecture and Key Features](#architecture-and-key-features)
-  - [Part A: Automated Lending Flow](#part-a-automated-lending-flow)
-  - [Part B: Intelligent Claims Review](#part-b-intelligent-claims-review)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Quick Start Guide](#quick-start-guide)
-- [Cost Estimation](#cost-estimation)
-- [Important Notes](#important-notes)
-- [Legal Notice](#legal-notice)
-- [Authors](#authors)
+- [Guidance for Multimodal Data Processing Using Amazon Bedrock Data Automation](#guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation)
+  - [Table of Contents](#table-of-contents)
+  - [Architecture and Key Features](#architecture-and-key-features)
+    - [Part A: Automated Lending Flow](#part-a-automated-lending-flow)
+    - [Part B: Intelligent Claims Review](#part-b-intelligent-claims-review)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Quick Start Guide](#quick-start-guide)
+      - [Lending Flow Setup](#lending-flow-setup)
+      - [Claims Review Setup](#claims-review-setup)
+  - [Cost Estimation](#cost-estimation)
+    - [Cost Breakdown](#cost-breakdown)
+      - [Flow A: Lending Flow](#flow-a-lending-flow)
+      - [Flow B:](#flow-b)
+  - [Important Notes](#important-notes)
+    - [Data Usage](#data-usage)
+    - [Regional Availability](#regional-availability)
+    - [Service Quotas](#service-quotas)
+  - [Revisions](#revisions)
+  - [Legal Notice](#legal-notice)
+  - [Authors](#authors)
 
 ## Architecture and Key Features
 

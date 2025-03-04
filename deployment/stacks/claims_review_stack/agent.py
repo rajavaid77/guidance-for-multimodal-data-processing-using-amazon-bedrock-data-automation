@@ -37,8 +37,7 @@ class ClaimsReviewAgentStack(Stack):
 
         aurora_serverless_v2 = Database(self,"auroraV2")
         database_cluster = aurora_serverless_v2.database_cluster
-        bedrock_service_role = self.create_bedrock_service_role (
-                                           service_role_name = "ClaimsEoCKnowledgeBaseServiceRole")
+        bedrock_service_role = self.create_bedrock_service_role ()
 
         vector_store =  self.create_vector_store(
             bedrock_service_role = bedrock_service_role
@@ -108,8 +107,7 @@ class ClaimsReviewAgentStack(Stack):
         return claims_review_agent_actions_function
         
     
-    def create_bedrock_agent_resource_role(self,
-                    claims_review_agent_resource_role_name: str,
+    def create_bedrock_agent_resource_role(self,                    
                     knowledge_bases: list[bedrock.CfnKnowledgeBase],
                     foundation_model_id=None,
                     inference_profile_id=None,
@@ -117,8 +115,7 @@ class ClaimsReviewAgentStack(Stack):
         
         #Create a resource role for our Claims Review Bedrock Agent
         claims_review_agent_resource_role = iam.Role(self, "claims_review_agent_resource_role",
-            description="Agent Resource Role for the Claims Review Bedrock Agent",
-            role_name=claims_review_agent_resource_role_name,
+            description="Agent Resource Role for the Claims Review Bedrock Agent",            
             assumed_by=iam.ServicePrincipal("bedrock.amazonaws.com", conditions={"StringEquals": {"aws:SourceAccount": self.account}})
         )
 
@@ -186,12 +183,9 @@ class ClaimsReviewAgentStack(Stack):
                     knowledge_bases: list[bedrock.CfnKnowledgeBase],
                     foundation_model_id=None,
                     inference_profile_id=None,
-                    model_arns=None) -> bedrock.CfnAgent:
-        # Get the current directory of the script
-        agent_parameters = self.node.try_get_context('agent')
+                    model_arns=None) -> bedrock.CfnAgent:        
 
         claims_review_agent_resource_role = self.create_bedrock_agent_resource_role(
-            claims_review_agent_resource_role_name = agent_parameters["claims_review_agent_resource_role_name"],
             knowledge_bases = knowledge_bases,
             foundation_model_id = foundation_model_id,
             inference_profile_id=inference_profile_id,
@@ -258,10 +252,8 @@ class ClaimsReviewAgentStack(Stack):
         claims_review_agent_alias.add_dependency(claims_review_agent)
         return claims_review_agent_alias
 
-    def create_bedrock_service_role(self,
-                            service_role_name: str ) -> iam.Role:
-        return iam.Role(self, "kb_service_role",
-            role_name=service_role_name, 
+    def create_bedrock_service_role(self) -> iam.Role:
+        return iam.Role(self, "kb_service_role",            
             inline_policies={
                 "S3DataSourceAccess": iam.PolicyDocument(
                     statements=[
