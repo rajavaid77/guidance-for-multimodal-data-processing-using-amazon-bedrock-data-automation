@@ -33,6 +33,7 @@ class ClaimsCLI:
             knowledgeBaseId=self.get_eoc_kb_id,
             description=f"Knowledge Base Sync triggered for S3: Bucket={bucket}, key={key}"
         )
+        print(f"Started ingestion job request - response: {response}")
         return response['ingestionJob']['ingestionJobId']
 
 
@@ -93,8 +94,8 @@ class ClaimsCLI:
                 return job['ingestionJobId']
             
             attempts += 1
-            time.sleep(delay)
-        print("Max attempts reached. Ingestion Job for the document did not start. It is possible that the document is still vectorized by another Sync job")
+            time.sleep(delay)        
+        print("Max attempts reached. Ingestion Job for the document did not start. Just try it again and make sure that you have enabled access to the Embedding Model 'Titan Text Embeddings V2' under Amazon Bedrock - Model access")
         return None
 
     def wait_for_ingestion_job_completion(self,ingestion_job_id, max_attempts=10, delay=5):
