@@ -118,7 +118,7 @@ class ClaimsReviewAgentStack(Stack):
         #Create a resource role for our Claims Review Bedrock Agent
         claims_review_agent_resource_role = iam.Role(self, "claims_review_agent_resource_role",
             description="Agent Resource Role for the Claims Review Bedrock Agent",
-            role_name=claims_review_agent_resource_role_name,
+            role_name=claims_review_agent_resource_role_name+"-"+self.node.id,
             assumed_by=iam.ServicePrincipal("bedrock.amazonaws.com", conditions={"StringEquals": {"aws:SourceAccount": self.account}})
         )
 
@@ -261,7 +261,7 @@ class ClaimsReviewAgentStack(Stack):
     def create_bedrock_service_role(self,
                             service_role_name: str ) -> iam.Role:
         return iam.Role(self, "kb_service_role",
-            role_name=service_role_name, 
+            role_name=f"{service_role_name}-{self.node.id}", 
             inline_policies={
                 "S3DataSourceAccess": iam.PolicyDocument(
                     statements=[
