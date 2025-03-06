@@ -92,20 +92,21 @@ You can use a cross region inference profile in place of a foundation model to r
    cd ../../..
 
    ```
-7. Deploy the stack: <a name="deploy-the-stack"></a>. Please use a foundation model or an inference profile of your choice for this step. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
+7. Deploy the stack: <a name="deploy-the-stack"></a>. Please use a foundation model and inference profile of your choice for this step. See [Select a Foundation Model](#select-a-foundation-model-to-use-with-bedrock-agent)
 
    
-   Using a foundation model
+   Specify a foundation model
    ```bash
    cdk deploy claims-review  --context foundation_model_id=<<your_chosen_model_id>>
    ```   
-   Using an inference profile
+   Specify an inference profile
    ```bash
    cdk deploy claims-review  --context inference_profile_id=<<your_chosen_inference_profile_id>>
    ```
-   To get a list of the model_ids for foundation models, use this CLI Command
+   Note: To get a list of the model_ids and profile_ids, use these CLI commands:
    ```bash
-   aws bedrock list-foundation-models --region=us-west-2  --query "modelSummaries[*].modelId" 
+   aws bedrock list-foundation-models --region=us-west-2  --query "modelSummaries[*].modelId"
+   aws bedrock list-inference-profiles --query 'inferenceProfileSummaries[*].inferenceProfileId' --output json
    ```   
 > [!Important]
 > You must provide one of foundation model id or inference profile id, but not both
