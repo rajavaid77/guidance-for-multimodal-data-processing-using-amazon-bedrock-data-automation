@@ -102,6 +102,10 @@ You can use a cross region inference profile in place of a foundation model to r
    Using an inference profile
    ```bash
    cdk deploy claims-review  --context inference_profile_id=<<your_chosen_inference_profile_id>>
+   ```
+   To get a list of the model_ids for foundation models, use this CLI Command
+   ```bash
+   aws bedrock list-foundation-models --region=us-west-2  --query "modelSummaries[*].modelId" 
    ```   
 > [!Important]
 > You must provide one of foundation model id or inference profile id, but not both
