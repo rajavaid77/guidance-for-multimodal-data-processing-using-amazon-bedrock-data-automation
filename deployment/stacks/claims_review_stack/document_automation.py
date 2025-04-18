@@ -35,7 +35,7 @@ class DocumentAutomation(Construct):
         blueprint_creation_custom_resource = self.create_blueprint_creation_lambda_function(blueprint_name=blueprint_name, lambda_layer=lambda_layer)
         blueprint_arn = blueprint_creation_custom_resource.get_att_string("blueprintArn")
         # Bucket to store claim form submissions
-        claims_submission_bucket = self.create_claims_submission_bucket()
+        self.claims_submission_bucket = self.create_claims_submission_bucket()
         
         # Bucket to store data insights from claim forms
         self.claims_review_bucket = self.create_claims_review_bucket()
@@ -49,11 +49,11 @@ class DocumentAutomation(Construct):
         )
         
         # Grant the Lambda function permission to access the S3 bucket.
-        claims_submission_bucket.grant_read(invoke_data_automation_lambda_function)
+        self.claims_submission_bucket.grant_read(invoke_data_automation_lambda_function)
         self.claims_review_bucket.grant_read_write(invoke_data_automation_lambda_function)
 
         # EventBridge Rule to trigger Bedrock Data Insight when a new Claim form is submitted
-        self.create_eventbridge_rule_to_invoke_document_automation(claims_submission_bucket=claims_submission_bucket,
+        self.create_eventbridge_rule_to_invoke_document_automation(claims_submission_bucket=self.claims_submission_bucket,
                                                             invoke_data_automation_lambda_function=invoke_data_automation_lambda_function)
 
         # EventBridge Rule to trigger Bedrock Agent when a new Claim form is successfully processed by Bedrock Data Insight

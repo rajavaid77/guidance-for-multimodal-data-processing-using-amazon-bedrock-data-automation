@@ -1,0 +1,8 @@
+streamlit>=1.40.0
+boto3>=1.37.4
+requests
+opensearch-py>=2.8.0
+pdf2image
+streamlit-pdf-viewer
+PyMuPDF 
+Pillow

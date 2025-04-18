@@ -38,6 +38,14 @@ CREATE TABLE CLAIM (
     FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)
 );
 
+CREATE TABLE CLAIM_EVENT (
+    id SERIAL PRIMARY KEY,
+    claim_reference VARCHAR(50),
+    claim_event VARCHAR(50),
+    claim_status VARCHAR(50),
+    detail VARCHAR(3000)
+);
+
 CREATE TABLE SERVICE (
     service_id SERIAL PRIMARY KEY,
     claim_id INT NOT NULL,

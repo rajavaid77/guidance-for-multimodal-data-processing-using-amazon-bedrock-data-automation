@@ -8,8 +8,8 @@ from aws_cdk import (
     CustomResource,
     CfnOutput,
     custom_resources,
-    CfnCondition,
-    Fn
+    aws_s3 as s3,
+    aws_rds as rds
 )
 import re
 
@@ -21,6 +21,7 @@ from stacks.claims_review_stack.knowledge_base import KnowledgeBase
 from stacks.claims_review_stack.document_automation import DocumentAutomation
 from .prompts.prompt_overrides import prompt_overrides
 from stacks.claims_review_stack.database import Database
+from stacks.claims_review_stack.event import Event
 class ClaimsReviewAgentStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None: 
@@ -37,6 +38,7 @@ class ClaimsReviewAgentStack(Stack):
 
         aurora_serverless_v2 = Database(self,"auroraV2")
         database_cluster = aurora_serverless_v2.database_cluster
+        database_name = aurora_serverless_v2.database_name
         bedrock_service_role = self.create_bedrock_service_role ()
 
         vector_store =  self.create_vector_store(
@@ -74,6 +76,13 @@ class ClaimsReviewAgentStack(Stack):
         
         document_automation.claims_review_bucket.grant_read(claims_review_agent_actions_lambda_function)
         database_cluster.grant_data_api_access(claims_review_agent_actions_lambda_function)
+
+        self.setup_claims_event_resources(
+            claims_submission_bucket=document_automation.claims_submission_bucket,
+            claims_review_bucket=document_automation.claims_review_bucket,
+            database_cluster=database_cluster,
+            database_name=database_name
+        )
 
         self.output_kb_info(
             agent_alias_id=claims_review_agent_alias.attr_agent_alias_id,
@@ -460,3 +469,18 @@ class ClaimsReviewAgentStack(Stack):
         new_arn = f"arn:aws:{service}:{region}:{Stack.of(self).account}:{resource_type}{separator}{resource}"
         
         return new_arn
+
+    def setup_claims_event_resources(self,
+                                    claims_submission_bucket:s3.Bucket,
+                                    claims_review_bucket:s3.Bucket,
+                                    database_cluster:rds.DatabaseCluster,
+                                    database_name:str):
+        event =  Event(self,
+            f"events",
+            claims_submission_bucket=claims_submission_bucket,
+            claims_review_bucket=claims_review_bucket,
+            database_cluster=database_cluster,
+            database_name=database_name
+        )
+
+        
