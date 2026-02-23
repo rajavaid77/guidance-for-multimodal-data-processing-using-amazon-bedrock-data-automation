@@ -3,7 +3,6 @@ from aws_cdk import (
     aws_rds as rds,
     aws_ec2 as ec2,
     aws_s3_assets as s3_assets,
-    aws_iam as iam,
     CfnOutput,
     RemovalPolicy,
     custom_resources,
@@ -54,7 +53,7 @@ class Database(Construct):
         # Create Aurora Serverless V2 Cluster
         cluster = rds.DatabaseCluster(self, "claims-review-cluster",
             engine=rds.DatabaseClusterEngine.aurora_postgres(
-                version=rds.AuroraPostgresEngineVersion.VER_15_4
+                version=rds.AuroraPostgresEngineVersion.VER_15_10
             ),
             serverless_v2_max_capacity=2,
             serverless_v2_min_capacity=0.5,
