@@ -1,0 +1,15 @@
+__pycache__/
+.agentcore.json
+.env
+.pytest_cache/
+.ruff_cache/
+.venv/
+*.pyc
+cdk.out/
+node_modules/
+web/dist/
+preview-fixtures/
+
+# build artifacts and deployment outputs
+cdk-outputs.json
+*.tsbuildinfo

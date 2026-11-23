@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "class": "Medical Record",
+  "description": "Clinical documentation such as a progress note, office visit note, operative note, or therapy note describing services provided to a patient.",
+  "properties": {
+    "patient_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The patient's full name"
+    },
+    "patient_date_of_birth": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The patient's date of birth in YYYY-MM-DD format"
+    },
+    "encounter_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The date of the encounter or service in YYYY-MM-DD format"
+    },
+    "provider_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The treating clinician's name and credentials"
+    },
+    "provider_npi": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The treating clinician's NPI, if shown"
+    },
+    "chief_complaint": {
+      "type": "string",
+      "inferenceType": "inferred",
+      "instruction": "The chief complaint or reason for visit"
+    },
+    "diagnoses": {
+      "type": "array",
+      "instruction": "Diagnoses documented in the note",
+      "items": {
+        "$ref": "#/definitions/Diagnosis"
+      }
+    },
+    "procedures_performed": {
+      "type": "array",
+      "instruction": "Procedures, treatments or services documented as performed",
+      "items": {
+        "$ref": "#/definitions/Procedure"
+      }
+    },
+    "clinical_findings": {
+      "type": "string",
+      "inferenceType": "inferred",
+      "instruction": "Summary of objective findings, exam results and imaging results that support medical necessity"
+    },
+    "treatment_plan": {
+      "type": "string",
+      "inferenceType": "inferred",
+      "instruction": "The documented plan of care"
+    },
+    "signed": {
+      "type": "boolean",
+      "inferenceType": "explicit",
+      "instruction": "Whether the note is signed or electronically authenticated by the clinician"
+    }
+  },
+  "definitions": {
+    "Diagnosis": {
+      "properties": {
+        "code": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "ICD-10 code if written"
+        },
+        "description": {
+          "type": "string",
+          "inferenceType": "inferred",
+          "instruction": "Diagnosis description"
+        }
+      }
+    },
+    "Procedure": {
+      "properties": {
+        "code": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "CPT or HCPCS code if written"
+        },
+        "description": {
+          "type": "string",
+          "inferenceType": "inferred",
+          "instruction": "Procedure or service description"
+        },
+        "date": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Date performed in YYYY-MM-DD format"
+        },
+        "units_or_minutes": {
+          "type": "string",
+          "inferenceType": "inferred",
+          "instruction": "Units, minutes or quantity documented"
+        }
+      }
+    }
+  }
+}

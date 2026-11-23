@@ -1,0 +1,8 @@
+{
+  "name": "agentic-claims-v2-infra",
+  "private": true,
+  "description": "Pins the AWS CDK CLI used for the v2 stack (run with npx cdk ...)",
+  "devDependencies": {
+    "aws-cdk": "2.1148.1"
+  }
+}

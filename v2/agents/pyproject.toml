@@ -1,0 +1,36 @@
+[project]
+name = "claims-agents"
+version = "0.1.0"
+description = "Strands multi-agent CMS-1500 claims reviewer hosted on Amazon Bedrock AgentCore Runtime"
+requires-python = ">=3.12"
+dependencies = [
+    "strands-agents==1.64.0",
+    "bedrock-agentcore==1.26.0",
+    "mcp>=1.20",
+    "pydantic>=2.8",
+    "boto3>=1.40",
+    "aws-opentelemetry-distro>=0.12",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["claims_agents*"]
+
+[tool.setuptools.package-data]
+claims_agents = ["prompts/*.md"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

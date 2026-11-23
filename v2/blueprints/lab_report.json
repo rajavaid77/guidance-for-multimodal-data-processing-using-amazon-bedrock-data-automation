@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "class": "Lab or Imaging Report",
+  "description": "A laboratory result report or diagnostic imaging report (X-ray, MRI, echocardiogram, ECG, stress test).",
+  "properties": {
+    "patient_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The patient's full name"
+    },
+    "patient_date_of_birth": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The patient's date of birth in YYYY-MM-DD format"
+    },
+    "report_type": {
+      "type": "string",
+      "inferenceType": "inferred",
+      "instruction": "The type of test or study, e.g. lumbar X-ray, echocardiogram, CBC"
+    },
+    "procedure_code": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "CPT code of the study if written"
+    },
+    "service_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The date the test or study was performed in YYYY-MM-DD format"
+    },
+    "ordering_provider": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The ordering provider's name"
+    },
+    "performing_facility": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The performing lab or facility name"
+    },
+    "findings": {
+      "type": "string",
+      "inferenceType": "inferred",
+      "instruction": "Key findings or result values"
+    },
+    "impression": {
+      "type": "string",
+      "inferenceType": "inferred",
+      "instruction": "The impression or conclusion section"
+    }
+  }
+}

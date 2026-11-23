@@ -1,0 +1,14 @@
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+extend-exclude = ["cdk.out", "layers", "node_modules"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]  # formatter wraps code; long reason strings stay readable
+
+[tool.ruff.lint.isort]
+known-first-party = ["agentic_claims", "common", "tools", "workflow", "api", "custom_resources"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

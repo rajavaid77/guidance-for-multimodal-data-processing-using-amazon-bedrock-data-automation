@@ -1,0 +1,128 @@
+{
+  "scenarios": [
+    {
+      "id": "S1",
+      "title": "Plus: chiropractic, acupuncture, hip X-ray, massage - with notes and X-ray report",
+      "provider_id": "PRV-1001",
+      "documents": [
+        {
+          "path": "assets/data/claims_review/cms_1500/sample1_cms-1500-P.pdf",
+          "type": "CMS1500"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S1_John_Doe_chiropractic_notes.pdf",
+          "type": "MEDICAL_RECORD"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S1_John_Doe_xray_report.pdf",
+          "type": "LAB_REPORT"
+        }
+      ],
+      "expected": "Not approved. Acupuncture excluded on Plus (CARC 96); hip X-ray not supported by a back diagnosis (MP-204); chiropractic and massage supported by notes; form data issues (POS 'A')."
+    },
+    {
+      "id": "S2",
+      "title": "Premium: PT, hip arthrocentesis with fluoroscopy, lumbar X-ray - with procedure and PT notes",
+      "provider_id": "PRV-1001",
+      "documents": [
+        {
+          "path": "assets/data/claims_review/cms_1500/sample2_cms-1500-P.pdf",
+          "type": "CMS1500"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S2_Ana_Silva_orthopedic_procedure_note.pdf",
+          "type": "MEDICAL_RECORD"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S2_Ana_Silva_physical_therapy_plan_of_care.pdf",
+          "type": "MEDICAL_RECORD"
+        }
+      ],
+      "expected": "Injection, fluoroscopy and PT supported by documentation; lumbar X-ray questioned against hip diagnosis; form data issues keep it in review."
+    },
+    {
+      "id": "S3",
+      "title": "Standard: cardiac testing and supplies - NO evidence (intentionally missing)",
+      "provider_id": "PRV-1002",
+      "documents": [
+        {
+          "path": "assets/data/claims_review/cms_1500/sample3_cms-1500-P.pdf",
+          "type": "CMS1500"
+        }
+      ],
+      "expected": "PEND: no supporting documentation (CARC 252 / M127); echo and stress test need prior authorization on Standard (AP-110)."
+    },
+    {
+      "id": "S4",
+      "title": "Premium: COPD/diabetes 02-12 form - with visit notes and lab report",
+      "provider_id": "PRV-1001",
+      "documents": [
+        {
+          "path": "assets/data/claims_review/cms_1500/sample4_cms-1500-02-12.pdf",
+          "type": "CMS1500"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S4_Jane_Doe_visit_and_testing_2025.pdf",
+          "type": "MEDICAL_RECORD"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S4_Jane_Doe_urine_albumin_lab_report.pdf",
+          "type": "LAB_REPORT"
+        }
+      ],
+      "expected": "Not approved. Line 1 telehealth modifier 95 contradicted by in-person note; line 4 home (POS 12) chest wall oscillation for asthma excluded/not necessary; line 3 bills 5 units but only 2 specimens documented."
+    },
+    {
+      "id": "S5",
+      "title": "Premium: clean COPD visit + spirometry - with visit note and spirometry report",
+      "provider_id": "PRV-1001",
+      "documents": [
+        {
+          "path": "assets/data/claims_review/test_scenarios/S5_clean_claim_form.pdf",
+          "type": "CMS1500"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S5_Jane_Doe_pulmonology_visit_2025-01-07.pdf",
+          "type": "MEDICAL_RECORD"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S5_Jane_Doe_spirometry_report_2025-01-07.pdf",
+          "type": "LAB_REPORT"
+        }
+      ],
+      "expected": "APPROVE both lines (99214-25 and 94060), total $336.35; human review only if extraction confidence is low."
+    },
+    {
+      "id": "S6",
+      "title": "Premium: clean follow-up visit 01/21/2025 - NO evidence (intentionally missing)",
+      "provider_id": "PRV-1001",
+      "documents": [
+        {
+          "path": "assets/data/claims_review/test_scenarios/S6_clean_claim_form_2025-01-21.pdf",
+          "type": "CMS1500"
+        }
+      ],
+      "expected": "PEND: services cannot be verified without records (CARC 252 / M127)."
+    },
+    {
+      "id": "S7",
+      "title": "Premium: exact resubmission of S5 (duplicate)",
+      "provider_id": "PRV-1001",
+      "documents": [
+        {
+          "path": "assets/data/claims_review/test_scenarios/S5_clean_claim_form.pdf",
+          "type": "CMS1500"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S5_Jane_Doe_pulmonology_visit_2025-01-07.pdf",
+          "type": "MEDICAL_RECORD"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S5_Jane_Doe_spirometry_report_2025-01-07.pdf",
+          "type": "LAB_REPORT"
+        }
+      ],
+      "expected": "DUPLICATE_SERVICE on both lines. PEND while S5 is still in review (possible duplicate, AP-130); DENY CARC 18 once S5 has been finalized. No resubmission code in item 22."
+    }
+  ]
+}

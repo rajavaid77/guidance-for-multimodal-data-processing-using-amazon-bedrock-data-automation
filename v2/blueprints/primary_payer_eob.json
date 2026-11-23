@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "class": "Primary Payer EOB",
+  "description": "An explanation of benefits or remittance advice from another (primary) insurance payer for the same services.",
+  "properties": {
+    "payer_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The name of the insurance payer that issued the EOB"
+    },
+    "member_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The member or patient name"
+    },
+    "member_id": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The member ID on the EOB"
+    },
+    "claim_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "The payer claim number"
+    },
+    "service_lines": {
+      "type": "array",
+      "instruction": "Service lines on the EOB",
+      "items": {
+        "$ref": "#/definitions/EobLine"
+      }
+    },
+    "total_billed": {
+      "type": "number",
+      "inferenceType": "explicit",
+      "instruction": "Total billed amount"
+    },
+    "total_paid": {
+      "type": "number",
+      "inferenceType": "explicit",
+      "instruction": "Total amount paid by this payer"
+    },
+    "patient_responsibility": {
+      "type": "number",
+      "inferenceType": "explicit",
+      "instruction": "Total patient responsibility"
+    }
+  },
+  "definitions": {
+    "EobLine": {
+      "properties": {
+        "service_date": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Service date in YYYY-MM-DD format"
+        },
+        "procedure_code": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "CPT or HCPCS code"
+        },
+        "billed": {
+          "type": "number",
+          "inferenceType": "explicit",
+          "instruction": "Billed amount"
+        },
+        "allowed": {
+          "type": "number",
+          "inferenceType": "explicit",
+          "instruction": "Allowed amount"
+        },
+        "paid": {
+          "type": "number",
+          "inferenceType": "explicit",
+          "instruction": "Paid amount"
+        },
+        "adjustment_reason_codes": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "CARC or remark codes listed"
+        }
+      }
+    }
+  }
+}

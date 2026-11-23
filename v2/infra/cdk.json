@@ -1,0 +1,49 @@
+{
+  "app": "python3 app.py",
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "cdk.out",
+      "**/__pycache__",
+      ".venv",
+      "tests"
+    ]
+  },
+  "context": {
+    "agentic_claims": {
+      "stack_name": "agentic-claims-v2",
+      "region": "us-west-2",
+      "resource_prefix": "agentic-claims",
+      "reasoning_model_id": "us.anthropic.claude-sonnet-5-5",
+      "fast_model_id": "us.anthropic.claude-haiku-5-5",
+      "embedding_model_id": "amazon.titan-embed-text-v2:0",
+      "embedding_dimensions": 1024,
+      "bda_profile": "us.data-automation-v1",
+      "extraction_confidence_threshold": 0.8,
+      "auto_approve_min_confidence": 0.9,
+      "auto_approve_max_amount": 1000,
+      "review_timeout_days": 7,
+      "examiner_notification_email": "",
+      "enable_waf": true,
+      "removal_policy": "destroy",
+      "prompt_version": "2026-11-13.1",
+      "availability_zones": [
+        "us-west-2a",
+        "us-west-2b"
+      ]
+    },
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/aws-iam:minimizePolicies": true,
+    "@aws-cdk/aws-s3:createDefaultLoggingPolicy": true,
+    "@aws-cdk/aws-s3:serverAccessLogsUseBucketPolicy": true,
+    "@aws-cdk/aws-apigateway:disableCloudWatchRole": true,
+    "@aws-cdk/core:enablePartitionLiterals": true,
+    "@aws-cdk/aws-kms:aliasNameRef": true,
+    "@aws-cdk/aws-rds:auroraClusterChangeScopeOfInstanceParameterGroupWithEachParameters": true,
+    "@aws-cdk/aws-stepfunctions-tasks:useNewS3UriParametersForBedrockInvokeModelTask": true,
+    "@aws-cdk/aws-lambda:useCdkManagedLogGroup": true
+  }
+}

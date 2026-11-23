@@ -1,0 +1,480 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "class": "CMS-1500 Claim Form",
+  "description": "CMS-1500 / HCFA-1500 health insurance claim form (NUCC 02-12 and older layouts) used by US providers to bill professional services: patient and insured information (items 1-13) and physician or supplier information with up to six service lines (items 14-33).",
+  "definitions": {
+    "ServiceLine": {
+      "properties": {
+        "supplemental_information": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Text printed in the SHADED upper row of this service line (e.g. NDC 'N4 00186071801 UN1.000', anesthesia time 'ZZ...', or 'NPI ...'). Never copy shaded-row text into the other service-line fields."
+        },
+        "service_start_date": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24A From date of the UNSHADED lower row. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+        },
+        "service_end_date": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24A To date of the unshaded lower row. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+        },
+        "place_of_service": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24B place of service exactly as written, normally a 2-digit code such as 11, 02 or 12. Do not infer."
+        },
+        "emg_indicator": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24C EMG value (Y or blank) on 02-12 forms. On older HCFA forms column C is Type of Service; return that value."
+        },
+        "procedure_code": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24D CPT/HCPCS code only (5 characters, e.g. 99214 or A4649). Exclude modifiers and any description text."
+        },
+        "procedure_modifier": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24D MODIFIER boxes: all modifiers (up to 4) separated by single spaces in the order written, e.g. '25 95'. Empty if none."
+        },
+        "procedure_description": {
+          "type": "string",
+          "inferenceType": "inferred",
+          "instruction": "Any description written next to the code in item 24D (common on older forms, e.g. '97810/Acupuncture'). Empty if none."
+        },
+        "diagnosis_code": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24E DIAGNOSIS POINTER exactly as written: letters A-L on 02-12 forms (e.g. 'ABC') or digits 1-4 on older forms. Not an ICD code."
+        },
+        "charge_amount": {
+          "type": "number",
+          "inferenceType": "explicit",
+          "instruction": "Item 24F charge: combine the dollars and cents boxes, e.g. '125 | 35' is 125.35."
+        },
+        "units": {
+          "type": "number",
+          "inferenceType": "explicit",
+          "instruction": "Item 24G days or units as a number."
+        },
+        "epsdt_family_plan": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24H EPSDT/Family Plan value, empty if blank."
+        },
+        "rendering_provider_id_qualifier": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24I ID qualifier in the SHADED half of the line, e.g. 0B or 1G. Empty if blank. The printed label 'NPI' is not a value."
+        },
+        "rendering_provider_other_id": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24J SHADED upper half: rendering provider non-NPI ID. Empty if blank."
+        },
+        "rendering_provider_npi": {
+          "type": "string",
+          "inferenceType": "explicit",
+          "instruction": "Item 24J UNSHADED lower half: the 10-digit rendering provider NPI written for THIS line. Empty if blank. Never use an NPI from a shaded supplemental row or another line."
+        }
+      }
+    }
+  },
+  "properties": {
+    "insurance_program": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 1 (top-left row): seven small boxes, each directly to the LEFT of a program ID label, in this order: (Medicare#)=MEDICARE, (Medicaid#)=MEDICAID, (ID#/DoD#)=TRICARE, (Member ID#)=CHAMPVA, (ID#) under GROUP HEALTH PLAN=GROUP_HEALTH_PLAN, (ID#) under FECA BLK LUNG=FECA_BLK_LUNG, (ID#) under OTHER=OTHER. Return the program whose box contains an X or check mark. The very first box at the far left belongs to MEDICARE. Return NONE if no box is marked."
+    },
+    "insured_id_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 1a insured's ID number exactly as written."
+    },
+    "patient_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 2 patient name as written, 'Last, First, Middle Initial'."
+    },
+    "patient_date_of_birth": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 3 patient's birth date (MM DD YY boxes). Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "patient_sex": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 3 SEX: return F or M for the marked box, empty if neither is marked."
+    },
+    "insured_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 4 insured's name as written, 'Last, First, Middle Initial'."
+    },
+    "patient_address": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 5 street, city, state and ZIP joined as one line."
+    },
+    "patient_phone_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 5 telephone including area code, e.g. (206) 550-0100."
+    },
+    "patient_relationship_to_insured": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 6: SELF, SPOUSE, CHILD or OTHER for the marked box; empty if none marked."
+    },
+    "insured_address": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 7 street, city, state and ZIP joined as one line."
+    },
+    "insured_phone_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 7 telephone including area code."
+    },
+    "other_insured_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 9 other insured's name, empty if blank."
+    },
+    "other_insured_policy_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 9a other insured's policy or group number, empty if blank."
+    },
+    "other_insured_plan_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 9d other insurance plan or program name, empty if blank."
+    },
+    "condition_related_to_employment": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 10a 'EMPLOYMENT? (Current or Previous)': there are two small square boxes, each immediately to the LEFT of its printed label 'YES' or 'NO'. Look inside each box: return YES if the box before the word YES contains an X or check mark, NO if the box before the word NO contains an X or check mark, NOT_MARKED if both boxes are empty."
+    },
+    "condition_related_to_auto_accident": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 10b 'AUTO ACCIDENT?': there are two small square boxes, each immediately to the LEFT of its printed label 'YES' or 'NO'. Look inside each box: return YES if the box before the word YES contains an X or check mark, NO if the box before the word NO contains an X or check mark, NOT_MARKED if both boxes are empty."
+    },
+    "auto_accident_state": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 10b PLACE (State) two-letter code, empty if blank."
+    },
+    "condition_related_to_other_accident": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 10c 'OTHER ACCIDENT?': there are two small square boxes, each immediately to the LEFT of its printed label 'YES' or 'NO'. Look inside each box: return YES if the box before the word YES contains an X or check mark, NO if the box before the word NO contains an X or check mark, NOT_MARKED if both boxes are empty."
+    },
+    "claim_codes": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 10d claim codes, empty if blank."
+    },
+    "insured_policy_feca_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 11 insured's policy group or FECA number."
+    },
+    "insured_date_of_birth": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 11a insured's date of birth. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "insured_sex": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 11a SEX: M or F for the marked box (an X or check mark), empty if none."
+    },
+    "other_claim_id": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 11b other claim ID, empty if blank."
+    },
+    "insured_insurance_plan_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 11c insurance plan name or program name."
+    },
+    "another_health_benefit_plan_indicator": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 11d 'IS THERE ANOTHER HEALTH BENEFIT PLAN?': there are two small square boxes, each immediately to the LEFT of its printed label 'YES' or 'NO'. Look inside each box: return YES if the box before the word YES contains an X or check mark, NO if the box before the word NO contains an X or check mark, NOT_MARKED if both boxes are empty."
+    },
+    "patient_signature_present": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 12: YES if a signature or 'Signature on File'/'SOF' is present on the SIGNED line, otherwise NO."
+    },
+    "patient_signed_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 12 DATE next to the patient's signature. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "insured_signature_present": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 13: YES if a signature or 'Signature on File'/'SOF' is present, otherwise NO. Item 13 has no date."
+    },
+    "illness_injury_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 14 date of current illness, injury or pregnancy. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "illness_injury_date_qualifier": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 14 QUAL code (e.g. 431 onset, 484 LMP), empty if blank."
+    },
+    "other_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 15 other date. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "other_date_qualifier": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 15 QUAL code, e.g. 439, empty if blank."
+    },
+    "unable_to_work_start_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 16 FROM date. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "unable_to_work_end_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 16 TO date. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "referring_provider_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 17 name of referring provider or other source, without the qualifier."
+    },
+    "referring_provider_qualifier": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 17 qualifier to the left of the name (DN, DK or DQ), empty if blank."
+    },
+    "referring_provider_other_id_qualifier": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 17a shaded qualifier, e.g. 0B or 1G, empty if blank."
+    },
+    "referring_provider_other_id": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 17a other ID value next to the qualifier, empty if blank."
+    },
+    "referring_provider_npi": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 17b NPI of the referring provider (10 digits), empty if blank."
+    },
+    "hospitalization_start_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 18 FROM date. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "hospitalization_end_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 18 TO date. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "additional_claim_information": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 19 additional claim information, empty if blank."
+    },
+    "is_outside_lab_indicator": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 20 'OUTSIDE LAB?': there are two small square boxes, each immediately to the LEFT of its printed label 'YES' or 'NO'. Look inside each box: return YES if the box before the word YES contains an X or check mark, NO if the box before the word NO contains an X or check mark, NOT_MARKED if both boxes are empty."
+    },
+    "outside_lab_charges": {
+      "type": "number",
+      "inferenceType": "explicit",
+      "instruction": "Item 20 $ CHARGES if present."
+    },
+    "icd_indicator": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 ICD Ind. value: 0 for ICD-10 or 9 for ICD-9."
+    },
+    "diagnosis_1": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line A. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 1. Empty if blank."
+    },
+    "diagnosis_2": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line B. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 2. Empty if blank."
+    },
+    "diagnosis_3": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line C. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 3. Empty if blank."
+    },
+    "diagnosis_4": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line D. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 4. Empty if blank."
+    },
+    "diagnosis_5": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line E. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 5. Empty if blank."
+    },
+    "diagnosis_6": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line F. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 6. Empty if blank."
+    },
+    "diagnosis_7": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line G. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 7. Empty if blank."
+    },
+    "diagnosis_8": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line H. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 8. Empty if blank."
+    },
+    "diagnosis_9": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line I. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 9. Empty if blank."
+    },
+    "diagnosis_10": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line J. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 10. Empty if blank."
+    },
+    "diagnosis_11": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line K. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 11. Empty if blank."
+    },
+    "diagnosis_12": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 21 diagnosis on line L. Return only the ICD code (e.g. J44.9), no description. On older forms numbered 1-4, line 12. Empty if blank."
+    },
+    "resubmission_code": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 22 resubmission code (7 replacement or 8 void), empty if blank."
+    },
+    "original_reference_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 22 original reference number, empty if blank."
+    },
+    "prior_authorization_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 23 prior authorization number, empty if blank."
+    },
+    "medical_procedures": {
+      "type": "array",
+      "instruction": "Item 24: one entry per numbered service line 1-6 that has a procedure code or charge in its unshaded lower row. Each line has a shaded upper row (supplemental information) and an unshaded lower row (the service). Skip empty lines.",
+      "items": {
+        "$ref": "#/definitions/ServiceLine"
+      }
+    },
+    "tax_id_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 25 federal tax ID number, empty if blank."
+    },
+    "tax_id_type": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 25: SSN or EIN for the marked box, empty if none marked."
+    },
+    "patient_account_number": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 26 patient's account number, empty if blank."
+    },
+    "accept_assignment": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 27 'ACCEPT ASSIGNMENT?': there are two small square boxes, each immediately to the LEFT of its printed label 'YES' or 'NO'. Look inside each box: return YES if the box before the word YES contains an X or check mark, NO if the box before the word NO contains an X or check mark, NOT_MARKED if both boxes are empty."
+    },
+    "total_charges": {
+      "type": "number",
+      "inferenceType": "explicit",
+      "instruction": "Item 28 total charge: combine dollars and cents, e.g. '753 | 22' is 753.22."
+    },
+    "amount_paid": {
+      "type": "number",
+      "inferenceType": "explicit",
+      "instruction": "Item 29 amount paid: combine dollars and cents."
+    },
+    "physician_signature_present": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 31: YES if a signature, typed name or 'Signature on File' is present, otherwise NO."
+    },
+    "physician_name": {
+      "type": "string",
+      "inferenceType": "inferred",
+      "instruction": "Item 31 signer's name as written, e.g. 'Joe Smith MD'."
+    },
+    "physician_signed_date": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 31 DATE. Return as YYYY-MM-DD. Convert MM DD YY or MM/DD/YYYY; a 2-digit year YY means 20YY. Leave empty if blank."
+    },
+    "service_facility_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 32 service facility name, empty if blank."
+    },
+    "service_facility_address": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 32 facility address as one line, empty if blank."
+    },
+    "service_facility_npi": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 32a facility NPI, empty if blank."
+    },
+    "billing_provider_name": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 33 billing provider name, empty if blank."
+    },
+    "billing_provider_address": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 33 billing provider address as one line, empty if blank."
+    },
+    "billing_provider_phone": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 33 PH # telephone, empty if blank."
+    },
+    "billing_provider_npi": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 33a billing provider NPI (10 digits), empty if blank. The faint printed word 'NPI' is a label, not a value."
+    },
+    "billing_provider_other_id": {
+      "type": "string",
+      "inferenceType": "explicit",
+      "instruction": "Item 33b billing provider other ID with qualifier, empty if blank."
+    }
+  }
+}
