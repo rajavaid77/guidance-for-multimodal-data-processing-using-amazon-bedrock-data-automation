@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-from aws_cdk import Duration, RemovalPolicy
+from aws_cdk import ArnFormat, Duration, RemovalPolicy, Stack
 from aws_cdk import aws_apigateway as apigw
 from aws_cdk import aws_cognito as cognito
+from aws_cdk import aws_iam as iam
 from aws_cdk import aws_kms as kms
 from aws_cdk import aws_logs as logs
 from aws_cdk import aws_s3 as s3
+from aws_cdk import aws_stepfunctions as sfn
 from aws_cdk import aws_wafv2 as wafv2
 from constructs import Construct
 
@@ -24,16 +26,23 @@ class ClaimsApi(Construct):
         prefix: str,
         user_pool: cognito.IUserPool,
         intake: s3.IBucket,
+        bda_output: s3.IBucket,
         database: Database,
         functions: FunctionFactory,
         state_machine_arn_grant,
+        claim_state_machine: sfn.IStateMachine,
         key: kms.IKey,
         app_origin: str,
         enable_waf: bool,
         removal: RemovalPolicy,
     ) -> None:
         super().__init__(scope, construct_id)
-        env = {**database.data_api_env(), "INTAKE_BUCKET": intake.bucket_name, "ALLOWED_ORIGIN": app_origin}
+        env = {
+            **database.data_api_env(),
+            "INTAKE_BUCKET": intake.bucket_name,
+            "BDA_OUTPUT_BUCKET": bda_output.bucket_name,
+            "ALLOWED_ORIGIN": app_origin,
+        }
 
         provider_fn = functions.create(
             self,
@@ -47,7 +56,7 @@ class ClaimsApi(Construct):
             "ExaminerReviews",
             handler="api.examiner_reviews.handler",
             description="Examiner review API",
-            environment=env,
+            environment={**env, "STATE_MACHINE_ARN": claim_state_machine.state_machine_arn},
         )
         self.provider_fn, self.examiner_fn = provider_fn, examiner_fn
         for f in (provider_fn, examiner_fn):
@@ -55,9 +64,26 @@ class ClaimsApi(Construct):
         intake.grant_put(provider_fn)
         intake.grant_read(provider_fn)
         intake.grant_read(examiner_fn)
+        bda_output.grant_read(provider_fn)
+        bda_output.grant_read(examiner_fn)
         key.grant_encrypt_decrypt(provider_fn)
         key.grant_encrypt_decrypt(examiner_fn)  # SendTaskSuccess output is encrypted with the CMK
         state_machine_arn_grant(examiner_fn)
+        # Re-run: start the claim workflow and stop the superseded waiting execution (examiner function only).
+        claim_state_machine.grant_start_execution(examiner_fn)
+        examiner_fn.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["states:StopExecution"],
+                resources=[
+                    Stack.of(self).format_arn(
+                        service="states",
+                        resource="execution",
+                        resource_name=f"{claim_state_machine.state_machine_name}:*",
+                        arn_format=ArnFormat.COLON_RESOURCE_NAME,
+                    )
+                ],
+            )
+        )
 
         access_logs = logs.LogGroup(
             self, "AccessLogs", retention=logs.RetentionDays.ONE_MONTH, encryption_key=key, removal_policy=removal
@@ -121,11 +147,20 @@ class ClaimsApi(Construct):
         claim = claims.add_resource("{claimId}")
         claim.add_method("GET", p, **self._method_opts)
         claim.add_resource("submit").add_method("POST", p, **self._method_opts)
+        part_url = claim.add_resource("parts").add_resource("{partId}").add_resource("url")
+        part_url.add_method("GET", p, **self._method_opts)
+        batches = claim.add_resource("batches")
+        batches.add_method("POST", p, **self._method_opts)
+        batches.add_resource("{batchId}").add_resource("submit").add_method("POST", p, **self._method_opts)
         reviews = self.api.root.add_resource("reviews")
         reviews.add_method("GET", e, **self._method_opts)
         review = reviews.add_resource("{claimId}")
         review.add_method("GET", e, **self._method_opts)
         review.add_resource("decision").add_method("POST", e, **self._method_opts)
+        review.add_resource("rerun").add_method("POST", e, **self._method_opts)
+        review.add_resource("parts").add_resource("{partId}").add_resource("url").add_method(
+            "GET", e, **self._method_opts
+        )
 
         if enable_waf:
             acl = wafv2.CfnWebACL(

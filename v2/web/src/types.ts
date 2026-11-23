@@ -67,3 +67,39 @@ export interface Extraction {
   field_value: string | null;
   confidence: number | null;
 }
+
+export interface ClaimDocument {
+  part_id: number | null;
+  document_id: number;
+  /** PACK = whole multi-document file (parent row), PART = a document BDA found, FILE = not yet read. */
+  kind: "PACK" | "PART" | "FILE";
+  name: string;
+  document_class: string | null;
+  declared_type: string;
+  page_start: number | null;
+  page_end: number | null;
+  source_file_name: string;
+  origin: "INITIAL" | "ADDITIONAL";
+  status: "PROCESSING" | "READY" | "FAILED";
+  added_at: string;
+}
+
+export interface DocumentBatch {
+  batch_id: string;
+  stage: string;
+  document_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ReviewRun {
+  run_id: number;
+  mode: string;
+  requested_by: string | null;
+  requested_at: string;
+  reason: string | null;
+  outcome: string;
+  agent_decision: string | null;
+  agent_confidence: string | number | null;
+  final_decision: string | null;
+}

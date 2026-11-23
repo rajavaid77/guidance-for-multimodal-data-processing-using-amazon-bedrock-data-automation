@@ -108,6 +108,15 @@ def test_save_decision_only_for_claims_under_agent_review(monkeypatch):
     assert save_decision.handler({"claim_id": "CLM-1", "decision": "MAYBE"}, None)["saved"] is False
 
 
+def test_save_decision_attributes_to_current_run(monkeypatch):
+    fake = FakeDb()
+    install(monkeypatch, save_decision, fake)
+    out = save_decision.handler({"claim_id": "CLM-1", "decision": "PEND", "confidence": 0.5}, None)
+    assert out["saved"] is True
+    insert = next(c for c in fake.calls if "INSERT INTO decisions" in c[0])[0]
+    assert "claim_run_id" in insert and "SELECT current_run FROM claims" in insert
+
+
 def test_find_duplicates_reports_detail_and_processed_flag(monkeypatch):
     from tools import find_duplicates
 

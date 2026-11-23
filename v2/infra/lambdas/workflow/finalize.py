@@ -17,8 +17,8 @@ def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
     decided_by = event.get("decided_by", "AUTO")
     actor = event.get("actor", "workflow")
     db.execute(
-        """INSERT INTO decisions (claim_id, decided_by, actor, decision, line_decisions, reason)
-           VALUES (:c, :by, :a, :d, :l, :r)""",
+        """INSERT INTO decisions (claim_id, decided_by, actor, decision, line_decisions, reason, claim_run_id)
+           VALUES (:c, :by, :a, :d, :l, :r, (SELECT current_run FROM claims WHERE claim_id = :c))""",
         {
             "c": claim_id,
             "by": decided_by,

@@ -1,12 +1,13 @@
-import { ArrowLeft, ClipboardList, FileSearch, FileText, Gavel, History, ListChecks, LoaderCircle, ScanText } from "lucide-react";
+import { ArrowLeft, ClipboardList, FileSearch, FileText, Gavel, History, ListChecks, LoaderCircle, RotateCcw, ScanText } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api } from "../api";
 import { Card, SectionTitle } from "../components/Card";
 import { ClaimPipeline } from "../components/Stepper";
 import { Badge, money, when } from "../components/Status";
+import { Modal } from "../components/Modal";
 import { RecommendationPanel } from "../components/RecommendationPanel";
-import type { Decision, Extraction, Finding, LineDecision, Recommendation, ServiceLine } from "../types";
+import type { Decision, Extraction, Finding, LineDecision, Recommendation, ReviewRun, ServiceLine } from "../types";
 
 interface Package {
   claim: {
@@ -15,12 +16,19 @@ interface Package {
     provider_name: string; provider_npi: string; failure_reason: string | null;
   };
   documents: { document_id: number; file_name: string; content_type: string; declared_type: string;
-               detected_type: string | null; view_url: string }[];
+               detected_type: string | null; view_url?: string }[];
+  parts?: { part_id: number; document_id: number; kind: "PACK" | "PART"; name: string; document_class: string | null;
+            page_start: number | null; page_end: number | null; source_file_name: string; declared_type: string }[];
   extractions: Extraction[];
   service_lines: ServiceLine[];
   recommendation: Recommendation | null;
   decisions: { decided_by: string; actor: string; decision: string; reason: string; created_at: string }[];
+  runs?: ReviewRun[];
+  current_run?: number;
+  can_rerun?: boolean;
 }
+const RERUN_MIN = 10;
+const RERUN_MAX = 1000;
 
 const LOW = 0.8;
 const CATEGORY_ORDER = ["VALIDATION", "ELIGIBILITY", "CLINICAL", "ADJUDICATION"];
@@ -32,12 +40,22 @@ export default function ReviewDetail() {
   const [pkg, setPkg] = useState<Package | null>(null);
   const [error, setError] = useState("");
   const [viewer, setViewer] = useState<string | null>(null);
+  const [viewerId, setViewerId] = useState<number | null>(null);
   const [decision, setDecision] = useState<Decision>("APPROVE");
   const [reason, setReason] = useState("");
   const [lines, setLines] = useState<LineDecision[]>([]);
   const [busy, setBusy] = useState(false);
   const [category, setCategory] = useState("ALL");
   const [showEmpty, setShowEmpty] = useState(false);
+  const [rerun, setRerun] = useState<{ step: 1 | 2; reason: string } | null>(null);
+
+  // Part links are signed on click and expire after 5 minutes.
+  function openPart(partId: number) {
+    setViewerId(partId);
+    api<{ url: string; page: number | null }>(`/reviews/${claimId}/parts/${partId}/url`)
+      .then((r) => setViewer(r.page ? `${r.url}#page=${r.page}` : r.url))
+      .catch((e) => setError(e.message));
+  }
 
   useEffect(() => {
     api<Package>(`/reviews/${claimId}`)
@@ -47,7 +65,8 @@ export default function ReviewDetail() {
           setDecision(p.recommendation.decision);
           setLines(p.recommendation.line_decisions);
         }
-        setViewer(p.documents[0]?.view_url ?? null);
+        if (p.parts?.length) openPart((p.parts.find((x) => x.kind === "PART") ?? p.parts[0]).part_id);
+        else setViewer(p.documents[0]?.view_url ?? null);
       })
       .catch((e) => setError(e.message));
   }, [claimId]);
@@ -77,6 +96,24 @@ export default function ReviewDetail() {
         : [...ls, { line_number: n, decision: "PEND", reason: "", ...patch }],
     );
 
+  function load() {
+    return api<Package>(`/reviews/${claimId}`).then(setPkg);
+  }
+  async function confirmRerun() {
+    if (!rerun) return;
+    setBusy(true);
+    setError("");
+    try {
+      await api(`/reviews/${claimId}/rerun`, { method: "POST", body: { mode: "AGENT", reason: rerun.reason.trim() } });
+      setRerun(null);
+      await load();
+    } catch (err) {
+      setError((err as Error).message);
+      setRerun(null);
+    } finally {
+      setBusy(false);
+    }
+  }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -98,18 +135,58 @@ export default function ReviewDetail() {
           <h1 style={{ marginTop: 6 }}>Claim {claim.claim_id}</h1>
           <p>{claim.provider_name} · NPI {claim.provider_npi} · {claim.patient_name ?? "patient unknown"} · insured {claim.insured_id_number ?? "—"} · {money(claim.total_charges)}</p>
         </div>
-        <Badge value={claim.status} />
+        <div className="row" style={{ gap: 12 }}>
+          {pkg.can_rerun && (
+            <button type="button" className="btn ghost" disabled={busy} title="Re-run the agent review on the stored documents" onClick={() => setRerun({ step: 1, reason: "" })}>
+              <RotateCcw size={16} /> Re-run review
+            </button>
+          )}
+          <Badge value={claim.status} />
+        </div>
       </div>
+      {rerun && (
+        <Modal title="Re-run review" onClose={() => !busy && setRerun(null)}>
+          {rerun.step === 1 ? (
+            <form className="stack" onSubmit={(e) => { e.preventDefault(); setRerun({ ...rerun, step: 2 }); }}>
+              <p className="muted small">The agent review runs again on the documents already extracted. Earlier results, runs and decisions are kept. The new recommendation always goes to an examiner. Extraction is not repeated.</p>
+              <label className="small" htmlFor="rerun-reason">Reason (required)</label>
+              <textarea id="rerun-reason" className="input" value={rerun.reason} maxLength={RERUN_MAX} onChange={(e) => setRerun({ ...rerun, reason: e.target.value })} />
+              <span className="muted small">{rerun.reason.trim().length} / {RERUN_MAX} (minimum {RERUN_MIN})</span>
+              <div className="actions">
+                <button type="button" className="btn quiet" onClick={() => setRerun(null)}>Cancel</button>
+                <button type="submit" className="btn" disabled={rerun.reason.trim().length < RERUN_MIN}>Continue</button>
+              </div>
+            </form>
+          ) : (
+            <div className="stack">
+              <p>Re-run the agent review for claim {claim.claim_id} as run {(pkg.current_run ?? 1) + 1}?</p>
+              <p className="small" style={{ whiteSpace: "pre-wrap" }}>{rerun.reason.trim()}</p>
+              <div className="actions">
+                <button type="button" className="btn quiet" disabled={busy} onClick={() => setRerun({ ...rerun, step: 1 })}>Back</button>
+                <button type="button" className="btn" disabled={busy} onClick={confirmRerun}>
+                  {busy ? <><LoaderCircle size={16} className="spin" /> Starting…</> : "Confirm re-run"}
+                </button>
+              </div>
+            </div>
+          )}
+        </Modal>
+      )}
       <ClaimPipeline status={claim.status} failedAt={rec ? 3 : 1} />
       {claim.failure_reason && <div className="banner bad" style={{ marginBottom: 20 }}>{claim.failure_reason}</div>}
 
       <div className="review-grid">
         <div>
-          <Card title="Evidence" hint={`(${pkg.documents.length} documents)`}>
+          <Card title="Evidence" hint={`(${pkg.parts?.length ? pkg.parts.filter((x) => x.kind === "PART").length : pkg.documents.length} documents)`}>
             <div className="card-body stack">
               <div className="doc-list">
-                {pkg.documents.map((d) => (
-                  <button key={d.document_id} className={`doc-btn ${viewer === d.view_url ? "on" : ""}`} onClick={() => setViewer(d.view_url)}>
+                {pkg.parts?.length ? pkg.parts.map((d) => (
+                  <button key={d.part_id} className={`doc-btn ${viewerId === d.part_id ? "on" : ""}`} onClick={() => openPart(d.part_id)}>
+                    <FileText size={20} />
+                    <span style={{ flex: 1 }}>{d.name}</span>
+                    <span className="muted small">{d.kind === "PACK" ? "multi-document pack" : (d.document_class ?? d.declared_type).replaceAll("_", " ").toLowerCase()}</span>
+                  </button>
+                )) : pkg.documents.map((d) => (
+                  <button key={d.document_id} className={`doc-btn ${viewer === d.view_url ? "on" : ""}`} onClick={() => setViewer(d.view_url ?? null)}>
                     <FileText size={20} />
                     <span style={{ flex: 1 }}>{d.file_name}</span>
                     <span className="muted small">{(d.detected_type ?? d.declared_type).replaceAll("_", " ").toLowerCase()}</span>
@@ -261,6 +338,23 @@ export default function ReviewDetail() {
                 ))}
               </tbody>
             </table>
+          )}
+          {pkg.runs && pkg.runs.length > 0 && (
+            <>
+              <SectionTitle icon={RotateCcw} title="Review runs" count={pkg.runs.length} />
+              <table className="table">
+                <tbody>
+                  {[...pkg.runs].reverse().map((r) => (
+                    <tr key={r.run_id}>
+                      <td className="small">Run {r.run_id}{r.mode === "INITIAL" ? " · original submission" : ""}</td>
+                      <td className="small">{r.requested_by ?? "—"}<br />{when(r.requested_at)}</td>
+                      <td className="small" style={{ whiteSpace: "pre-wrap" }}>{r.reason ?? "—"}</td>
+                      <td><Badge value={r.outcome} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
           <p className="muted small" style={{ marginTop: 12 }}><FileSearch size={14} /> Models: {rec ? Object.values(rec.models).join(", ") : "—"}</p>
         </div>

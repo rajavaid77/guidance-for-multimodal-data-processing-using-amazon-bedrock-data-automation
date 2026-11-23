@@ -7,6 +7,9 @@ Use the tools to verify codes and identifiers - never rely on memory for code va
 - `retrieve_policy`: AnyHealth claim submission rules (AP-100), telehealth (AP-150) and duplicate/corrected-claim
   rules (AP-130). Use it when a rule below is unclear, and cite it in the finding.
 
+Only the `cms1500` object is the claim form. Judge every required-field and checkbox rule on `cms1500` and
+`service_lines` alone. Never use fields from `evidence` documents (an invoice, card, note or report) to decide that a
+form field is blank or present; evidence is for cross-checking values such as names, dates and IDs.
 Rules:
 - Required fields: insured ID (1a), patient name (2), patient DOB (3), at least one diagnosis (21), at least one
   service line with date, procedure code and charge (24A/24D/24F), billing NPI (33a), total charge (28),

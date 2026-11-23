@@ -61,8 +61,9 @@ IAM4_REASON = "AWSLambdaBasicExecutionRole is the CDK default for writing functi
 IAM5_REASON = (
     "Scoped wildcard from a CDK grant helper or a service-generated ARN: object keys within this stack's buckets, "
     "KMS key actions on this stack's key, Lambda versions/aliases, BDA invocations, AgentCore runtime log groups, "
-    "token-vault secrets and workload identities, Amplify jobs, and model families across the US cross-region "
-    "inference profile regions. Resource '*' is only used for X-Ray, CloudWatch metrics, ECR auth and log delivery, "
+    "token-vault secrets and workload identities, Amplify jobs, executions of the claim state machine (StopExecution "
+    "takes an execution ARN, so the re-run API can only be scoped to that one machine's executions), and model "
+    "families across the US cross-region inference profile regions. Resource '*' is only used for X-Ray, CloudWatch metrics, ECR auth and log delivery, "
     "which do not support resource-level permissions."
 )
 GRANT_ACTIONS = (
@@ -99,6 +100,8 @@ def _iam5_findings(stack: Stack, config: dict) -> list[str]:
         if isinstance(node, CfnResource):
             lid = stack.resolve(stack.get_logical_id(node))
             findings += [f"Resource::<{lid}.Arn>/*", f"Resource::<{lid}.Arn>:*", f"Resource::<{lid}.AgentRuntimeArn>/*"]
+            if node.cfn_resource_type == "AWS::StepFunctions::StateMachine":
+                findings.append(f"Resource::arn:aws:states:{region}:{acct}:execution:<{lid}.Name>:*")
             if node.cfn_resource_type == "AWS::Amplify::App":
                 findings.append(f"Resource::arn:aws:amplify:{region}:{acct}:apps/<{lid}.AppId>/branches/main/jobs/*")
                 findings.append(

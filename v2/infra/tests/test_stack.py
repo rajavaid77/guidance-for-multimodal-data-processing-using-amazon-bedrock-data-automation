@@ -97,3 +97,52 @@ def test_state_machine_does_not_log_execution_data(template):
         "AWS::StepFunctions::StateMachine",
         {"LoggingConfiguration": Match.object_like({"IncludeExecutionData": False, "Level": "ERROR"})},
     )
+
+
+def test_batch_state_machine_exists_and_does_not_log_execution_data(template):
+    machines = template.find_resources("AWS::StepFunctions::StateMachine")
+    assert len(machines) == 2
+    for machine in machines.values():
+        logging = machine["Properties"]["LoggingConfiguration"]
+        assert logging["Level"] == "ERROR" and logging["IncludeExecutionData"] is False
+        assert "KmsKeyId" in machine["Properties"]["EncryptionConfiguration"]
+
+
+def test_submit_rules_use_distinct_key_patterns(template):
+    rules = template.find_resources("AWS::Events::Rule", {"Properties": {"EventPattern": {"source": ["aws.s3"]}}})
+    patterns = sorted(r["Properties"]["EventPattern"]["detail"]["object"]["key"][0]["wildcard"] for r in rules.values())
+    assert patterns == ["batches/*/*/submit.json", "claims/*/submit.json"]
+
+
+def test_bda_project_has_custom_and_managed_blueprints(template):
+    projects = template.find_resources("AWS::Bedrock::DataAutomationProject")
+    arns = json.dumps([p["Properties"]["CustomOutputConfiguration"] for p in projects.values()])
+    assert arns.count("Blueprint") >= 5
+    for name in ("us-medical-insurance-card", "prescription-label", "us-driver-license"):
+        assert f":aws:blueprint/bedrock-data-automation-public-{name}" in arns
+    assert "bedrock-data-automation-public-invoice" in arns
+    assert "bedrock-data-automation-public-bank-statement" not in arns
+    assert len(template.find_resources("AWS::Bedrock::Blueprint")) == 5
+
+
+def test_claim_workflow_has_entry_point_choice(template):
+    machines = template.find_resources("AWS::StepFunctions::StateMachine")
+    bodies = [json.dumps(m["Properties"]["DefinitionString"]) for m in machines.values()]
+    entry = [b for b in bodies if "EntryPoint" in b]
+    assert len(entry) == 1 and "EntryKind" in entry[0] and "UnknownEntry" in entry[0]
+    assert "ParseClaimId" in entry[0]
+
+
+def test_rerun_route_and_iam_scoping(template):
+    resources = template.find_resources("AWS::ApiGateway::Resource", {"Properties": {"PathPart": "rerun"}})
+    assert len(resources) == 1
+    policies = template.find_resources("AWS::IAM::Policy")
+    by_role = {}
+    for p in policies.values():
+        role = json.dumps(p["Properties"]["Roles"])
+        by_role[role] = by_role.get(role, "") + json.dumps(p["Properties"]["PolicyDocument"])
+    examiner = [v for k, v in by_role.items() if "ExaminerReviews" in k]
+    provider = [v for k, v in by_role.items() if "ProviderClaims" in k]
+    assert examiner and provider
+    assert "states:StartExecution" in examiner[0] and "states:StopExecution" in examiner[0]
+    assert "states:StartExecution" not in provider[0] and "states:StopExecution" not in provider[0]

@@ -266,3 +266,20 @@ details summary { cursor: pointer; font-weight: 600; padding: 8px 0; }
 .rec-more summary { font-size: 13px; color: var(--brand-600); }
 .rec-more .md { font-size: 13px; color: var(--ink-2); padding-top: 6px; }
 @media (max-width: 1300px) { .rec-grid { grid-template-columns: 1fr; } }
+
+/* ---------- modal & documents table ---------- */
+.modal-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(30, 37, 50, 0.55); display: grid; place-items: center; padding: 24px; }
+.modal { background: var(--white); border-radius: var(--radius); width: min(560px, 100%); max-height: calc(100vh - 48px); display: flex; flex-direction: column;
+  box-shadow: 0 12px 40px rgba(30, 37, 50, 0.25); }
+.modal.wide { width: min(980px, 100%); }
+.modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 24px; border-bottom: 1px solid var(--line); }
+.modal-head h2 { margin: 0; font-size: 16px; word-break: break-all; }
+.modal-body { padding: 20px 24px 24px; overflow: auto; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
+.modal .viewer { height: 70vh; }
+.btn.small-btn { padding: 4px 10px; font-size: 12px; border-radius: 10px; }
+
+/* Split documents of a multi-document pack sit indented under the pack row. */
+.table tr.pack-row td { font-weight: 600; }
+.table tr.sub-row td { background: rgba(127, 127, 127, 0.06); }
+.table tr.sub-row td:first-child { padding-left: 28px; }

@@ -1,4 +1,4 @@
-"""Bedrock Data Automation: four custom blueprints and a project with document splitting enabled."""
+"""Bedrock Data Automation: five custom blueprints, four AWS-managed ones, and a project with document splitting."""
 
 from __future__ import annotations
 
@@ -18,7 +18,15 @@ BLUEPRINTS = {
     "medical-record": "medical_record.json",
     "lab-report": "lab_report.json",
     "primary-eob": "primary_payer_eob.json",
+    "discharge-summary": "discharge_summary.json",
 }
+# AWS-managed blueprints, referenced by ARN (not created by this stack). Names are matched in bda_output.py:classify().
+BUILT_IN_BLUEPRINTS = (
+    "bedrock-data-automation-public-us-medical-insurance-card",
+    "bedrock-data-automation-public-prescription-label",
+    "bedrock-data-automation-public-us-driver-license",
+    "bedrock-data-automation-public-invoice",
+)
 PROFILE_REGIONS = ("us-east-1", "us-east-2", "us-west-1", "us-west-2")
 
 
@@ -36,6 +44,9 @@ class DocumentAutomation(Construct):
                 schema=json.loads((BLUEPRINT_DIR / file_name).read_text()),
                 kms_key_id=key.key_arn,
             )
+        self.built_in_blueprint_arns = [
+            f"arn:{stack.partition}:bedrock:{stack.region}:aws:blueprint/{name}" for name in BUILT_IN_BLUEPRINTS
+        ]
         P = bedrock.CfnDataAutomationProject
         self.project = P(
             self,
@@ -61,6 +72,10 @@ class DocumentAutomation(Construct):
                     P.BlueprintItemProperty(blueprint_arn=bp.attr_blueprint_arn, blueprint_stage="LIVE")
                     for bp in self.blueprints.values()
                 ]
+                + [
+                    P.BlueprintItemProperty(blueprint_arn=arn, blueprint_stage="LIVE")
+                    for arn in self.built_in_blueprint_arns
+                ]
             ),
             override_configuration=P.OverrideConfigurationProperty(
                 document=P.DocumentOverrideConfigurationProperty(
@@ -81,6 +96,7 @@ class DocumentAutomation(Construct):
             resource_arns=[
                 self.project.attr_project_arn,
                 *[bp.attr_blueprint_arn for bp in self.blueprints.values()],
+                *self.built_in_blueprint_arns,
                 *[
                     f"arn:{stack.partition}:bedrock:{r}:{stack.account}:data-automation-profile/{self._profile}"
                     for r in PROFILE_REGIONS

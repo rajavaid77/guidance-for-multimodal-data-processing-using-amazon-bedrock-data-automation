@@ -17,7 +17,9 @@ def load_prompt(name: str) -> str:
     return resources.files("claims_agents.prompts").joinpath(f"{name}.md").read_text(encoding="utf-8")
 
 
-def bedrock_model(settings: Settings, model_id: str, max_tokens: int = 8000) -> BedrockModel:
+def bedrock_model(settings: Settings, model_id: str, max_tokens: int = 16000) -> BedrockModel:
+    # Hidden reasoning tokens count against max_tokens. At 8000 a Validation call spent its whole budget thinking and
+    # was cut off before writing its structured result (MaxTokensReachedException).
     # Current Claude models reject `temperature`; rely on model defaults plus typed structured output.
     config: dict[str, Any] = {"model_id": model_id, "max_tokens": max_tokens}
     if settings.guardrail_id and settings.guardrail_version:

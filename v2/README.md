@@ -35,6 +35,27 @@ editable diagram: [`c_agentic_claims_mvp_architecture.drawio`](../assets/archite
    - **Every denial or pend goes to a human.**
 6. The **Examiner UI** shows the documents, extracted fields with confidence, findings with citations and the line
    decisions. The examiner's decision resumes the workflow through a task token and is recorded in the audit trail.
+7. **Packs and parts.** Whether an upload is one document or a pack is decided from the BDA output (number of
+   segments), never from what the provider declares. Each BDA segment is stored as a row in `claim_document_parts`
+   (type, page range, S3 location). For a PDF pack, the assemble step cuts one page-range PDF per segment into the
+   BDA output bucket (`claims/{claim_id}/parts/...`). Single documents and images reuse the uploaded object. If a PDF
+   cannot be cut, the part points at the original with a start page. The Documents table lists parts only.
+8. **Additional documents.** While a claim is in progress, the provider can upload more files from the claim page.
+   Each upload batch runs in its own state machine (`ClaimDocumentBatchWorkflow`, triggered by
+   `batches/{claim_id}/{batch_id}/submit.json`): BDA, wait until no other review is running, merge the evidence into
+   the case, then re-run the agent review. The claim form and service lines are never replaced. Merge behavior
+   depends on the claim status: `PENDING_REVIEW` re-reviews in place and notifies examiners, `PENDED_INFO_REQUESTED`
+   reopens the claim through the same auto/human routing, and a claim that is already approved, denied or failed
+   only records the documents.
+9. **Re-run review (Mode A).** An examiner can re-run only the agent review, for example after a prompt, model or
+   `max_tokens` change, or when the agent step failed. `POST /reviews/{claimId}/rerun` with `{mode: "AGENT", reason}`
+   starts the claim state machine at the agent step with the stored `claims/{claim_id}/case.json`. BDA is not called
+   again and `claim_document_parts` and `extractions` are not changed. Each claim has a run number
+   (`claims.current_run`, 1 = original submission). Agent runs and decisions carry it as `claim_run_id`, and the
+   request (who, when, mode, reason, outcome) is stored in `claim_runs`. Old runs, recommendations and decisions are
+   kept. A re-run is always routed to a human, never auto-finalized. The reason is required (10 to 1000 characters),
+   is stored only in `claim_runs`, and is not logged, audited in detail or sent in notifications. If the claim waits
+   for an examiner, the old execution is stopped and its task token is cleared before the new run starts.
 
 ## Repository layout
 
@@ -95,9 +116,15 @@ cd v2/scripts
 1. Open `AppUrl` and sign in with the temporary password Cognito emailed. You must set a new password and register a
    TOTP authenticator (MFA is required).
 2. As the provider, submit `assets/data/claims_review/cms_1500/sample1_cms-1500-P.pdf`. You can also add a medical
-   record PDF as evidence.
+   record PDF as evidence. A single file may hold several documents.
 3. As the examiner, open the review queue. The sample forms carry NPI `1234567890`, which fails the CMS check digit,
    so expect an `INVALID_NPI` finding and a human review.
+
+4. On **My Claims**, open the claim. **Documents** lists each document with type, pages, whether it was added later and
+   its status. **View** opens it in a dialog (the link is fetched fresh on every open and expires after 5 minutes).
+   While the claim is in progress (or the examiner pended it), **Add documents** uploads up to 10 more files. The page
+   refreshes itself (every 5 s while something is processing, every 15 s while awaiting an examiner) and shows the
+   stage of the upload batch.
 
 To exercise the whole backend without the UI:
 
@@ -155,4 +182,17 @@ irreversible, so use `retain` for any data you need to keep.
 
 - Reference code sets and plan data are small demo subsets; well-formed codes outside them are only warnings.
 - No provider credentialing, prior-authorization matching, NCCI edits, pricing, EOB/835 generation or appeals.
+- An additional-documents batch never replaces the claim form. A CMS-1500 inside a batch is stored as a document only.
+- One batch merges at a time. A batch waits behind the main workflow or another batch for up to about 1 hour, then fails
+  without changing the claim.
+- With `PENDING_REVIEW`, an examiner who decides while the re-review runs may see the earlier recommendation.
+- Claims processed before parts existed show one row per uploaded file. Part boundaries for real packs depend on the
+  BDA segment output; confirm with one multi-document pack after deploy.
+- Re-run is Mode A only (agent review). A claim can be re-run from `PENDING_REVIEW`, `FAILED` (with a stored case) or
+  `PENDED_INFO_REQUESTED` (`final_decision = PEND`, which means "more information needed"), with no additional-documents
+  batch in flight. `APPROVED` and `DENIED` claims cannot be re-run. Re-running a pended claim clears the PEND so the
+  new run can finalize on its own result; the original PEND stays in the decision history under run 1. If the new run
+  cannot be started, a pended claim returns to `PENDED_INFO_REQUESTED`. A claim that failed during extraction has no
+  stored case and cannot be re-run. `run_id` columns on `claim_document_parts` and `extractions` are reserved for a later
+  re-extraction mode and are always 1 today.
 - Policy retrieval filters knowledge base passages by plan name in the document file name.

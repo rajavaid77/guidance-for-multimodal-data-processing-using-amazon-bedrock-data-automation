@@ -78,9 +78,14 @@ class AgenticClaimsStack(Stack):
             prefix=prefix,
             user_pool=auth.user_pool,
             intake=storage.intake,
+            bda_output=storage.bda_output,
             database=database,
             functions=functions,
-            state_machine_arn_grant=workflow.state_machine.grant_task_response,
+            state_machine_arn_grant=lambda fn: (
+                workflow.state_machine.grant_task_response(fn),
+                workflow.batch_state_machine.grant_task_response(fn),  # examiner decisions resume reopened batches
+            ),
+            claim_state_machine=workflow.state_machine,
             key=key,
             app_origin=web.origin,
             enable_waf=bool(config.get("enable_waf", True)),

@@ -87,6 +87,43 @@ CREATE TABLE IF NOT EXISTS claim_documents (
     UNIQUE (claim_id, s3_key)
 );
 
+ALTER TABLE claim_documents ADD COLUMN IF NOT EXISTS origin VARCHAR(12) NOT NULL DEFAULT 'INITIAL';
+ALTER TABLE claim_documents ADD COLUMN IF NOT EXISTS batch_id VARCHAR(40);
+ALTER TABLE claim_documents ADD COLUMN IF NOT EXISTS page_count INTEGER;
+ALTER TABLE claim_documents ADD COLUMN IF NOT EXISTS segment_count INTEGER;
+CREATE TABLE IF NOT EXISTS document_batches (
+    batch_id     VARCHAR(40) PRIMARY KEY,
+    claim_id     VARCHAR(40) NOT NULL REFERENCES claims(claim_id),
+    requested_by VARCHAR(100),
+    stage        VARCHAR(30) NOT NULL DEFAULT 'UPLOADING',
+    task_token   TEXT,
+    execution_arn VARCHAR(300),
+    reopened     BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    completed_at TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_document_batches_claim ON document_batches(claim_id);
+CREATE TABLE IF NOT EXISTS claim_document_parts (
+    part_id      SERIAL PRIMARY KEY,
+    claim_id     VARCHAR(40) NOT NULL REFERENCES claims(claim_id),
+    document_id  INTEGER NOT NULL REFERENCES claim_documents(document_id),
+    batch_id     VARCHAR(40),
+    segment_index INTEGER NOT NULL,
+    document_class VARCHAR(100),
+    display_name VARCHAR(300),
+    page_start   INTEGER,
+    page_end     INTEGER,
+    page_indices VARCHAR(200),
+    blueprint_confidence NUMERIC(4,3),
+    s3_bucket_kind VARCHAR(10) NOT NULL,
+    s3_key       VARCHAR(600) NOT NULL,
+    is_original  BOOLEAN NOT NULL DEFAULT TRUE,
+    content_type VARCHAR(100),
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (document_id, segment_index)
+);
+CREATE INDEX IF NOT EXISTS idx_claim_document_parts_claim ON claim_document_parts(claim_id);
 CREATE TABLE IF NOT EXISTS service_lines (
     line_id            SERIAL PRIMARY KEY,
     claim_id           VARCHAR(40) NOT NULL REFERENCES claims(claim_id),
@@ -138,6 +175,30 @@ CREATE TABLE IF NOT EXISTS decisions (
     created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Re-run support (Mode A). claims.current_run is the claim-scoped run number (1 = original submission).
+-- agent_runs.run_id stays the global row id; claim_run_id is the per-claim run it belongs to.
+ALTER TABLE claims ADD COLUMN IF NOT EXISTS current_run INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE agent_runs ADD COLUMN IF NOT EXISTS claim_run_id INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE decisions ADD COLUMN IF NOT EXISTS claim_run_id INTEGER NOT NULL DEFAULT 1;
+-- Extraction run that produced the row. Mode A never changes it. Reserved for a later re-extraction mode.
+ALTER TABLE claim_document_parts ADD COLUMN IF NOT EXISTS run_id INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE extractions ADD COLUMN IF NOT EXISTS run_id INTEGER NOT NULL DEFAULT 1;
+CREATE TABLE IF NOT EXISTS claim_runs (
+    claim_id           VARCHAR(40) NOT NULL REFERENCES claims(claim_id),
+    run_id             INTEGER NOT NULL,
+    mode               VARCHAR(20) NOT NULL,
+    reason             TEXT,
+    requested_by       VARCHAR(100) NOT NULL,
+    requested_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+    prior_status       VARCHAR(30),
+    prior_failure_reason TEXT,
+    prior_execution_arn  VARCHAR(500),
+    execution_arn      VARCHAR(500),
+    case_key           VARCHAR(600),
+    status             VARCHAR(20) NOT NULL DEFAULT 'STARTED',
+    PRIMARY KEY (claim_id, run_id)
+);
+CREATE INDEX IF NOT EXISTS idx_claim_runs_claim ON claim_runs(claim_id);
 CREATE TABLE IF NOT EXISTS audit_events (
     event_id   SERIAL PRIMARY KEY,
     claim_id   VARCHAR(40) NOT NULL,

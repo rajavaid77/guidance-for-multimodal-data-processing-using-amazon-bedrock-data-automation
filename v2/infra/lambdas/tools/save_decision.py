@@ -31,8 +31,9 @@ def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
     if updated != 1:
         return {"saved": False, "error": "claim is not under agent review"}
     db.execute(
-        """INSERT INTO decisions (claim_id, decided_by, actor, decision, line_decisions, reason)
-           VALUES (:id, 'AGENT', 'adjudication-agent', :d, :lines, :r)""",
+        """INSERT INTO decisions (claim_id, decided_by, actor, decision, line_decisions, reason, claim_run_id)
+           VALUES (:id, 'AGENT', 'adjudication-agent', :d, :lines, :r,
+                   (SELECT current_run FROM claims WHERE claim_id = :id))""",
         {
             "id": claim_id,
             "d": decision,

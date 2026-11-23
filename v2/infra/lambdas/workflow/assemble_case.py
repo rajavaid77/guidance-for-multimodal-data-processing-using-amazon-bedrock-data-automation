@@ -12,7 +12,8 @@ import boto3
 from common import db
 from tools.codes import normalize_code, parse_date
 
-from .bda_output import build_case, segment_record
+from .bda_output import build_case, parse_segments, segment_record
+from .parts import record_parts
 
 s3 = boto3.client("s3")
 
@@ -24,19 +25,31 @@ def _read_json(uri_or_bucket: str, key: str | None = None) -> dict[str, Any]:
     return json.loads(s3.get_object(Bucket=uri_or_bucket, Key=key)["Body"].read())
 
 
-def _segments_for(doc: dict[str, Any], bucket: str) -> list[dict[str, Any]]:
+def _segments_for(doc: dict[str, Any], bucket: str, intake_bucket: str) -> list[dict[str, Any]]:
     prefix, _, asset_id = (doc.get("bda_output_prefix") or "").rpartition("/")
     if not prefix:
         return []
     metadata = _read_json(bucket, f"{prefix}/job_metadata.json")
-    segments = []
-    for item in metadata.get("output_metadata") or []:
-        if asset_id and str(item.get("asset_id")) != asset_id:
+    cache: dict[str, dict[str, Any]] = {}
+
+    def load(path: str) -> dict[str, Any]:
+        if path not in cache:
+            cache[path] = _read_json(path)
+        return cache[path]
+
+    parsed = parse_segments(metadata, asset_id, load)
+    # Every segment (including unmatched ones) becomes a part; only matched ones feed the claim case.
+    record_parts(doc["claim_id"], doc, parsed, bucket, intake_bucket, s3)
+    records = []
+    for p in parsed:
+        if not p["custom_output_path"]:
             continue
-        for segment in item.get("segment_metadata") or []:
-            if segment.get("custom_output_path") and segment.get("custom_output_status", "MATCH") == "MATCH":
-                segments.append(segment_record(_read_json(segment["custom_output_path"]), doc["s3_key"]) | {"doc": doc})
-    return segments
+        record = segment_record(load(p["custom_output_path"]), doc["s3_key"]) | {"doc": doc}
+        if p["document_class"] != record["document_class"]:
+            # parse_segments demoted a weaker CMS-1500 match (an invoice, say) to OTHER: drop its form fields.
+            record |= {"document_class": p["document_class"], "fields": {}, "inference": {}}
+        records.append(record)
+    return records
 
 
 def _num(value: Any) -> float | None:
@@ -49,16 +62,18 @@ def _num(value: Any) -> float | None:
 def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
     claim_id = event["claim_id"]
     output_bucket = os.environ["BDA_OUTPUT_BUCKET"]
+    intake_bucket = os.environ["INTAKE_BUCKET"]
     claim = db.query_one(
         """SELECT c.claim_id, p.provider_id, p.npi, p.name FROM claims c JOIN providers p ON p.provider_id = c.provider_id
            WHERE c.claim_id = :id""",
         {"id": claim_id},
     )
     docs = db.query(
-        "SELECT document_id, s3_key, declared_type, bda_output_prefix FROM claim_documents WHERE claim_id = :id",
+        """SELECT document_id, claim_id, s3_key, file_name, content_type, declared_type, bda_output_prefix, batch_id
+           FROM claim_documents WHERE claim_id = :id AND batch_id IS NULL""",
         {"id": claim_id},
     )
-    segments = [s for d in docs for s in _segments_for(d, output_bucket)]
+    segments = [s for d in docs for s in _segments_for(d, output_bucket, intake_bucket)]
     case = build_case(
         claim_id,
         {"provider_id": claim["provider_id"], "npi": claim["npi"], "name": claim["name"]},
@@ -66,7 +81,11 @@ def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
         float(os.environ.get("CONFIDENCE_THRESHOLD", "0.8")),
     )
 
-    db.execute("DELETE FROM extractions WHERE claim_id = :id", {"id": claim_id})
+    db.execute(
+        """DELETE FROM extractions WHERE document_id IN
+           (SELECT document_id FROM claim_documents WHERE claim_id = :id AND batch_id IS NULL)""",
+        {"id": claim_id},
+    )
     db.execute("DELETE FROM service_lines WHERE claim_id = :id", {"id": claim_id})
     db.execute_many(
         """INSERT INTO extractions (claim_id, document_id, document_class, source_key, page_indices, field_name,
@@ -108,12 +127,6 @@ def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
             for line in case["service_lines"]
         ],
     )
-    for s in segments:
-        db.execute(
-            "UPDATE claim_documents SET detected_type = :t WHERE document_id = :d",
-            {"t": s["document_class"], "d": s["doc"]["document_id"]},
-        )
-
     form = case["cms1500"]
     insured_id = (form.get("insured_id_number") or {}).get("value")
     member = db.query_one("SELECT member_id FROM members WHERE insured_id_number = :i", {"i": str(insured_id or "")})

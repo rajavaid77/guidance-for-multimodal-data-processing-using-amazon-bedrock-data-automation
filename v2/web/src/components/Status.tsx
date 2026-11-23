@@ -22,10 +22,34 @@ const LOOKS: Record<string, Look> = {
   APPROVE: { tone: "good", label: "Approve", Icon: CircleCheck },
   DENY: { tone: "bad", label: "Deny", Icon: CircleX },
   PEND: { tone: "warn", label: "Pend", Icon: CircleAlert },
+  READY: { tone: "good", label: "Ready", Icon: CircleCheck },
+  PROCESSING: { tone: "info", label: "Processing", Icon: LoaderCircle },
   ERROR: { tone: "bad", label: "Error", Icon: CircleX },
   WARNING: { tone: "warn", label: "Warning", Icon: TriangleAlert },
   INFO: { tone: "neutral", label: "Info", Icon: Info },
 };
+/** Stages of an additional-documents batch (separate from the claim status). */
+const BATCH_LOOKS: Record<string, Look> = {
+  UPLOADING: { tone: "info", label: "Uploaded", Icon: LoaderCircle },
+  QUEUED: { tone: "info", label: "Uploaded", Icon: LoaderCircle },
+  EXTRACTING: { tone: "info", label: "Reading documents", Icon: LoaderCircle },
+  WAITING: { tone: "warn", label: "Waiting for claim review", Icon: Hourglass },
+  MERGING: { tone: "info", label: "Adding to claim", Icon: LoaderCircle },
+  AGENT_REVIEW: { tone: "info", label: "AI re-review", Icon: LoaderCircle },
+  DONE: { tone: "good", label: "Done", Icon: CircleCheck },
+  FAILED: { tone: "bad", label: "Failed", Icon: TriangleAlert },
+};
+export const BATCH_ACTIVE = new Set(["UPLOADING", "QUEUED", "EXTRACTING", "WAITING", "MERGING", "AGENT_REVIEW"]);
+
+export function BatchBadge({ stage }: { stage: string }) {
+  const look = BATCH_LOOKS[stage] ?? { tone: "neutral" as Tone, label: stage.replaceAll("_", " ").toLowerCase(), Icon: Info };
+  return (
+    <span className={`pill ${look.tone}`}>
+      <look.Icon size={13} />
+      {look.label}
+    </span>
+  );
+}
 
 /** Status is always icon + label, never colour alone. */
 export function Badge({ value }: { value: string | null | undefined }) {
