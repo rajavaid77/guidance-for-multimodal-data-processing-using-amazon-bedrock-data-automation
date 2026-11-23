@@ -73,6 +73,22 @@
       "expected": "Not approved. Line 1 telehealth modifier 95 contradicted by in-person note; line 4 home (POS 12) chest wall oscillation for asthma excluded/not necessary; line 3 bills 5 units but only 2 specimens documented."
     },
     {
+      "id": "S4B",
+      "title": "Premium: supplemental evidence for the S4 claim (office visit note + spirometry report)",
+      "provider_id": "PRV-1001",
+      "documents": [
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S4B_Jane_Doe_office_visit_2025-01-07.pdf",
+          "type": "MEDICAL_RECORD"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S4B_Jane_Doe_spirometry_report_2025-02-06_07.pdf",
+          "type": "LAB_REPORT"
+        }
+      ],
+      "expected": "Upload as ADDITIONAL documents on a pended S4 claim (together with the existing S4 urine albumin report). Clears NO_EVIDENCE_SUBMITTED and documents an in-person 01/07 visit and the two spirometry sessions. Still not approvable: S4 item 3 and 33a are blank, referring NPI 0123456789 is invalid, line 1 has modifier 95 with POS 11, line 3 bills 5 units for 2 specimens, and line 4 (home, POS 12) is excluded."
+    },
+    {
       "id": "S5",
       "title": "Premium: clean COPD visit + spirometry - with visit note and spirometry report",
       "provider_id": "PRV-1001",
@@ -123,6 +139,77 @@
         }
       ],
       "expected": "DUPLICATE_SERVICE on both lines. PEND while S5 is still in review (possible duplicate, AP-130); DENY CARC 18 once S5 has been finalized. No resubmission code in item 22."
+    },
+    {
+      "id": "S8",
+      "title": "Premium: complete claim pack (fully filled CMS-1500 + insurance card, 2 IDs, Rx label, discharge summary, visit note, 2 lab reports, invoice, bank statement) for visit 04/15/2025",
+      "provider_id": "PRV-1001",
+      "documents": [
+        {
+          "path": "assets/data/claims_review/test_scenarios/S8_Jane_Doe_complete_claim_pack_2025-04-15.pdf",
+          "type": "AUTO"
+        }
+      ],
+      "individual_documents": [
+        {
+          "path": "assets/data/claims_review/test_scenarios/S8_claim_form_2025-04-15.pdf",
+          "type": "CMS1500"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_1_insurance_card.pdf",
+          "type": "INSURANCE_CARD"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_2_drivers_license.pdf",
+          "type": "DRIVER_LICENSE"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_3_state_id.pdf",
+          "type": "OTHER"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_4_prescription_label.pdf",
+          "type": "PRESCRIPTION_LABEL"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_5_discharge_summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_6_office_visit_note.pdf",
+          "type": "MEDICAL_RECORD"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_7_spirometry_report.pdf",
+          "type": "LAB_REPORT"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_8_urine_albumin_report.pdf",
+          "type": "LAB_REPORT"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_9_provider_invoice.pdf",
+          "type": "OTHER"
+        },
+        {
+          "path": "assets/data/claims_review/test_scenarios/evidence/S8_10_bank_statement.pdf",
+          "type": "OTHER"
+        }
+      ],
+      "pack_pages": {
+        "form": "1",
+        "insurance_card": "2",
+        "drivers_license": "3",
+        "state_id": "4",
+        "prescription_label": "5",
+        "discharge_summary": "6",
+        "office_visit_note": "7",
+        "spirometry_report": "8",
+        "urine_albumin_report": "9",
+        "provider_invoice": "10",
+        "bank_statement": "11"
+      },
+      "expected": "APPROVE all 3 lines (99214-25, 94060, 82043), total $335.00, patient co-pay $10.00; human review only if extraction confidence is low. Upload the pack as one document (BDA splits and classifies it) or the individual files (max 10 per upload)."
     }
   ]
 }
