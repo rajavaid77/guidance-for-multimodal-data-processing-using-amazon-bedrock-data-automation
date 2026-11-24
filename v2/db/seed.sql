@@ -18,7 +18,9 @@ FROM (VALUES
   ('123456789A', 'Joe Doe', '1965-06-03', 'A12345678', 'AnyHealth Premium', '2024-01-01', NULL, '206 555 0199', '123 Any Street, Any City, CA 11111')
 ) AS v(insured_id_number, insured_name, birth_date, group_number, plan_name, coverage_start, coverage_end, phone_number, address)
 JOIN plans p ON p.plan_name = v.plan_name
-ON CONFLICT (insured_id_number) DO NOTHING;
+ON CONFLICT (insured_id_number) DO UPDATE SET insured_name = EXCLUDED.insured_name, birth_date = EXCLUDED.birth_date,
+  group_number = EXCLUDED.group_number, plan_id = EXCLUDED.plan_id, coverage_start = EXCLUDED.coverage_start,
+  coverage_end = EXCLUDED.coverage_end, phone_number = EXCLUDED.phone_number, address = EXCLUDED.address;
 
 INSERT INTO patients (member_id, first_name, last_name, birth_date, sex, relationship_to_insured)
 SELECT m.member_id, v.first_name, v.last_name, v.birth_date::date, v.sex, v.rel
