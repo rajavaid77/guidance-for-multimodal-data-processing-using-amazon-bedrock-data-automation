@@ -1025,7 +1025,7 @@ def make_rx_label(path: Path) -> None:
     y -= 14
     c.drawString(x0 + 14, y, "Plan: AnyHealth Premium  |  ID 123456789A  |  Grp A12345678")
     y -= 14
-    c.drawString(x0 + 14, y, "Pharmacist: D. Ramirez, RPh")
+    c.drawString(x0 + 14, y, "Pharmacist: Diego Ramirez, RPh")
     y -= 22
     for i, (txt, col) in enumerate(
         [("CHRONIC USE", colors.Color(0.85, 0.1, 0.1)), ("MAY CAUSE HOARSENESS", colors.Color(0.9, 0.6, 0.0)),
