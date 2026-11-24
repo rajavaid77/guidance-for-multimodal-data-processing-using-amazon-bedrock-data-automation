@@ -38,10 +38,10 @@ Before you can use a foundation model in Amazon Bedrock, you must request access
 * If choosing one of [Amazon Titan Text models](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-text-models.html) ensure the model **Supported use cases** include _Agents Support_
 
 #### Using Inference Profiles
-You can use a cross region inference profile in place of a foundation model to route requests to multiple Regions. When using inference profiles, make sure you've requested access to the models and the regions defined in the inference profiles that you want to use. For example, to gain access to make calls to the US Anthropic Claude 3 Haiku inference profile from the US West (Oregon) Region, do the following:
+You can use a cross region inference profile in place of a foundation model to route requests to multiple Regions. When using inference profiles, make sure you've requested access to the models and the regions defined in the inference profiles that you want to use. For example, the default configuration in `deployment/cdk.json` uses the US Amazon Nova Pro inference profile (`us.amazon.nova-pro-v1:0`). To call it from the US West (Oregon) Region, do the following:
 
-  1. Sign into the AWS Management Console in the US East (N. Virginia) Region and request model access to Anthropic Claude 3 Haiku by following the steps at Access Amazon  Bedrock foundation models.
-  2. Change to the US West (Oregon) Region and request model access to Anthropic Claude 3 Haiku. 
+  1. Sign in to the AWS Management Console in the US East (N. Virginia) Region and request model access to Amazon Nova Pro by following the steps at Access Amazon Bedrock foundation models.
+  2. Repeat for each other Region the profile routes to, including US West (Oregon). The Regions are listed in [Supported Regions and models for inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html). 
 
 > [!Important]
 >Take a note of the foundation model id or the inference profile id. You would need to use the model id with the [`cdk deploy command`](#deploy-the-stack)
@@ -132,7 +132,7 @@ You can use a cross region inference profile in place of a foundation model to r
 ## Deployment Validation
 To validate that your AWS CloudFormation stack
 1. Log in to your personal AWS account in the AWS Console.
-2. Navigate to the to the `AWS CloudFormation` Console by searching for AWS CloudFormation in the search bar at the top of the AWS Console page and Click on `CloudFormation` in the results.
+2. Navigate to the to the `AWS CloudFormation` Console by searching for AWS CloudFormation in the search bar at the top of the AWS Console page and Choose on `CloudFormation` in the results.
 3. From the `AWS CloudFormation` in the `Stacks` list, look for a stack with Stack name `claims-review`. Validate that the status shows 'CREATE_COMPLETE'
 
 ![Stack_create_complete][screenshot_stack_create_complete]
@@ -151,7 +151,7 @@ Alternatively, you can use the AWS CLI
 
 
 ## Running the Guidance
-See the guide [here](./b_claims_review_02_run_flow.md) for steps to run the claims review application
+See the [Claims Review Run Flow](./b_claims_review_02_run_flow.md) for steps to run the claims review application
 ### 
 
 ## Security
@@ -221,7 +221,7 @@ The stack sets up the following key AWS resources:
   - Collection Name `claims-vector-store`
   - Index Name `claims_eoc_index`
   
-- Custom resource with Lambda function to create Opensearch vector index 
+- Custom resource with Lambda function to create OpenSearch vector index 
   - function name prefix `claims-review-vectorstorecreatevectorindex`
 
 - Aurora PostgreSQL Serverless Database
@@ -242,7 +242,7 @@ The stack sets up the following key AWS resources:
 
 ### Project Structure
 <details>
-  <summary>Click for Project Structure</summary>
+  <summary>Choose for Project Structure</summary>
 
 ```
 guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/
@@ -351,12 +351,12 @@ The `claims-review` stack has the following main source code files associated wi
 
 - `deployment/stacks/claims_review_stack/agent.py` - The top-level `claims-review` stack that creates bedrock agent resources and uses custom construct to create and configure other related resources include the bedrock knowledge base, vector store, the aurora databaseand BDA automation.
 
-- `deployment/stacks/claims_review_stack/vector_store.py` - Vector store resources include opensearch serverless collection and a Custom resource lambda function to create the vector index for the claims EoC knowledge base
+- `deployment/stacks/claims_review_stack/vector_store.py` - Vector store resources include OpenSearch Serverless collection and a Custom resource lambda function to create the vector index for the claims EoC knowledge base
 
 - `deployment/stacks/claims_review_stack/knowledge_base.py` - A construct encapsulating resources required for the bedrock knowledge base including datasource buckets, datasources, the knowledge base itself and KB logging configuration
 
 
-- `deployment/stacks/claims_review_stack/document_automation.py` - A construct encapsulating resources related to bedrock document automation, include the input/output s3 buckets, lambda function to invoke bda for insights
+- `deployment/stacks/claims_review_stack/document_automation.py` - A construct encapsulating resources related to Amazon Bedrock Data Automation, include the input/output s3 buckets, lambda function to invoke bda for insights
 
 - `deployment/stacks/claims_review_stack/aurora_postgres.py` - Aurora Postgres database resources for the claims review database including, aurora cluster, database and initial schema creation
 
@@ -386,10 +386,10 @@ To update stack resources -
 
 2. Change to the `deployment` directory for the guidance repository
    ```
-   cd guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation
+   cd guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/deployment
    ```
  
-1. Destroy the stack
+3. Destroy the stack
     ```bash
     cdk destroy claims-review
     ```

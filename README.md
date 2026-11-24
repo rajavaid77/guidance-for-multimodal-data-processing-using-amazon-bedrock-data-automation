@@ -4,8 +4,7 @@ Automate document processing using AWS AI/ML services to:
 - Improve decision quality 
 - Reduce operational costs
 - Free up expert resources for high-value tasks
-cd
-This solution uses Amazon Bedrock's Generative AI capabilities to:
+This solution uses the generative AI capabilities of Amazon Bedrock to:
 1. Classify documents
 2. Extract content
 3. Process information using foundation models
@@ -58,7 +57,7 @@ By using this dataset and guidance, you acknowledge that you have read, understo
 - Extracts relevant information
 - Processes results downstream
 
-<img src="assets/architectures/a_lending_flow_architecture.png" width="800" />
+<img alt="Lending flow architecture: S3 upload, EventBridge, Lambda, and Bedrock Data Automation" src="assets/architectures/a_lending_flow_architecture.png" width="800" />
 
 ### Part B: Intelligent Claims Review
 - Processes insurance documents
@@ -67,12 +66,12 @@ By using this dataset and guidance, you acknowledge that you have read, understo
 - Employs Bedrock Agent to determine claim eligibility
 - Updates claims database automatically
 
-<img src="assets/architectures/b_claims_review_architecture.png" width="800" />
+<img alt="Claims review architecture: S3, Bedrock Data Automation, Bedrock Agent, Knowledge Base, Aurora" src="assets/architectures/b_claims_review_architecture.png" width="800" />
 
 ## Getting Started
 
 ### Prerequisites
-1. Active AWS Account ([Create one here](https://aws.amazon.com/resources/create-account/))
+1. Active AWS Account ([Create an account on AWS](https://aws.amazon.com/resources/create-account/))
 2. AWS CLI ([Installation guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
 3. AWS CDK CLI ([Installation guide](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html))
 
@@ -131,20 +130,20 @@ Below you can see the estimated costs of the guidance solution and the assumptio
 This guidance can be deployed only to AWS regions which have these services available: 
 
 - Amazon Bedrock
-- Bedrock Data Exchange
+- Amazon Bedrock Data Automation
 - Bedrock Agents
 - Other services noted above
 
 ### Service Quotas
-Your AWS account has default quotas, also known as service limits, described [here](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html). This guidance can be installed and tested within the default quotas for each of the services used. You can request increases for some quotas. Note that not all quotas can be increased.
+Your AWS account has default quotas, also known as service limits, see [AWS service quotas](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html). This guidance can be installed and tested within the default quotas for each of the services used. You can request increases for some quotas. Note that not all quotas can be increased.
 
-To operate this guidance at scale, it is important to monitor your usage of AWS services and configure alarm settings to notify you when a quota is close to being exceeded. You can find details on visualizing your service quotas and setting alarms [here](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Quotas-Visualize-Alarms.html).  
+To operate this guidance at scale, it is important to monitor your usage of AWS services and configure alarm settings to notify you when a quota is close to being exceeded. See  [Visualizing your service quotas and setting alarms](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Quotas-Visualize-Alarms.html).  
 
 ## Revisions
 
-Document all notable changes to this project.
-
-Consider formatting this section based on Keep a Changelog, and adhering to Semantic Versioning.
+| Date | Change |
+|------|--------|
+| December 2024 | Initial release |
 
 ## Legal Notice
 

@@ -1,4 +1,4 @@
-# S3 Event Processing with AWS CDK
+# Deploy an Event-Driven BDA Pipeline for Lending Flow with S3, EventBridge and Lambda
 
 This project implements an event-driven architecture using S3, EventBridge, and Lambda functions using AWS CDK.
 
@@ -117,6 +117,7 @@ cdk synth       # Synthesize CloudFormation template
 cdk deploy      # Deploy stack
 cdk diff        # Compare deployed stack with current state
 cdk destroy     # Remove stack
+```
 
 
 

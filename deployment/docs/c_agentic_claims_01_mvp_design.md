@@ -49,7 +49,7 @@ flowchart LR
     end
 
     subgraph BR["Amazon Bedrock"]
-        llm["Foundation Models<br/>Claude Sonnet / Haiku"]
+        llm["Foundation Models<br/>Claude Sonnet 5.5 / Haiku 5.5"]
         grd["Bedrock Guardrails"]
         kb["Bedrock Knowledge Bases<br/>Policies, EoC, LCD/NCD"]
     end
@@ -141,11 +141,11 @@ the claim or pauses for an examiner decision.
 
 | Agent | Responsibility | Tools | Model |
 |-------|----------------|-------|-------|
-| Supervisor | Plans the review, calls the specialists, merges their findings into the final structured output | Specialist agents (as tools), AgentCore Memory | Claude Sonnet |
-| Validation | Required fields, formats (NPI check digit, dates), ICD-10/CPT/POS/modifier validity, exact duplicates | `validate_codes`, `find_duplicates` | Claude Haiku |
-| Eligibility | Member match, coverage active on date of service, plan benefits, coordination of benefits (boxes 9, 11d) | `check_eligibility` | Claude Haiku |
-| Clinical Review | Reconcile each billed line against the evidence; check diagnosis-to-procedure medical necessity against policy | Bedrock KB `retrieve` | Claude Sonnet |
-| Adjudication | Apply plan rules to the findings, set line decisions and reason codes, persist the result | `save_decision` | Claude Sonnet |
+| Supervisor | Plans the review, calls the specialists, merges their findings into the final structured output | Specialist agents (as tools), AgentCore Memory | Claude Sonnet 5.5 (`us.anthropic.claude-sonnet-5-5`) |
+| Validation | Required fields, formats (NPI check digit, dates), ICD-10/CPT/POS/modifier validity, exact duplicates | `validate_codes`, `find_duplicates` | Claude Haiku 5.5 (`us.anthropic.claude-haiku-5-5`) |
+| Eligibility | Member match, coverage active on date of service, plan benefits, coordination of benefits (boxes 9, 11d) | `check_eligibility` | Claude Haiku 5.5 (`us.anthropic.claude-haiku-5-5`) |
+| Clinical Review | Reconcile each billed line against the evidence; check diagnosis-to-procedure medical necessity against policy | Bedrock KB `retrieve` | Claude Sonnet 5.5 (`us.anthropic.claude-sonnet-5-5`) |
+| Adjudication | Apply plan rules to the findings, set line decisions and reason codes, persist the result | `save_decision` | Claude Sonnet 5.5 (`us.anthropic.claude-sonnet-5-5`) |
 
 Design choices:
 - **Step Functions handles the deterministic steps** (extraction, retries, the human-review pause, SLAs); **agents handle the reasoning**. Each part is easier to audit and retry this way.

@@ -2,9 +2,9 @@
 
 In the second flow, we will submit documents that will be processed and the extracted contents stored in an Amazon Bedrock Knowledge Base, to create a Retrieval Augmented Generation (RAG) database.  We will then build a Bedrock Agent to process an insurance claim. The agent will use Generative AI to determine the eligibility of the claim, and update the claims database.
 
-You have now completed the install and setup of the solution to process Insurance Claims. Our deployed solution has the components shown. If you have not completed this step, please go back and complete the deployment steps [here](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/deployment/docs/b_claims_review_01_deploy.md) before proceeding. 
+You have now completed the install and setup of the solution to process Insurance Claims. Our deployed solution has the components shown. If you have not completed this step, please go back and [Deploy an Event-Driven BDA Pipeline for Lending Flow with S3, EventBridge and Lambda](https://github.com/aws-solutions-library-samples/guidance-for-multimodal-data-processing-using-amazon-bedrock-data-automation/blob/main/deployment/docs/b_claims_review_01_deploy.md) before proceeding. 
 
-<img src="../../assets/architectures/b_claims_review_architecture.png" width="800" />
+<img alt="Claims review architecture: S3, Bedrock Data Automation, Bedrock Agent, Knowledge Base, Aurora" src="../../assets/architectures/b_claims_review_architecture.png" width="800" />
 
 
 BDA is a generative-AI powered capability of Amazon Bedrock that enables you to automate your end-to-end Intelligent Document Processing (IDP) workflows quickly, accurately and at scale. A blueprint is a structural representation of your desired output for a specific document type (e.g. invoices, drivers licenses or IRS form 1099-INT). We then feed new unseen documents into the solution, for BDA to detect the document type, apply the correct blueprint and send the extracted results for downstream processing.
@@ -34,13 +34,13 @@ The output shows the Ingestion process starting and completing.
 
 In this step, we will use Bedrock in the AWS Console to view and access the Insurance EOC Knowledge Base. We will use the console to issue prompts 
 
-1. Open the Amazon Bedrock Console and Click on `Knowledge Bases` under `Builder Tools` in the the sidebar to navigate to the Knowledge Bases view
+1. Open the Amazon Bedrock Console and Choose on `Knowledge Bases` under `Builder Tools` in the the sidebar to navigate to the Knowledge Bases view
 ![Navigate to Knowledge Base Page][screenshot_view_kb]
 
-2. In the Knowledge Bases view, select the Knowledge Base named `claims-eoc-kb` and click on `Test Knowledge Base`
+2. In the Knowledge Bases view, select the Knowledge Base named `claims-eoc-kb` and choose on `Test Knowledge Base`
 ![Test Knowledge Base][screenshot_test_kb]
 
-3. In the `Test Knowledge Base` pane on the right side of the page, Click Select model, select a model of choice from the available models and Click Apply.
+3. In the `Test Knowledge Base` pane on the right side of the page, Choose Select model, select a model of choice from the available models and Choose Apply.
 
 > [!Note]
 > Choose the model of your choice and please follow the model provider acceptable end user policy. Results will vary based on the foundational model chosen
@@ -98,7 +98,7 @@ An example output (screenshot below) of the command lists the summary of the aut
 
 ## Viewing Logs and Troubleshooting
 
-#### Error: Claim output not found for claim reference ID: <<claim_reference_id>>. Please try again later when trying to view claim output in [Step 2](#step2_claimreview)
+### Error: Claim output not found for claim reference ID: <<claim_reference_id>>. Please try again later when trying to view claim output in [Step 2](#step2_claimreview)
 This means an error in the claims review process. We can look at CloudWatch Logs to identify the root cause of the error
 
 1. View and analyse log stream for the BDA invoke automation lambda function for any errors
