@@ -29,10 +29,12 @@ def build_boto3_layer() -> str:
     # boto3/botocore are pure Python wheels, so no platform-specific build is needed.
     args = ["install", "-r", str(LAYER_REQ), "--target", str(target), "--quiet"]
     uv = shutil.which("uv")
+    # Argument lists are fixed at build time: the interpreter path, a PATH-resolved uv, and module-level
+    # constant paths. shell=False (list form), so no shell parsing or injection is possible.
     if uv:
-        subprocess.run([uv, "pip", *args, "--python", sys.executable], check=True)
+        subprocess.run([uv, "pip", *args, "--python", sys.executable], check=True)  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-audit
     else:
-        subprocess.run([sys.executable, "-m", "pip", *args, "--no-cache-dir"], check=True)
+        subprocess.run([sys.executable, "-m", "pip", *args, "--no-cache-dir"], check=True)  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-audit
     marker.write_text(LAYER_REQ.read_text())
     return str(LAYER_BUILD)
 

@@ -70,3 +70,9 @@ ehthumbs.db
 Thumbs.db
 deployment/lambda/claims_review/layer/python/
 .idea
+.omni/
+.claude/
+.github/
+.cursor/
+.kiro/
+.agents/
