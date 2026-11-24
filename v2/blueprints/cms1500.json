@@ -122,7 +122,7 @@
     "patient_phone_number": {
       "type": "string",
       "inferenceType": "explicit",
-      "instruction": "Item 5 telephone including area code, e.g. (206) 550-0100."
+      "instruction": "Item 5 telephone including area code, e.g. (206) 555-0100."
     },
     "patient_relationship_to_insured": {
       "type": "string",
@@ -429,7 +429,7 @@
     "physician_name": {
       "type": "string",
       "inferenceType": "inferred",
-      "instruction": "Item 31 signer's name as written, e.g. 'Joe Smith MD'."
+      "instruction": "Item 31 signer's name as written, e.g. 'Carlos Salazar MD'."
     },
     "physician_signed_date": {
       "type": "string",

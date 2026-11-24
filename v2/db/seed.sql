@@ -15,7 +15,7 @@ FROM (VALUES
   ('11-2234-10190', 'Jane Doe', '1965-06-12', 'G4683A', 'AnyHealth Plus', '2000-01-01', NULL, '858 555 0100', '123 Any Street, Any City, CA 92127'),
   ('12-1134-90110', 'Ana Carolina Silva', '1992-06-15', 'G5794A', 'AnyHealth Premium', '2000-01-01', NULL, '555 555 0192', '100 Main Street, Anytown, USA'),
   ('90-1234-11012', 'Mateo Jackson', '1985-11-03', 'G6905B', 'AnyHealth Standard', '2019-01-01', NULL, '555 555 0194', '404 Anywhere Street, Nowhere Town, USA'),
-  ('123456789A', 'Joe Doe', '1965-06-03', 'A12345678', 'AnyHealth Premium', '2024-01-01', NULL, '206 550 0199', '123 Any Street, Any City, CA 11111')
+  ('123456789A', 'Joe Doe', '1965-06-03', 'A12345678', 'AnyHealth Premium', '2024-01-01', NULL, '206 555 0199', '123 Any Street, Any City, CA 11111')
 ) AS v(insured_id_number, insured_name, birth_date, group_number, plan_name, coverage_start, coverage_end, phone_number, address)
 JOIN plans p ON p.plan_name = v.plan_name
 ON CONFLICT (insured_id_number) DO NOTHING;
@@ -33,7 +33,7 @@ WHERE NOT EXISTS (SELECT 1 FROM patients x WHERE x.member_id = m.member_id AND x
 
 -- Demo providers. NPIs pass the CMS Luhn check digit (prefix 80840).
 INSERT INTO providers (provider_id, npi, name, tax_id, in_network) VALUES
-('PRV-1001', '1234567893', 'Any City Medical Group', '98-7654321', TRUE),
+('PRV-1001', '1234567893', 'AnyCompany Medical Group', '12-3456789', TRUE),
 ('PRV-1002', '1245319599', 'Nowhere Town Cardiology', '45-6789012', TRUE)
 ON CONFLICT (provider_id) DO UPDATE SET name = EXCLUDED.name, tax_id = EXCLUDED.tax_id;
 

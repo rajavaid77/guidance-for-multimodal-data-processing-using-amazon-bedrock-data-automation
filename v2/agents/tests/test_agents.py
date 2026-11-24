@@ -18,7 +18,7 @@ from claims_agents.supervisor import ClaimReview, SpecialistToolkit
 
 CASE = {
     "claim_id": "CLM-" + "a" * 32,
-    "provider": {"provider_id": "PRV-1001", "npi": "1234567893", "name": "Any City Spine"},
+    "provider": {"provider_id": "PRV-1001", "npi": "1234567893", "name": "AnyCompany Spine"},
     "cms1500": {"insured_id_number": {"value": "11-2234-10190", "confidence": 0.98}},
     "service_lines": [
         {"line_number": 1, "procedure_code": "97810", "charge_amount": 170.0},

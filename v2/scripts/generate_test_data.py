@@ -31,9 +31,9 @@ FORMS = REPO / "assets" / "data" / "claims_review" / "cms_1500"
 OUT = REPO / "assets" / "data" / "claims_review" / "test_scenarios"
 EVIDENCE = OUT / "evidence"
 
-RENDERING_NPI = "1654329873"  # Joe Smith MD (fictional, passes the NPI check digit)
-REFERRING_NPI = "1098765435"  # Alejandro Rosalez MD (fictional)
-BILLING_NPI = "1234567893"  # PRV-1001 Any City Medical Group (seeded provider)
+RENDERING_NPI = "1111111112"  # Carlos Salazar MD (fictional, passes the NPI check digit)
+REFERRING_NPI = "2222222228"  # Alejandro Rosalez MD (fictional)
+BILLING_NPI = "1234567893"  # PRV-1001 AnyCompany Medical Group (seeded provider)
 
 # ----------------------------------------------------------------------------------------------------------------
 # Clean CMS-1500 (S5): replace values of sample4 in place. Keys are the exact text spans on sample4 page 1,
@@ -82,10 +82,10 @@ ADD = [  # (x, top, text, size) - new values in fields that are blank on sample4
     (323, 169, "1967", 8),  # item 3 DOB
     (545, 579, RENDERING_NPI, 8),
     (545, 604, RENDERING_NPI, 8),  # 24J rendering NPI, lines 1-2
-    (66, 722, "98-7654321", 8),  # item 25 tax ID
+    (66, 722, "12-3456789", 8),  # item 25 tax ID
     (222, 722, "JD-20250107", 8),  # item 26 account
-    (418, 744, "Any City Medical Group", 8),
-    (418, 755, "500 Health Way", 8),
+    (418, 744, "AnyCompany Medical Group", 8),
+    (418, 755, "100 Any Street", 8),
     (418, 766, "Any City CA 11111", 8),
     (531, 735, "206", 8),
     (556, 735, "555-0123", 8),  # item 33 phone
@@ -287,11 +287,11 @@ def make_evidence() -> dict[str, Path]:
     f["s1_notes"] = EVIDENCE / "S1_John_Doe_chiropractic_notes.pdf"
     document(
         f["s1_notes"],
-        "Any City Spine and Wellness · NPI 1234567893",
+        "AnyCompany Spine and Wellness · NPI 1234567893",
         "Chiropractic and Acupuncture Visit Notes",
         jd
         + [
-            ("Treating provider", "Dr. Jane Smith, DC"),
+            ("Treating provider", "Dr. Martha Rivera, DC"),
             ("Dates", "10/15/2005 - 10/30/2005"),
         ],
         [
@@ -320,18 +320,18 @@ def make_evidence() -> dict[str, Path]:
                 "documented in this record.",
             ),
         ],
-        "Electronically signed: Dr. Jane Smith, DC - 10/30/2005",
+        "Electronically signed: Dr. Martha Rivera, DC - 10/30/2005",
     )
     f["s1_xray"] = EVIDENCE / "S1_John_Doe_xray_report.pdf"
     document(
         f["s1_xray"],
-        "Any City Imaging Center",
+        "AnyCompany Imaging Center",
         "Radiology Report",
         jd
         + [
             ("Exam", "XR hips bilateral with pelvis, 2 views (CPT 73521)"),
             ("Date of service", "10/20/2005"),
-            ("Ordering provider", "Dr. Jane Smith, DC"),
+            ("Ordering provider", "Dr. Martha Rivera, DC"),
             ("Clinical indication", "Back pain"),
         ],
         [
@@ -345,7 +345,7 @@ def make_evidence() -> dict[str, Path]:
                 "Normal bilateral hips. Indication (back pain) does not reference hip symptoms.",
             ),
         ],
-        "Electronically signed: Maria Garcia, MD, Radiologist - 10/20/2005",
+        "Electronically signed: María García, MD, Radiologist - 10/20/2005",
     )
 
     # ---- S2: Ana Silva (AnyHealth Premium) - left hip pain, 2005 ----
@@ -357,9 +357,9 @@ def make_evidence() -> dict[str, Path]:
     f["s2_ortho"] = EVIDENCE / "S2_Ana_Silva_orthopedic_procedure_note.pdf"
     document(
         f["s2_ortho"],
-        "Any City Orthopedics",
+        "AnyCompany Orthopedics",
         "Orthopedic Visit and Procedure Note",
-        asv + [("Provider", "Dr. Jane Smith, MD"), ("Date of service", "09/11/2005")],
+        asv + [("Provider", "Dr. Martha Rivera, MD"), ("Date of service", "09/11/2005")],
         [
             (
                 "History",
@@ -380,14 +380,14 @@ def make_evidence() -> dict[str, Path]:
                 "A lumbar spine X-ray was also obtained today to screen for referred pain from the spine.",
             ),
         ],
-        "Electronically signed: Dr. Jane Smith, MD - 09/11/2005",
+        "Electronically signed: Dr. Martha Rivera, MD - 09/11/2005",
     )
     f["s2_pt"] = EVIDENCE / "S2_Ana_Silva_physical_therapy_plan_of_care.pdf"
     document(
         f["s2_pt"],
-        "Any City Physical Therapy",
+        "AnyCompany Physical Therapy",
         "Physical Therapy Evaluation and Plan of Care",
-        asv + [("Therapist", "Sam Lee, PT, DPT"), ("Date of service", "09/11/2005")],
+        asv + [("Therapist", "Paulo Santos, PT, DPT"), ("Date of service", "09/11/2005")],
         [
             (
                 "Assessment",
@@ -397,7 +397,7 @@ def make_evidence() -> dict[str, Path]:
             (
                 "Plan of care",
                 "Therapeutic exercise (97110-GP) 2x/week for 6 weeks; goals LEFS 65/80, abductors 4+/5. "
-                "Signed by referring physician Dr. Jane Smith, MD on 09/11/2005.",
+                "Signed by referring physician Dr. Martha Rivera, MD on 09/11/2005.",
             ),
             (
                 "Treatment today",
@@ -412,7 +412,7 @@ def make_evidence() -> dict[str, Path]:
                 ],
             ),
         ],
-        "Electronically signed: Sam Lee, PT, DPT - 09/11/2005",
+        "Electronically signed: Paulo Santos, PT, DPT - 09/11/2005",
     )
 
     # ---- S4 and S5: Jane M Doe (spouse of Joe Doe, AnyHealth Premium), 2025 ----
@@ -424,11 +424,11 @@ def make_evidence() -> dict[str, Path]:
     f["s5_note"] = EVIDENCE / "S5_Jane_Doe_pulmonology_visit_2025-01-07.pdf"
     document(
         f["s5_note"],
-        "Any City Medical Group · Pulmonology · NPI 1234567893",
+        "AnyCompany Medical Group · Pulmonology · NPI 1234567893",
         "Office Visit Note",
         jane
         + [
-            ("Rendering provider", f"Joe Smith, MD (NPI {RENDERING_NPI})"),
+            ("Rendering provider", f"Carlos Salazar, MD (NPI {RENDERING_NPI})"),
             ("Referring provider", f"Alejandro Rosalez, MD (NPI {REFERRING_NPI})"),
             ("Date of service", "01/07/2025 · in-person office visit (POS 11)"),
         ],
@@ -468,17 +468,17 @@ def make_evidence() -> dict[str, Path]:
             ),
             ("Plan", "Follow up in 4 weeks; return precautions reviewed."),
         ],
-        "Electronically signed: Joe Smith, MD - 01/07/2025",
+        "Electronically signed: Carlos Salazar, MD - 01/07/2025",
     )
     f["s5_spiro"] = EVIDENCE / "S5_Jane_Doe_spirometry_report_2025-01-07.pdf"
     document(
         f["s5_spiro"],
-        "Any City Medical Group · Pulmonary Function Lab",
+        "AnyCompany Medical Group · Pulmonary Function Lab",
         "Spirometry Report (CPT 94060)",
         jane
         + [
             ("Date of test", "01/07/2025"),
-            ("Ordering/interpreting", f"Joe Smith, MD (NPI {RENDERING_NPI})"),
+            ("Ordering/interpreting", f"Carlos Salazar, MD (NPI {RENDERING_NPI})"),
             ("Indication", "COPD with asthma, acute exacerbation (J44.9, J45.909)"),
         ],
         [
@@ -503,15 +503,15 @@ def make_evidence() -> dict[str, Path]:
                 "(+15%, +210 mL), consistent with COPD-asthma overlap. Test quality: grade A.",
             ),
         ],
-        "Electronically signed: Joe Smith, MD - 01/07/2025",
+        "Electronically signed: Carlos Salazar, MD - 01/07/2025",
     )
 
     f["s4_note"] = EVIDENCE / "S4_Jane_Doe_visit_and_testing_2025.pdf"
     document(
         f["s4_note"],
-        "Any City Medical Group · NPI 1234567893",
+        "AnyCompany Medical Group · NPI 1234567893",
         "Visit Notes and Test Results (Jan-Mar 2025)",
-        jane + [("Rendering provider", f"Joe Smith, MD (NPI {RENDERING_NPI})")],
+        jane + [("Rendering provider", f"Carlos Salazar, MD (NPI {RENDERING_NPI})")],
         [
             (
                 "01/07/2025 - Office visit (in person, POS 11)",
@@ -530,12 +530,12 @@ def make_evidence() -> dict[str, Path]:
                 "documented as asthma symptom control. No documentation of daily sputum production or bronchiectasis.",
             ),
         ],
-        "Electronically signed: Joe Smith, MD - 03/20/2025",
+        "Electronically signed: Carlos Salazar, MD - 03/20/2025",
     )
     f["s4_lab"] = EVIDENCE / "S4_Jane_Doe_urine_albumin_lab_report.pdf"
     document(
         f["s4_lab"],
-        "Any City Medical Group · In-office laboratory (CLIA 05D1234567)",
+        "AnyCompany Medical Group · In-office laboratory (CLIA 00D0000000)",
         "Laboratory Report - Urine Albumin (CPT 82043)",
         jane + [("Indication", "Type 2 diabetes with diabetic kidney complication (E11.29)")],
         [
@@ -563,7 +563,7 @@ def make_evidence() -> dict[str, Path]:
                 "urine albumin tests were performed between 03/15 and 03/19.",
             ),
         ],
-        "Electronically reviewed: Joe Smith, MD - 03/20/2025",
+        "Electronically reviewed: Carlos Salazar, MD - 03/20/2025",
     )
 
     # ---- S4B: supplemental evidence for the S4 claim (Jane Doe, Premium). The S4 claim form is submitted without
@@ -573,13 +573,13 @@ def make_evidence() -> dict[str, Path]:
     f["s4b_visit"] = EVIDENCE / "S4B_Jane_Doe_office_visit_2025-01-07.pdf"
     document(
         f["s4b_visit"],
-        "Any City Medical Group · NPI 1234567893",
+        "AnyCompany Medical Group · NPI 1234567893",
         "Office Visit Progress Note",
         jane
         + [
             ("Date of service", "01/07/2025"),
             ("Place of service", "11 - Office (in person). No telehealth was used."),
-            ("Rendering provider", f"Joe Smith, MD (NPI {RENDERING_NPI})"),
+            ("Rendering provider", f"Carlos Salazar, MD (NPI {RENDERING_NPI})"),
             ("Visit type", "Established patient, follow-up. Total time on the date of service: 35 minutes."),
         ],
         [
@@ -610,17 +610,17 @@ def make_evidence() -> dict[str, Path]:
                 "None. No separately billed test or procedure was performed on 01/07/2025.",
             ),
         ],
-        "Electronically signed: Joe Smith, MD - 01/07/2025",
+        "Electronically signed: Carlos Salazar, MD - 01/07/2025",
     )
     f["s4b_spiro"] = EVIDENCE / "S4B_Jane_Doe_spirometry_report_2025-02-06_07.pdf"
     document(
         f["s4b_spiro"],
-        "Any City Medical Group · Pulmonary function laboratory",
+        "AnyCompany Medical Group · Pulmonary function laboratory",
         "Spirometry Report - Pre/Post Bronchodilator (CPT 94060, technical component)",
         jane
         + [
             ("Indication", "COPD (J44.9) with asthma overlap (J45.909); symptom worsening noted at the 01/07/2025 visit"),
-            ("Ordering physician", f"Joe Smith, MD (NPI {RENDERING_NPI})"),
+            ("Ordering physician", f"Carlos Salazar, MD (NPI {RENDERING_NPI})"),
             ("Interpretation", "Outside pulmonologist (professional component billed separately by that provider)"),
         ],
         [
@@ -662,7 +662,7 @@ def make_evidence() -> dict[str, Path]:
                 "asthmatic component.",
             ),
         ],
-        "Electronically signed: Joe Smith, MD - 02/07/2025",
+        "Electronically signed: Carlos Salazar, MD - 02/07/2025",
     )
     return f
 
@@ -674,7 +674,7 @@ def make_evidence() -> dict[str, Path]:
 S8_DOS = "04/15/2025"
 S8_ACCOUNT = "JD-20250415"
 S8_COPAY_CENTS = 1000  # AnyHealth Premium in-network office visit co-pay: $10 (Schedule of Benefits, section 2)
-HOSPITALIST_NPI = "1306849450"  # Maria Chen, MD (fictional, passes the NPI check digit)
+HOSPITALIST_NPI = "3333333334"  # Saanvi Sarkar, MD (fictional, passes the NPI check digit)
 S8_LINES = [  # (CPT, modifier, dx pointer, charge in cents, units, description)
     ("99214", "25", "ABC", 18500, 1, "Established patient office visit, moderate MDM"),
     ("94060", "", "AC", 11200, 1, "Spirometry, pre- and post-bronchodilator"),
@@ -692,15 +692,16 @@ S8_KEEP = {
     ("J44.9", 80), ("E11.29", 171), ("J45.909", 264), ("234 Another Any Street, Any Avenue", 71),
     ("AnotherCity", 85), ("CA", 249), ("99999", 76), ("206", 165), ("550-0100", 190),
 }  # fmt: skip
+S8_REWRITE = {"550-0100": "555-0100", "550-0199": "555-0199"}  # kept sample4 values redrawn with 555-01xx phones
 S8_TEXT = [  # (x, top, text, size): new values on sample4
     (281, 169, "02", 8), (303, 169, "14", 8), (323, 169, "1967", 8),  # item 3 DOB
     (100, 408, "Signature on File", 8), (324, 403, S8_DOS, 10),  # item 12 + date
     (74, 435, "03", 10), (93, 435, "22", 10), (119, 435, "2025", 10), (172, 435, "431", 8),  # item 14 onset + qualifier
     (66, 458, "DN", 8), (289, 460, REFERRING_NPI, 8),  # item 17 qualifier, 17b
-    (66, 722, "98-7654321", 8), (222, 722, S8_ACCOUNT, 8),  # items 25, 26
-    (158, 767, S8_DOS, 10), (222, 744, "Any City Medical Group", 8), (222, 755, "500 Health Way", 8),
+    (66, 722, "12-3456789", 8), (222, 722, S8_ACCOUNT, 8),  # items 25, 26
+    (158, 767, S8_DOS, 10), (222, 744, "AnyCompany Medical Group", 8), (222, 755, "100 Any Street", 8),
     (222, 766, "Any City CA 11111", 8), (238, 781, BILLING_NPI, 8),  # items 31 date, 32, 32a
-    (418, 744, "Any City Medical Group", 8), (418, 755, "500 Health Way", 8), (418, 766, "Any City CA 11111", 8),
+    (418, 744, "AnyCompany Medical Group", 8), (418, 755, "100 Any Street", 8), (418, 766, "Any City CA 11111", 8),
     (531, 735, "206", 8), (556, 735, "555-0123", 8), (432, 781, BILLING_NPI, 8),  # item 33, 33a
 ]  # fmt: skip
 # Item 18 hospitalization dates (From / To): x positions of MM, DD, YYYY
@@ -740,7 +741,8 @@ def build_full_form(src: Path, dst: Path) -> None:
         if "Arial" in w["fontname"] and ("DTELUR" in w["fontname"] or (w["text"], round(w["x0"])) in S8_KEEP):
             size = w["bottom"] - w["top"]
             c.setFont("Helvetica", size)
-            c.drawString(w["x0"], height - w["bottom"] + 0.21 * size + 0.8, w["text"])  # keep the original baseline
+            text = S8_REWRITE.get(w["text"], w["text"])
+            c.drawString(w["x0"], height - w["bottom"] + 0.21 * size + 0.8, text)  # keep the original baseline
     for x, top, text, size in S8_TEXT:
         put(x, top, text, size)
     for x, top, text in S8_HOSP:
@@ -762,8 +764,8 @@ def build_full_form(src: Path, dst: Path) -> None:
     put(476, 722, f"{S8_TOTAL_CENTS % 100:02d}")  # item 28
     put(537, 722, f"{S8_COPAY_CENTS // 100}", right=True)
     put(547, 722, f"{S8_COPAY_CENTS % 100:02d}")  # item 29
-    c.setFont("Times-Italic", 12)
-    c.drawString(73, height - 778, "Joe Smith MD")  # item 31 signature
+    c.setFont("Times-Italic", 10)
+    c.drawString(73, height - 778, "Carlos Salazar MD")  # item 31 signature (10 pt so it ends before the date)
     c.setLineWidth(1.2)
     c.setStrokeColor(colors.black)
     for x0, top, x1, bottom in S8_CHECK:
@@ -952,7 +954,7 @@ def make_insurance_card(path: Path) -> None:
         "Member services (24/7): 1-800-555-0100       TTY: 711",
         "Provider services / eligibility: 1-800-555-0101       Prior authorization: 1-800-555-0102",
         "Submit medical claims to: AnyHealth Claims, P.O. Box 0000, Any City, CA 11111",
-        "Electronic payer ID: 00000       Website: www.anyhealth.example",
+        "Electronic payer ID: 00000       Website: www.example.com",
         "Pharmacy help desk: 1-800-555-0103       Behavioral health: 1-800-555-0104",
         "This card does not guarantee coverage or payment. Present it at every visit.",
         "In an emergency call 911 or go to the nearest emergency room.",
@@ -980,9 +982,9 @@ def make_rx_label(path: Path) -> None:
     c.rect(x0, y0 + lh - 52, lw, 52, fill=1, stroke=0)
     c.setFillColor(colors.white)
     c.setFont("Helvetica-Bold", 16)
-    c.drawCentredString(x0 + lw / 2, y0 + lh - 24, "ANY CITY PHARMACY")
+    c.drawCentredString(x0 + lw / 2, y0 + lh - 24, "ANYCOMPANY PHARMACY")
     c.setFont("Helvetica", 8)
-    c.drawCentredString(x0 + lw / 2, y0 + lh - 38, "100 Main Street, Any City, CA 11111  |  Phone (206) 555-0150")
+    c.drawCentredString(x0 + lw / 2, y0 + lh - 38, "300 Any Street, Any City, CA 11111  |  Phone (206) 555-0150")
     c.drawCentredString(x0 + lw / 2, y0 + lh - 48, "Open daily 8am-9pm")
     c.setFillColor(colors.black)
     y = y0 + lh - 74
@@ -998,7 +1000,7 @@ def make_rx_label(path: Path) -> None:
         y -= 32
 
     c.setFont("Helvetica-Bold", 12)
-    c.drawString(x0 + 14, y, "Rx 0000451")
+    c.drawString(x0 + 14, y, "Rx 0000001")
     c.setFont("Helvetica", 9)
     c.drawRightString(x0 + lw - 14, y, "Fill date: 04/15/2025")
     y -= 24
@@ -1017,13 +1019,13 @@ def make_rx_label(path: Path) -> None:
     c.drawString(x0 + 14, y, "QTY: 1 inhaler (120 actuations)")
     c.drawString(x0 + 200, y, "REFILLS: 5 remaining")
     y -= 16
-    c.drawString(x0 + 14, y, "PRESCRIBER: JOE SMITH, MD   NPI 1654329873")
+    c.drawString(x0 + 14, y, "PRESCRIBER: CARLOS SALAZAR, MD   NPI 1111111112")
     y -= 14
     c.drawString(x0 + 14, y, "Date written: 04/15/2025        Discard after: 04/15/2026")
     y -= 14
     c.drawString(x0 + 14, y, "Plan: AnyHealth Premium  |  ID 123456789A  |  Grp A12345678")
     y -= 14
-    c.drawString(x0 + 14, y, "Pharmacist: A. Lopez, RPh")
+    c.drawString(x0 + 14, y, "Pharmacist: D. Ramirez, RPh")
     y -= 22
     for i, (txt, col) in enumerate(
         [("CHRONIC USE", colors.Color(0.85, 0.1, 0.1)), ("MAY CAUSE HOARSENESS", colors.Color(0.9, 0.6, 0.0)),
@@ -1047,12 +1049,12 @@ def make_rx_label(path: Path) -> None:
 def make_bank_statement(path: Path) -> None:
     w, h = letter
     c = canvas.Canvas(str(path), pagesize=letter)
-    c.setTitle("Any Bank checking statement - April 2025")
+    c.setTitle("AnyCompany Bank checking statement - April 2025")
     _specimen(c, w, h)
     navy = colors.Color(0.05, 0.25, 0.45)
     c.setFillColor(navy)
     c.setFont("Helvetica-Bold", 22)
-    c.drawString(50, h - 78, "ANY BANK")
+    c.drawString(50, h - 78, "ANYCOMPANY BANK")
     c.setFont("Helvetica", 9)
     c.setFillColor(colors.black)
     c.drawString(50, h - 92, "Checking Account Statement  |  Member FDIC (synthetic)  |  1-800-555-0120")
@@ -1062,19 +1064,19 @@ def make_bank_statement(path: Path) -> None:
     c.drawString(50, h - 133, "234 Another Any Street, Any Avenue")
     c.drawString(50, h - 146, "AnotherCity, CA 99999")
     c.drawString(340, h - 120, "Statement period: 04/01/2025 - 04/30/2025")
-    c.drawString(340, h - 133, "Account number: 0000-1234 (Everyday Checking)")
+    c.drawString(340, h - 133, "Account number: 0000-0000 (Everyday Checking)")
     c.drawString(340, h - 146, "Page 1 of 1")
     tx = [  # (date, description, amount in cents; negative = withdrawal)
-        ("04/03", "DIRECT DEPOSIT - ANYCO PAYROLL", 215000),
-        ("04/04", "FRESH MART #112 GROCERIES", -8642),
-        ("04/05", "ANY CITY UTILITIES - ELECTRIC", -11230),
-        ("04/10", "FRESH MART #112 GROCERIES", -6418),
-        ("04/15", "DIRECT DEPOSIT - ANYCO PAYROLL", 215000),
-        ("04/15", "ANY CITY MEDICAL GROUP - COPAY 04/15/2025", -S8_COPAY_CENTS),
-        ("04/15", "ANY CITY PHARMACY #0415", -3500),
-        ("04/17", "STREAMINGCO SUBSCRIPTION", -1599),
-        ("04/21", "GASSTOP #33 FUEL", -4275),
-        ("04/25", "ANY CITY PROPERTY MGMT - RENT", -145000),
+        ("04/03", "DIRECT DEPOSIT - EXAMPLE CORP PAYROLL", 215000),
+        ("04/04", "ANYCOMPANY GROCERY #112", -8642),
+        ("04/05", "ANYCOMPANY UTILITIES - ELECTRIC", -11230),
+        ("04/10", "ANYCOMPANY GROCERY #112", -6418),
+        ("04/15", "DIRECT DEPOSIT - EXAMPLE CORP PAYROLL", 215000),
+        ("04/15", "ANYCOMPANY MEDICAL GROUP - COPAY 04/15/2025", -S8_COPAY_CENTS),
+        ("04/15", "ANYCOMPANY PHARMACY #0415", -3500),
+        ("04/17", "ANYCOMPANY STREAMING SUBSCRIPTION", -1599),
+        ("04/21", "ANYCOMPANY FUEL #33", -4275),
+        ("04/25", "ANYCOMPANY PROPERTY MGMT - RENT", -145000),
     ]
     start = 341257
     bal = start
@@ -1123,23 +1125,23 @@ def make_s8() -> dict[str, Path]:
     make_bank_statement(f["bank_statement"])
 
     jane = [("Patient", "Jane M Doe"), ("DOB", "02/14/1967"), ("Insured ID", "123456789A (AnyHealth Premium)")]
-    clinic = "Any City Medical Group · NPI 1234567893"
+    clinic = "AnyCompany Medical Group · NPI 1234567893"
     document(
         f["discharge_summary"],
-        "Any City General Hospital",
+        "AnyCompany General Hospital",
         "Hospital Discharge Summary",
         [
-            ("Hospital name", "Any City General Hospital"),
-            ("Hospital contact", "1000 Hospital Drive, Any City, CA 11111 · Phone (206) 555-0190 · Fax (206) 555-0191"),
+            ("Hospital name", "AnyCompany General Hospital"),
+            ("Hospital contact", "200 Any Street, Any City, CA 11111 · Phone (206) 555-0190 · Fax (206) 555-0191"),
             ("Admitted date", "03-24-2025"),
             ("Discharged date", "03-28-2025"),
             ("Discharged to", "Home (self-care) with outpatient follow-up"),
             ("Patient name", "Jane M Doe"),
             ("Gender", "Female"),
-            ("Patient ID (MRN)", "MRN-00458213"),
+            ("Patient ID (MRN)", "MRN-00000000"),
             ("Date of birth", "02/14/1967"),
             ("Insured ID", "123456789A (AnyHealth Premium)"),
-            ("Provider name", "Maria Chen, MD (attending hospitalist)"),
+            ("Provider name", "Saanvi Sarkar, MD (attending hospitalist)"),
             ("Provider ID (NPI)", HOSPITALIST_NPI),
         ],
         [
@@ -1160,11 +1162,11 @@ def make_s8() -> dict[str, Path]:
                 "Discharged 03-28-2025 in stable condition, SpO2 94% on room air. Complete the prednisone taper "
                 "and continue the budesonide-formoterol inhaler, two puffs twice daily. Check blood glucose four "
                 "times daily while on steroids. Return to the emergency department for worsening breathlessness, "
-                "fever or chest pain. Follow-up with Joe Smith, MD (Any City Medical Group) within 2 weeks for "
+                "fever or chest pain. Follow-up with Carlos Salazar, MD (AnyCompany Medical Group) within 2 weeks for "
                 "repeat spirometry and diabetes kidney monitoring.",
             ),
         ],
-        f"Electronically signed: Maria Chen, MD (NPI {HOSPITALIST_NPI}) - 03/28/2025",
+        f"Electronically signed: Saanvi Sarkar, MD (NPI {HOSPITALIST_NPI}) - 03/28/2025",
     )
     document(
         f["office_visit_note"],
@@ -1174,7 +1176,7 @@ def make_s8() -> dict[str, Path]:
             ("Patient", "Jane M Doe · DOB 02/14/1967 · Insured ID 123456789A (AnyHealth Premium)"),
             ("Date of service", S8_DOS),
             ("Place of service", "11 - Office. In-person visit. No telehealth was used."),
-            ("Rendering provider", f"Joe Smith, MD (NPI {RENDERING_NPI})"),
+            ("Rendering provider", f"Carlos Salazar, MD (NPI {RENDERING_NPI})"),
             ("Referring provider", f"Alejandro Rosalez, MD (NPI {REFERRING_NPI})"),
             ("Visit type", "Established patient, post-hospitalization follow-up. Time spent on the E/M, excluding the "
              "separately reported tests: 35 minutes."),
@@ -1213,16 +1215,16 @@ def make_s8() -> dict[str, Path]:
                 "collected at check-in.",
             ),
         ],
-        f"Electronically signed: Joe Smith, MD - {S8_DOS}",
+        f"Electronically signed: Carlos Salazar, MD - {S8_DOS}",
     )
     document(
         f["spirometry_report"],
-        "Any City Medical Group · Pulmonary Function Lab",
+        "AnyCompany Medical Group · Pulmonary Function Lab",
         "Spirometry Report - Pre/Post Bronchodilator (CPT 94060)",
         jane
         + [
             ("Date of test", f"{S8_DOS} (performed in the office)"),
-            ("Ordering/interpreting", f"Joe Smith, MD (NPI {RENDERING_NPI})"),
+            ("Ordering/interpreting", f"Carlos Salazar, MD (NPI {RENDERING_NPI})"),
             ("Indication", "COPD (J44.9) with asthma (J45.909), follow-up after hospitalization"),
             ("Sessions", "1 session on 04/15/2025. Test quality: grade A (acceptability and repeatability criteria met)."),
         ],  # fmt: skip
@@ -1242,17 +1244,17 @@ def make_s8() -> dict[str, Path]:
                 "+210 mL), consistent with COPD-asthma overlap. Improved from the pre-admission baseline.",
             ),
         ],
-        f"Electronically signed: Joe Smith, MD (interpreting physician) - {S8_DOS}",
+        f"Electronically signed: Carlos Salazar, MD (interpreting physician) - {S8_DOS}",
     )
     document(
         f["urine_albumin_report"],
-        "Any City Medical Group · In-office laboratory (CLIA 05D1234567)",
+        "AnyCompany Medical Group · In-office laboratory (CLIA 00D0000000)",
         "Laboratory Report - Urine Albumin (CPT 82043)",
         jane
         + [
             ("Indication", "Type 2 diabetes with diabetic kidney complication (E11.29)"),
-            ("Testing location", "Performed in the office laboratory (CLIA 05D1234567); not sent to an outside lab"),
-            ("Ordering physician", f"Joe Smith, MD (NPI {RENDERING_NPI})"),
+            ("Testing location", "Performed in the office laboratory (CLIA 00D0000000); not sent to an outside lab"),
+            ("Ordering physician", f"Carlos Salazar, MD (NPI {RENDERING_NPI})"),
         ],  # fmt: skip
         [
             (
@@ -1268,16 +1270,16 @@ def make_s8() -> dict[str, Path]:
                 "date. Persistent albuminuria consistent with diabetic kidney disease.",
             ),
         ],
-        f"Electronically reviewed: Joe Smith, MD - {S8_DOS}",
+        f"Electronically reviewed: Carlos Salazar, MD - {S8_DOS}",
     )
     money = lambda cents: f"${cents / 100:,.2f}"  # noqa: E731
     document(
         f["provider_invoice"],
-        clinic + " · Tax ID 98-7654321",
+        clinic + " · Tax ID 12-3456789",
         "Itemized Statement / Invoice",
         [
-            ("Invoice number", "INV-20250415-0117"),
-            ("Provider", "Any City Medical Group, 500 Health Way, Any City CA 11111 · Phone (206) 555-0123"),
+            ("Invoice number", "INV-20250415-0001"),
+            ("Provider", "AnyCompany Medical Group, 100 Any Street, Any City CA 11111 · Phone (206) 555-0123"),
             ("Patient", "Jane M Doe"),
             ("DOB", "02/14/1967"),
             ("Insured / Member ID", "Joe Doe (subscriber) · 123456789A · Group A12345678 · AnyHealth Premium"),
@@ -1306,7 +1308,7 @@ def make_s8() -> dict[str, Path]:
                 ],
             ),
         ],
-        "Remit questions: Any City Medical Group billing office, (206) 555-0123.",
+        "Remit questions: AnyCompany Medical Group billing office, (206) 555-0123.",
     )
     # pack order: claim form, card, license, state id, Rx, discharge, note, spirometry, urine albumin, invoice, bank
     pack_order = ["form"] + names
